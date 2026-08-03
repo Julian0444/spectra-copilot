@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spectra-copilot"
+version = "0.1.0"
+description = "LLM agent that analyzes astronomical spectra using the desi-fm foundation model as a tool"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy",
+  "scipy",
+  "torch",
+  "huggingface_hub",
+  "desi-fm @ git+https://github.com/Julian0444/desi-spectra-fm",
+  "anthropic>=0.5",
+  "mcp[cli]",
+]
+
+[project.optional-dependencies]
+ui = ["gradio", "matplotlib"]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+packages = ["copilot"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
