@@ -23,7 +23,9 @@ mcp = MCPServer(
         "spectra). Typical loop: predict_redshift first; if z_confidence is "
         "low (< 0.3) or the user asks for verification, test the redshift "
         "with identify_spectral_lines and derive alternative hypotheses from "
-        "its strongest_peaks_angstrom. Inputs are .npz files containing "
+        "its strongest_peaks_angstrom; find_similar_spectra adds a "
+        "line-independent check — neighbors whose catalog redshifts cluster "
+        "around a candidate z support it. Inputs are .npz files containing "
         "'flux' and 'wavelength' (Angstrom) arrays."
     ),
 )
@@ -69,6 +71,22 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: float = 0.5) -> dict:
     large swings mean fragile evidence.
     """
     return tools.reconstruct_spectrum_impl(npz_path, mask_ratio)
+
+
+@mcp.tool()
+def find_similar_spectra(npz_path: str, k: int = 5) -> dict:
+    """Find the k most similar spectra in a 15k-spectrum DESI reference index.
+
+    Use it as a second, line-independent check on a candidate redshift: the
+    spectrum is embedded with the foundation model's encoder and matched by
+    cosine similarity against 15k DESI training spectra, each neighbor
+    reporting its catalog z. Neighbors whose redshifts cluster tightly around
+    a candidate z support it; scattered neighbor redshifts add doubt. The
+    signal comes from the embedding space, not the classification head — it
+    complements identify_spectral_lines, never replaces it. The first call
+    may download the index (~30 MB) from the Hub.
+    """
+    return tools.find_similar_spectra_impl(npz_path, k)
 
 
 if __name__ == "__main__":

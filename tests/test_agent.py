@@ -20,6 +20,10 @@ def test_system_prompt_states_v21_facts():
     assert "0.3" in SYSTEM
     assert "3.5" in SYSTEM
     assert "identify_spectral_lines" in SYSTEM
+    # Plan 10: the similarity tool must be framed as a complement to line
+    # verification, not a replacement.
+    assert "find_similar_spectra" in SYSTEM
+    assert "never replaces" in SYSTEM
 
 
 def test_wrapped_tool_call_matches_impl():
@@ -30,6 +34,13 @@ def test_wrapped_tool_call_matches_impl():
     r = json.loads(out)
     assert r["verdict"] == "consistent"
     assert r == tools.identify_spectral_lines_impl(ex, 0.2036)
+
+
+def test_wrapped_similarity_tool_matches_impl(tiny_index):
+    out = agent.find_similar_spectra.call({"npz_path": tiny_index, "k": 3})
+    r = json.loads(out)
+    assert r == tools.find_similar_spectra_impl(tiny_index, 3)
+    assert r["neighbors"][0]["similarity"] > 0.999  # the query is in the index
 
 
 def test_estimate_cost_usd_reproduces_rates():

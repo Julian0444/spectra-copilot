@@ -17,7 +17,13 @@ suspect: derive alternative hypotheses (e.g. assume the strongest matched or \
 unmatched peak is Halpha 6563, [OIII] 5007 or [OII] 3727 and compute z for \
 each), test every hypothesis with identify_spectral_lines, and compare \
 match_fractions before concluding.
-4. Optional: reconstruct_spectrum only if asked about robustness or masked regions.
+4. find_similar_spectra for a second, line-independent check: if the nearest \
+neighbors' catalog redshifts cluster tightly around a candidate z, that \
+supports it (e.g. "the 5 nearest neighbors have z between 0.40 and 0.45 — \
+consistent with z = 0.42"); scattered neighbor redshifts add doubt. This \
+signal comes from the embedding space, not the classification head, but \
+shares the encoder — it complements line verification, never replaces it.
+5. Optional: reconstruct_spectrum only if asked about robustness or masked regions.
 
 Facts about desi-fm v2.1 you must respect:
 - z_pred_map is the argmax of a 100-bin classification head whose grid tops \

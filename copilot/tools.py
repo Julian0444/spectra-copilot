@@ -14,13 +14,17 @@ from __future__ import annotations
 
 import os
 from functools import lru_cache
+from pathlib import Path
 
 import numpy as np
 import torch
 from scipy.ndimage import gaussian_filter1d
 from scipy.signal import find_peaks
 
-from desi_fm.predict import load_model_from_checkpoint, predict_spectrum
+from desi_fm.predict import embed_spectrum, load_model_from_checkpoint, predict_spectrum
+
+# Default location of the FAISS index built by scripts/build_index.py.
+DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 # Rest-frame line catalog (Angstroms) — galaxies + quasars.
 LINES = {
@@ -42,6 +46,44 @@ def _hub_checkpoint() -> str:
     from huggingface_hub import hf_hub_download
 
     return hf_hub_download("jirustaroure/desi-spectra-fm", "checkpoint_last.pt")
+
+
+def _index_paths() -> tuple[str, str]:
+    """Resolve (spectra.faiss, spectra_meta.npz): DESI_FM_INDEX_DIR, then the
+    repo's data/ directory, then the copy published on the Hugging Face Hub."""
+    local = Path(os.environ.get("DESI_FM_INDEX_DIR") or DATA_DIR)
+    index_file, meta_file = local / "spectra.faiss", local / "spectra_meta.npz"
+    if index_file.exists() and meta_file.exists():
+        return str(index_file), str(meta_file)
+    from huggingface_hub import hf_hub_download
+
+    return (
+        hf_hub_download("jirustaroure/desi-spectra-fm", "faiss/spectra.faiss"),
+        hf_hub_download("jirustaroure/desi-spectra-fm", "faiss/spectra_meta.npz"),
+    )
+
+
+def _faiss():
+    """Import faiss so it coexists with torch on macOS.
+
+    torch and faiss-cpu each bundle their own libomp; the duplicate-runtime
+    check aborts the whole process at faiss's first parallel region (OMP
+    Error #15). The documented workaround plus single-threaded faiss keeps
+    the two runtimes from contending — search over a 15k flat index is
+    microseconds single-threaded anyway.
+    """
+    os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+    import faiss
+
+    faiss.omp_set_num_threads(1)
+    return faiss
+
+
+@lru_cache(maxsize=1)
+def _index():
+    faiss = _faiss()
+    index_file, meta_file = _index_paths()
+    return faiss.read_index(index_file), np.load(meta_file)["z"]
 
 
 def _load(npz_path: str):
@@ -116,6 +158,40 @@ def reconstruct_spectrum_impl(npz_path: str, mask_ratio: float = 0.5) -> dict:
     out = {"mask_ratio": mask_ratio, "n_tokens_masked": int(masked.sum())}
     out["z_pred_under_masking"] = round(float(r.get("z_pred_map", r["z_pred"])), 4)
     return out
+
+
+def find_similar_spectra_impl(npz_path: str, k: int = 5) -> dict:
+    """Retrieve the k nearest neighbors of a spectrum in embedding space.
+
+    The spectrum is embedded with the encoder (mean-pooled spectral tokens)
+    and searched against a FAISS index of 15k DESI *training* spectra, so
+    held-out queries are never in the index. Similarity is cosine in [-1, 1].
+    Each neighbor comes with its catalog redshift: a tight neighbor z range
+    around a candidate z supports it through the embedding space — a signal
+    independent of the classification head, though not of the shared encoder.
+    """
+    flux, wave, ivar, mask = _load(npz_path)
+    emb = embed_spectrum(flux=flux, wavelength=wave, ivar=ivar, mask=mask, model=_model())
+    emb = (emb / np.linalg.norm(emb)).astype(np.float32)[None, :]
+    index, meta_z = _index()
+    k = max(1, min(int(k), index.ntotal))
+    sims, ids = index.search(emb, k)
+    neighbors = [
+        {
+            "rank": i + 1,
+            "similarity": round(float(s), 3),
+            "z": round(float(meta_z[j]), 3),
+        }
+        for i, (s, j) in enumerate(zip(sims[0], ids[0]))
+    ]
+    zs = [n["z"] for n in neighbors]
+    return {
+        "k": k,
+        "index_size": int(index.ntotal),
+        "neighbors": neighbors,
+        "neighbor_z_range": [min(zs), max(zs)],
+        "neighbor_z_median": round(float(np.median(zs)), 3),
+    }
 
 
 def identify_spectral_lines_impl(

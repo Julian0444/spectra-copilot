@@ -84,6 +84,23 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: float = 0.5) -> str:
     return json.dumps(tools.reconstruct_spectrum_impl(npz_path, mask_ratio))
 
 
+@beta_tool
+def find_similar_spectra(npz_path: str, k: int = 5) -> str:
+    """Find the k most similar spectra in a FAISS index of 15k DESI training spectra.
+
+    The spectrum is embedded with the foundation model's encoder and matched
+    by cosine similarity; each neighbor reports its catalog redshift. A tight
+    neighbor z range around a candidate z is independent supporting evidence
+    (embedding space, not the classification head); scattered neighbor
+    redshifts mean the embedding is not distinctive.
+
+    Args:
+        npz_path: path to the spectrum .npz file.
+        k: number of neighbors to retrieve (default 5).
+    """
+    return json.dumps(tools.find_similar_spectra_impl(npz_path, k))
+
+
 def request_kwargs(model: str) -> dict:
     """Per-model extras: adaptive thinking where supported (not on Haiku 4.5)."""
     if model.startswith("claude-haiku"):
@@ -122,7 +139,12 @@ def run(
         model=model,
         max_tokens=16000,
         system=SYSTEM,
-        tools=[predict_redshift, identify_spectral_lines, reconstruct_spectrum],
+        tools=[
+            predict_redshift,
+            identify_spectral_lines,
+            reconstruct_spectrum,
+            find_similar_spectra,
+        ],
         messages=[
             {
                 "role": "user",

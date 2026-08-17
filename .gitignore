@@ -5,3 +5,5 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 docs/img/*.png
+data/
+!docs/img/umap_z.png

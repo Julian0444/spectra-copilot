@@ -16,6 +16,7 @@ dependencies = [
   "desi-fm @ git+https://github.com/Julian0444/desi-spectra-fm",
   "anthropic>=0.5",
   "mcp[cli]",
+  "faiss-cpu",
 ]
 
 [project.optional-dependencies]

@@ -74,6 +74,25 @@ def test_lines_discriminate_on_real_spectrum():
     assert bad["match_fraction"] < good["match_fraction"]
 
 
+def test_find_similar_retrieves_the_query_itself(tiny_index):
+    # The index contains the query's own embedding at z = 0.2036: it must come
+    # back as rank 1 with cosine ~1.0, and similarities must be sorted.
+    r = tools.find_similar_spectra_impl(tiny_index, k=5)
+    assert r["k"] == 5 and r["index_size"] == 33
+    top = r["neighbors"][0]
+    assert top["rank"] == 1
+    assert top["similarity"] > 0.999
+    assert top["z"] == pytest.approx(0.204, abs=1e-3)
+    sims = [n["similarity"] for n in r["neighbors"]]
+    assert sims == sorted(sims, reverse=True)
+    assert r["neighbor_z_range"][0] <= r["neighbor_z_median"] <= r["neighbor_z_range"][1]
+
+
+def test_find_similar_clamps_k_to_index_size(tiny_index):
+    r = tools.find_similar_spectra_impl(tiny_index, k=999)
+    assert r["k"] == 33 == len(r["neighbors"])
+
+
 def test_load_handles_2d_and_nans(tmp_path):
     w, f = _synth(0.42)
     f2 = np.stack([f, f * 0.5])

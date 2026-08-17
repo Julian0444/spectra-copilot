@@ -18,6 +18,10 @@ tool returns compact JSON conclusions, never raw arrays.
   instead of just repeating it.
 - `reconstruct_spectrum` — masks a fraction of the model's tokens and
   re-predicts, probing the stability of the prediction.
+- `find_similar_spectra` — embeds the spectrum with the model's encoder and
+  retrieves its nearest neighbors from a FAISS index of 15k DESI training
+  spectra, each with its catalog redshift — a second, line-independent
+  validation signal ([details below](#semantic-search-embeddings--faiss)).
 
 ## Quick start
 
@@ -25,7 +29,7 @@ tool returns compact JSON conclusions, never raw arrays.
 pip install -e ".[dev]"
 # optional: skip the ~104 MB Hub download by pointing at a local checkpoint
 export DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt
-pytest -q                                  # 17 passed
+pytest -q                                  # 20 passed
 python -m copilot examples/heldout_z020.npz
 ```
 
@@ -73,7 +77,10 @@ exactly that z. The tool can catch and refine an off prediction, and a wrong z
 `copilot/agent.py` drives Claude through the SDK tool runner: predict →
 verify against lines → if `z_confidence < 0.3` or the match is weak, derive
 alternative hypotheses from the strongest peaks and compare their
-match_fractions before concluding.
+match_fractions before concluding; `find_similar_spectra` adds a
+line-independent neighbor check on the candidate z. (The reference transcripts
+below predate the similarity tool — it joined the toolset with the semantic
+search.)
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
@@ -189,9 +196,55 @@ low-confidence outlier (z_confidence = 0.18), though its peak-based recovery
 lands on z ≈ 1.98 vs the catalog 1.574 — the strong UV lines at that z fall
 outside DESI coverage, an honest limitation of emission-peak verification.
 
+## Semantic search (embeddings + FAISS)
+
+The foundation-model encoder doubles as an **embedding model**: `desi_fm`'s
+`embed_spectrum()` mean-pools the valid spectral tokens into a 512-d vector,
+and `scripts/build_index.py` indexes 15k DESI training spectra
+(L2-normalized → `faiss.IndexFlatIP`, i.e. cosine similarity). The index ships
+on the [Hub](https://huggingface.co/jirustaroure/desi-spectra-fm/tree/main/faiss)
+and is downloaded automatically on first use (~30 MB); the held-out `examples/`
+are *not* in it by construction (it indexes the training side of the split).
+
+A real query — the held-out galaxy at z_true = 0.204 whose official model
+prediction was off (z_pred_map = 0.2267):
+
+```json
+{
+  "k": 5, "index_size": 15000,
+  "neighbors": [
+    {"rank": 1, "similarity": 0.992, "z": 0.187},
+    {"rank": 2, "similarity": 0.992, "z": 0.202},
+    {"rank": 3, "similarity": 0.991, "z": 0.198},
+    {"rank": 4, "similarity": 0.990, "z": 0.192},
+    {"rank": 5, "similarity": 0.989, "z": 0.193}
+  ],
+  "neighbor_z_range": [0.187, 0.202], "neighbor_z_median": 0.193
+}
+```
+
+The five nearest neighbors cluster tightly around the true redshift — evidence
+from the embedding space, independent of the classification head, that backs
+the line-verified z ≈ 0.204 over the model's own 0.2267. The tool is equally
+honest about failure modes: on the low-confidence outlier
+(`heldout_lowconf_z157.npz`) the neighbor redshifts scatter across
+[0.13, 1.39] — the embedding is not distinctive, doubt confirmed — and the
+synthetic single-line trap peaks at similarity 0.90 vs ~0.99 for real DESI
+spectra: far from the data manifold, neighbors not to be trusted.
+
+The same embeddings, projected with UMAP and colored by catalog redshift:
+
+![UMAP of the embedding space, colored by redshift](docs/img/umap_z.png)
+
+Nobody told the model to order spectra by redshift — the smooth z gradient is
+structure it learned from masked-spectrum pretraining alone. That is the
+foundation-model claim in one picture: representations reusable downstream,
+not just a z head. (Reproduce with `scripts/build_index.py` +
+`scripts/plot_umap.py`.)
+
 ## Use it from any MCP client
 
-`copilot/mcp_server.py` exposes the same three tools over the
+`copilot/mcp_server.py` exposes the same four tools over the
 [Model Context Protocol](https://modelcontextprotocol.io) (stdio transport),
 so any MCP client — Claude Code, Claude Desktop, the `mcp dev` inspector —
 can drive the foundation model directly. The client's LLM does the reasoning;
@@ -239,6 +292,9 @@ the MCP tools and the client's own reasoning):
 
 Same detect-and-refine story as the agent's, reproduced by an off-the-shelf
 MCP client: the tool descriptions alone are enough to steer the loop.
+(`find_similar_spectra` was added after that session; called through the same
+MCP layer on the same spectrum it returns the neighbor cluster shown in the
+semantic-search section — z ∈ [0.187, 0.202] around the true 0.204.)
 
 ## Related
 
