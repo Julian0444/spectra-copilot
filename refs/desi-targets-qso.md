@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2208.08511
+QSO (quasar) targets are broad-line AGN observed by DESI both as direct tracers (0.9 < z < 2.1) and as backlights for the Lyman-alpha forest (z > 2.1). Quasar spectra show broad emission lines (Lya, CIV, CIII], MgII) and reach the highest redshifts in the survey, z of 3.5 and beyond. Prior for verification: broad lines and a high z_pred point to a QSO; note that the desi-fm classification grid tops out near z = 3.5, so genuine higher-z quasars pile up at the grid ceiling.

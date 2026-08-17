@@ -22,6 +22,11 @@ tool returns compact JSON conclusions, never raw arrays.
   retrieves its nearest neighbors from a FAISS index of 15k DESI training
   spectra, each with its catalog redshift — a second, line-independent
   validation signal ([details below](#semantic-search-embeddings--faiss)).
+- `lookup_reference` (`copilot/rag.py`) — BM25 retrieval over a committed
+  corpus of DESI reference notes + the extended line catalog, so the agent can
+  ground its reasoning in citable priors — target-type z ranges, line
+  visibility windows, classic degeneracies
+  ([details below](#mini-rag-cited-references-bm25)).
 
 ## Quick start
 
@@ -29,7 +34,7 @@ tool returns compact JSON conclusions, never raw arrays.
 pip install -e ".[dev]"
 # optional: skip the ~104 MB Hub download by pointing at a local checkpoint
 export DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt
-pytest -q                                  # 20 passed
+pytest -q                                  # 35 passed
 python -m copilot examples/heldout_z020.npz
 ```
 
@@ -242,9 +247,54 @@ foundation-model claim in one picture: representations reusable downstream,
 not just a z head. (Reproduce with `scripts/build_index.py` +
 `scripts/plot_umap.py`.)
 
+## Mini-RAG: cited references (BM25)
+
+The agent's missing ingredient was *priors*: knowing that ELGs live at
+0.6 < z < 1.6 turns "z_pred = 3.5 on an emission-line galaxy" from a number
+into a red flag. `refs/` holds a small committed corpus — `refs/lines.json`
+(the 15-line catalog, extended with retrieval-friendly context: visibility
+windows in DESI coverage, known confusions) plus 15 short notes on DESI
+written from the public documentation (SV3, the BGS/LRG/ELG/QSO target
+classes and their z ranges, Redrock, spectrograph coverage, sky residuals,
+the single-line degeneracy), each carrying its `source:` URL on the first
+line. `copilot/rag.py` indexes the ~30 documents with **BM25**
+(`rank_bm25`) behind the `lookup_reference(query)` tool.
+
+BM25 is a deliberate choice, not a placeholder: for ~30 short, technical
+documents with controlled vocabulary, embeddings add a model dependency
+without adding recall, while BM25 keeps retrieval deterministic, offline and
+testable in CI. A real query:
+
+```json
+// lookup_reference("ELG redshift range", k=2)
+{
+  "results": [
+    {"id": "desi-targets-elg", "source": "https://arxiv.org/abs/2208.08513",
+     "snippet": "ELG (Emission Line Galaxy) targets are star-forming galaxies selected to lie at 0.6 < z < 1.6, the largest DESI target class. Their redshifts are measured primarily from the [OII] 3727 doublet, since Halpha has left the optical window above z = 0.49. ..."},
+    {"id": "oii-doublet", "source": "https://arxiv.org/abs/2208.08513",
+     "snippet": "The [OII] line is actually a doublet (3726.0 and 3728.8 A rest, ..."}
+  ]
+}
+```
+
+The system prompt closes the loop with a citation contract: when the agent
+uses retrieved information it must cite the document id in square brackets
+(`[line-catalog]`, `[desi-targets-elg]`), and it may cite **only** ids
+returned by `lookup_reference` in that conversation — never invent a
+reference. `rag.valid_ids()` exposes the citable set so evals can verify
+that no cited source was hallucinated. The classic failure the corpus
+targets — `lookup_reference("Halpha OII confusion")` — retrieves the
+single-line degeneracy note plus the `Halpha_6563` / `OII_3727` catalog
+entries (pinned by a unit test).
+
+> **Pending (API credit):** the corpus, retrieval and integration in the
+> agent + MCP server are built and tested offline; the demo agent report
+> with an inline `[citation]` will be pasted here after the next credited
+> run (~$0.02 on Haiku).
+
 ## Use it from any MCP client
 
-`copilot/mcp_server.py` exposes the same four tools over the
+`copilot/mcp_server.py` exposes the same five tools over the
 [Model Context Protocol](https://modelcontextprotocol.io) (stdio transport),
 so any MCP client — Claude Code, Claude Desktop, the `mcp dev` inspector —
 can drive the foundation model directly. The client's LLM does the reasoning;

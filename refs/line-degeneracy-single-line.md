@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2306.06307
+The classic single-line degeneracy: one emission peak at observed wavelength L is consistent with several redshifts at once - Halpha gives z = L/6562.8 - 1, [OIII] 5007 gives z = L/5006.8 - 1, [OII] 3727 gives z = L/3727.1 - 1, and Lya gives z = L/1215.7 - 1. The Halpha vs [OII] confusion is the most common cause of catastrophic redshift errors in emission-line galaxies. Breaking the degeneracy requires either a second line, the resolved [OII] doublet shape, or external priors such as the target type's expected redshift range.

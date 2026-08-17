@@ -17,6 +17,7 @@ dependencies = [
   "anthropic>=0.5",
   "mcp[cli]",
   "faiss-cpu",
+  "rank_bm25",
 ]
 
 [project.optional-dependencies]

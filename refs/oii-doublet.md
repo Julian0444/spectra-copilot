@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2208.08513
+The [OII] line is actually a doublet (3726.0 and 3728.8 A rest, separation about 2.8 A rest, growing as (1+z) when observed). DESI's spectral resolution partially resolves this doublet, which is how Redrock secures ELG redshifts from what would otherwise be a single ambiguous line. A single narrow unresolved peak is therefore weaker evidence for [OII] than a peak with the characteristic doublet width or split.

@@ -9,7 +9,7 @@ import asyncio
 import json
 from pathlib import Path
 
-from copilot import tools
+from copilot import rag, tools
 from copilot.mcp_server import mcp
 
 EXAMPLES = Path(__file__).resolve().parent.parent / "examples"
@@ -25,11 +25,11 @@ def _payload(result):
     return json.loads(result.content[0].text)
 
 
-def test_exposes_exactly_the_four_tools():
+def test_exposes_exactly_the_five_tools():
     ts = _run(mcp.list_tools())
     assert {t.name for t in ts} == {
         "predict_redshift", "identify_spectral_lines", "reconstruct_spectrum",
-        "find_similar_spectra",
+        "find_similar_spectra", "lookup_reference",
     }
 
 
@@ -49,6 +49,10 @@ def test_descriptions_say_when_to_use_and_schemas_match():
     # check, never a replacement — that framing is part of the contract.
     d = ts["find_similar_spectra"].description
     assert "line-independent" in d and "complements" in d
+    # The reference tool must advertise its purpose (priors + degeneracies)
+    # and that results are citable by id.
+    d = ts["lookup_reference"].description
+    assert "sanity-check" in d and "cite" in d
     assert ts["predict_redshift"].input_schema["required"] == ["npz_path"]
     assert set(ts["identify_spectral_lines"].input_schema["required"]) == {
         "npz_path", "z"
@@ -56,6 +60,7 @@ def test_descriptions_say_when_to_use_and_schemas_match():
     # mask_ratio / k have defaults, so only the path is required.
     assert ts["reconstruct_spectrum"].input_schema["required"] == ["npz_path"]
     assert ts["find_similar_spectra"].input_schema["required"] == ["npz_path"]
+    assert ts["lookup_reference"].input_schema["required"] == ["query"]
 
 
 def test_call_tool_equals_impl_on_real_heldout_spectrum():
@@ -100,3 +105,14 @@ def test_model_tools_delegate_with_defaults(monkeypatch):
     got = _payload(_run(mcp.call_tool("find_similar_spectra", {"npz_path": "c.npz"})))
     assert got["k"] == 5  # default k applied by the server
     assert calls["similar"] == ("c.npz", 5)
+
+
+def test_lookup_reference_through_the_real_mcp_layer():
+    # The corpus is committed, so this exercises the real retrieval end to
+    # end through call_tool — no model, no network.
+    got = _payload(
+        _run(mcp.call_tool("lookup_reference", {"query": "Halpha OII confusion"}))
+    )
+    assert got == rag.lookup_reference_impl("Halpha OII confusion", 3)
+    ids = [r["id"] for r in got["results"]]
+    assert "line-degeneracy-single-line" in ids

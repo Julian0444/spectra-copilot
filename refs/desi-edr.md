@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2306.06308
+The DESI Early Data Release (EDR, June 2023) contains the spectra taken during Survey Validation between December 2020 and June 2021, before the start of the five-year main survey. It includes galaxy, quasar and stellar spectra with pipeline redshifts and quality flags. The desi-fm foundation model behind these tools was trained on DESI EDR spectra served through the MultimodalUniverse dataset.

@@ -1,0 +1,2 @@
+source: https://github.com/desihub/redrock
+Redrock is the DESI pipeline redshift fitter: it fits PCA-based templates of galaxies, quasars and stars to each spectrum over a dense redshift grid and picks the global chi-squared minimum. It reports the best redshift Z with an error ZERR, a warning bitmask ZWARN (0 means no known problem), and the best template class as SPECTYPE. The catalog z_true labels used to evaluate desi-fm come from Redrock, so a disagreement with the catalog can in principle also be a Redrock failure - though at ZWARN=0 that is rare.

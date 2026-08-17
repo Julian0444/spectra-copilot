@@ -14,7 +14,7 @@ on the first model call.
 
 from mcp.server.mcpserver import MCPServer
 
-from copilot import tools
+from copilot import rag, tools
 
 mcp = MCPServer(
     "desi-fm",
@@ -25,8 +25,10 @@ mcp = MCPServer(
         "with identify_spectral_lines and derive alternative hypotheses from "
         "its strongest_peaks_angstrom; find_similar_spectra adds a "
         "line-independent check — neighbors whose catalog redshifts cluster "
-        "around a candidate z support it. Inputs are .npz files containing "
-        "'flux' and 'wavelength' (Angstrom) arrays."
+        "around a candidate z support it; lookup_reference retrieves DESI "
+        "reference notes (target-type z ranges, line degeneracies) to "
+        "sanity-check a conclusion, citing sources by id. Inputs are .npz "
+        "files containing 'flux' and 'wavelength' (Angstrom) arrays."
     ),
 )
 
@@ -87,6 +89,21 @@ def find_similar_spectra(npz_path: str, k: int = 5) -> dict:
     may download the index (~30 MB) from the Hub.
     """
     return tools.find_similar_spectra_impl(npz_path, k)
+
+
+@mcp.tool()
+def lookup_reference(query: str, k: int = 3) -> dict:
+    """Consult the spectral-line catalog and DESI reference notes (BM25).
+
+    Use it to sanity-check target-type vs redshift priors (BGS/LRG/ELG/QSO
+    expected ranges), line visibility windows, and to explain classic line
+    degeneracies (e.g. Halpha vs [OII] in single-line spectra). Returns up
+    to k documents, strongest match first, each with an `id` to cite in
+    square brackets, its public `source`, and a text snippet. The corpus is
+    ~30 short committed documents; queries with no term overlap return an
+    empty list. Needs no model and runs offline.
+    """
+    return rag.lookup_reference_impl(query, k)
 
 
 if __name__ == "__main__":

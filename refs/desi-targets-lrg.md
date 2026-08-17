@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2208.08515
+LRG (Luminous Red Galaxy) targets are massive, passively evolving galaxies selected to lie at 0.4 < z < 1.1. Their spectra are dominated by absorption features - the 4000 A break with Ca H and K - and typically show weak or no emission lines. Prior for verification: an absorption-dominated red spectrum with few emission peaks and z_pred between 0.4 and 1.1 is consistent with an LRG; a weak emission-line verdict on such a spectrum is expected, not evidence against the redshift.

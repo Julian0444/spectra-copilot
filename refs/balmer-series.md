@@ -1,0 +1,2 @@
+source: https://physics.nist.gov/PhysRefData/ASD/lines_form.html
+The hydrogen Balmer series in the optical runs Halpha 6562.8, Hbeta 4861.3, Hgamma 4340.5, Hdelta 4101.7 A, with strength decreasing along the series. Because these rest wavelengths are fixed by atomic physics, matching two or more Balmer lines at a common redshift pins z essentially uniquely - no single-line degeneracy survives a confirmed Balmer pair. In star-forming galaxies at z < 0.5, Halpha plus Hbeta is the most common such pair inside DESI coverage.

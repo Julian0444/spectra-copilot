@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2208.08513
+ELG (Emission Line Galaxy) targets are star-forming galaxies selected to lie at 0.6 < z < 1.6, the largest DESI target class. Their redshifts are measured primarily from the [OII] 3727 doublet, since Halpha has left the optical window above z = 0.49. Prior for verification: an emission-line spectrum whose only strong line sits between about 6000 and 9800 A is typical of an ELG with that line being [OII]; an ELG-like spectrum with z_pred of 3.5 is suspicious because ELGs live at 0.6-1.6.

@@ -21,7 +21,7 @@ from pathlib import Path
 import anthropic
 from anthropic import beta_tool
 
-from copilot import tools
+from copilot import rag, tools
 from copilot.report import SYSTEM
 
 DEFAULT_MODEL = "claude-opus-4-8"
@@ -101,6 +101,22 @@ def find_similar_spectra(npz_path: str, k: int = 5) -> str:
     return json.dumps(tools.find_similar_spectra_impl(npz_path, k))
 
 
+@beta_tool
+def lookup_reference(query: str, k: int = 3) -> str:
+    """Consult the spectral-line catalog and DESI reference notes (BM25 retrieval).
+
+    Use it to sanity-check target-type vs redshift priors (BGS/LRG/ELG/QSO
+    ranges), line visibility windows, and to explain line degeneracies when a
+    single-line identification is ambiguous. Each result carries an `id` you
+    can cite in square brackets and the public `source` it was written from.
+
+    Args:
+        query: short keyword query, e.g. "ELG redshift range" or "Halpha OII confusion".
+        k: number of documents to retrieve (default 3).
+    """
+    return json.dumps(rag.lookup_reference_impl(query, k))
+
+
 # Structured-output channel for the evals (plan 11): the submit_report tool
 # records its arguments here and eval/run_evals.py reads fields off the dict —
 # zero parsing of prose reports.
@@ -171,6 +187,7 @@ def run(
             identify_spectral_lines,
             reconstruct_spectrum,
             find_similar_spectra,
+            lookup_reference,
         ],
         messages=[
             {
@@ -233,6 +250,7 @@ def run_structured(npz_path: str, model: str = "claude-haiku-4-5") -> dict | Non
             identify_spectral_lines,
             reconstruct_spectrum,
             find_similar_spectra,
+            lookup_reference,
             submit_report,
         ],
         messages=[

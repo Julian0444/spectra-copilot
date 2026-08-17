@@ -77,6 +77,7 @@ def test_run_structured_returns_payload_with_token_accounting(monkeypatch):
     # the Haiku no-thinking contract of request_kwargs().
     names = {t.name for t in captured["tools"]}
     assert "submit_report" in names and "find_similar_spectra" in names
+    assert "lookup_reference" in names  # plan 12: the RAG tool is offered too
     assert "submit_report exactly once" in captured["system"]
     assert "thinking" not in captured
 

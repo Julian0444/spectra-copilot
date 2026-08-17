@@ -4,6 +4,10 @@ Measures the **whole system** — agent + tools + desi-fm v2.1 — against DESI
 pipeline redshifts, and answers one question: *does the verification loop
 recover the catastrophic outliers the model alone gets wrong?*
 
+Since plan 12 the agent's toolset also includes `lookup_reference` (the
+mini-RAG over DESI reference notes), so any run from that commit on measures
+the agent *with* retrieval-grounded priors.
+
 ## Files
 
 | file | what |
