@@ -287,10 +287,51 @@ targets — `lookup_reference("Halpha OII confusion")` — retrieves the
 single-line degeneracy note plus the `Halpha_6563` / `OII_3727` catalog
 entries (pinned by a unit test).
 
-> **Pending (API credit):** the corpus, retrieval and integration in the
-> agent + MCP server are built and tested offline; the demo agent report
-> with an inline `[citation]` will be pasted here after the next credited
-> run (~$0.02 on Haiku).
+**Verified on 3 real Haiku runs (~$0.07 total):** in every analysis the agent
+consulted `lookup_reference` unprompted when the redshift was ambiguous, and
+**all 6 citations across the 3 reports matched documents actually returned in
+that conversation** — zero invented references (checked against
+`rag.valid_ids()` and the transcripts in `eval/transcripts/*_rag.json`).
+The low-confidence outlier report, verbatim (`claude-haiku-4-5`, $0.023 —
+note how both citations do real work as priors):
+
+> ## Observation report
+>
+> **Object:** examples/heldout_lowconf_z157.npz
+>
+> **Redshift:** Indeterminate; z_pred_map = 0.957 is unverified.
+>
+> **Evidence:**
+>
+> The foundation model prediction z_pred_map = 0.957 carries low confidence
+> (0.181, well below the 0.3 threshold). Spectral-line verification at this
+> redshift yields only 1 matched line (CIII] 1909) from 10 expected lines,
+> match_fraction = 0.1 (identify_spectral_lines). This "weak_or_inconsistent"
+> verdict is incompatible with a confident redshift claim.
+>
+> Alternative hypothesis z = 0.058 (derived by assuming the strongest peak
+> 3944 Å is [OII] 3727) matches 2/11 lines and is equally weak. The 61
+> detected peaks show no coherent signature of either redshift.
+>
+> The spectrum's nearest neighbors in the embedding space scatter widely
+> (z = 0.129 to 1.386, median 0.937; find_similar_spectra), indicating the
+> embedding is not distinctive—a sign the spectrum may be low
+> signal-to-noise, ambiguous, or absorption-dominated.
+>
+> This spectrum's properties are consistent with an LRG (absorption-dominated,
+> few emission lines; z_pred in the 0.4–1.1 LRG window **[desi-targets-lrg]**),
+> but absorption-dominated spectra will inherently yield weak emission-line
+> matches even at correct redshift **[absorption-dominated-spectra]**. The
+> lack of strong, corroborating emission-line pairs (e.g. Hβ–[OIII] or [OII]
+> doublet at consistent wavelengths) prevents secure redshift determination.
+>
+> **Confidence:** Very low. Neither z_pred_map nor alternative hypotheses
+> exhibit >40% line-match fractions or tight neighbor clustering.
+>
+> **Notes:** The spectrum requires either higher signal-to-noise data or
+> physical priors (photometry, host-galaxy morphology) to disambiguate. A
+> robust absorption-feature-based redshift estimate (e.g. 4000 Å break,
+> Ca H/K) would be more suitable for this object.
 
 ## Use it from any MCP client
 
