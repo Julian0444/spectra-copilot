@@ -101,6 +101,33 @@ def find_similar_spectra(npz_path: str, k: int = 5) -> str:
     return json.dumps(tools.find_similar_spectra_impl(npz_path, k))
 
 
+# Structured-output channel for the evals (plan 11): the submit_report tool
+# records its arguments here and eval/run_evals.py reads fields off the dict —
+# zero parsing of prose reports.
+SUBMITTED: dict = {}
+
+
+@beta_tool
+def submit_report(
+    z_final: float, confidence: str, lines_matched: int, summary: str
+) -> str:
+    """Submit the final structured result of the analysis. Call exactly once, at the end.
+
+    Args:
+        z_final: your final redshift estimate after verification.
+        confidence: one of "high", "medium", "low".
+        lines_matched: how many expected lines matched peaks at z_final.
+        summary: 2-3 sentence justification citing the tools used.
+    """
+    SUBMITTED["last"] = {
+        "z_final": float(z_final),
+        "confidence": confidence,
+        "lines_matched": int(lines_matched),
+        "summary": summary,
+    }
+    return "recorded"
+
+
 def request_kwargs(model: str) -> dict:
     """Per-model extras: adaptive thinking where supported (not on Haiku 4.5)."""
     if model.startswith("claude-haiku"):
@@ -178,6 +205,56 @@ def run(
         file=sys.stderr,
     )
     return "".join(b.text for b in final.content if b.type == "text")
+
+
+STRUCTURED_RULE = (
+    "\nAdditional rule for this run: do NOT write the markdown report. "
+    "Instead, ALWAYS finish by calling submit_report exactly once, after "
+    "verifying your final z with identify_spectral_lines. Keep tool use "
+    "tight: at most 6 tool calls before submit_report."
+)
+
+
+def run_structured(npz_path: str, model: str = "claude-haiku-4-5") -> dict | None:
+    """Run the agent on one spectrum and return the submit_report payload.
+
+    Returns None if the agent never called submit_report. On success the
+    payload gains tokens_in / tokens_out plus the full accumulated `usage`
+    dict, so callers can estimate cost with estimate_cost_usd().
+    """
+    SUBMITTED.pop("last", None)
+    client = anthropic.Anthropic()
+    runner = client.beta.messages.tool_runner(
+        model=model,
+        max_tokens=8000,
+        system=SYSTEM + STRUCTURED_RULE,
+        tools=[
+            predict_redshift,
+            identify_spectral_lines,
+            reconstruct_spectrum,
+            find_similar_spectra,
+            submit_report,
+        ],
+        messages=[
+            {
+                "role": "user",
+                "content": f"Analyze the spectrum in {npz_path} and submit the "
+                "structured result via submit_report.",
+            }
+        ],
+        **request_kwargs(model),
+    )
+    usage = dict.fromkeys(USAGE_KEYS, 0)
+    for message in runner:  # the runner executes the tools and loops by itself
+        for key in USAGE_KEYS:
+            usage[key] += getattr(message.usage, key, None) or 0
+    result = SUBMITTED.get("last")
+    if result is not None:
+        result = dict(result)
+        result["tokens_in"] = usage["input_tokens"]
+        result["tokens_out"] = usage["output_tokens"]
+        result["usage"] = usage
+    return result
 
 
 def main() -> None:

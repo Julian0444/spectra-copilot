@@ -7,3 +7,4 @@ __pycache__/
 docs/img/*.png
 data/
 !docs/img/umap_z.png
+eval/cases/*.npz
