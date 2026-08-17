@@ -25,7 +25,7 @@ tool returns compact JSON conclusions, never raw arrays.
 pip install -e ".[dev]"
 # optional: skip the ~104 MB Hub download by pointing at a local checkpoint
 export DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt
-pytest -q                                  # 13 passed
+pytest -q                                  # 17 passed
 python -m copilot examples/heldout_z020.npz
 ```
 
@@ -189,11 +189,60 @@ low-confidence outlier (z_confidence = 0.18), though its peak-based recovery
 lands on z ≈ 1.98 vs the catalog 1.574 — the strong UV lines at that z fall
 outside DESI coverage, an honest limitation of emission-peak verification.
 
+## Use it from any MCP client
+
+`copilot/mcp_server.py` exposes the same three tools over the
+[Model Context Protocol](https://modelcontextprotocol.io) (stdio transport),
+so any MCP client — Claude Code, Claude Desktop, the `mcp dev` inspector —
+can drive the foundation model directly. The client's LLM does the reasoning;
+the tools only report measurements.
+
+Register it in **Claude Code** (use the venv python so all deps resolve;
+`DESI_FM_CKPT` is optional — without it the checkpoint is pulled from the Hub
+on the first model call):
+
+```bash
+claude mcp add desi-fm \
+    -e DESI_FM_CKPT=/path/to/checkpoint_last.pt \
+    -- /path/to/spectra-copilot/.venv/bin/python \
+       /path/to/spectra-copilot/copilot/mcp_server.py
+claude mcp list   # desi-fm: ... - ✔ Connected
+```
+
+Or in **Claude Desktop**
+(`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "desi-fm": {
+      "command": "/path/to/spectra-copilot/.venv/bin/python",
+      "args": ["/path/to/spectra-copilot/copilot/mcp_server.py"],
+      "env": {"DESI_FM_CKPT": "/path/to/checkpoint_last.pt"}
+    }
+  }
+}
+```
+
+Verified session (Claude Code driving the server on
+`examples/heldout_z020.npz`, z_true = 0.204 — no agent code involved, just
+the MCP tools and the client's own reasoning):
+
+1. `predict_redshift` → `z_pred_map = 0.2267`, `z_confidence = 0.64`.
+2. `identify_spectral_lines(z=0.2267)` → **weak** (2/11 lines,
+   match_fraction 0.18): the physics does not confirm the model.
+3. `reconstruct_spectrum(mask_ratio=0.5)` → `z_pred_under_masking = 0.2031`,
+   a notable swing — fragile evidence.
+4. The client reads the strongest peak (7900.8 Å) as Hα and re-tests
+   `z = 0.204` → **consistent** (8/11 lines, match_fraction 0.73, deltas
+   < 2 Å).
+
+Same detect-and-refine story as the agent's, reproduced by an off-the-shelf
+MCP client: the tool descriptions alone are enough to steer the loop.
+
 ## Related
 
 - Model: [desi-spectra-fm](https://github.com/Julian0444/desi-spectra-fm)
   (code) · [HF checkpoint](https://huggingface.co/jirustaroure/desi-spectra-fm)
   · [live demo](https://huggingface.co/spaces/jirustaroure/desi-spectra-fm-demo)
   · [REST API](https://jirustaroure-desi-fm-api.hf.space/api/docs)
-
-The MCP server lands next.
