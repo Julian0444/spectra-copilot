@@ -125,17 +125,23 @@ def identify_spectral_lines_impl(
 
     Detects *emission* peaks (prominence over a smoothed continuum) and
     matches them against the rest-frame catalog shifted by (1+z). The 12 A
-    default tolerance is ~5 DESI pixels. Caveat: absorption-dominated spectra
-    (e.g. passive galaxies with only Ca H&K) can yield a weak verdict even at
-    the correct z — a weak verdict is *lack of confirmation*, not refutation.
-    A z that matches clearly fewer lines than an alternative z is the useful
-    signal for validation.
+    default tolerance is ~5 DESI pixels. The strongest detected peaks are
+    reported (by prominence, strongest first) so an agent can derive
+    alternative z hypotheses from an unexplained peak. Caveat:
+    absorption-dominated spectra (e.g. passive galaxies with only Ca H&K) can
+    yield a weak verdict even at the correct z — a weak verdict is *lack of
+    confirmation*, not refutation. A z that matches clearly fewer lines than
+    an alternative z is the useful signal for validation.
     """
     flux, wave, _, _ = _load(npz_path)
     smooth = gaussian_filter1d(flux.astype(float), sigma=3.0)
     prominence = 0.8 * float(np.std(flux - smooth))
-    peaks, _ = find_peaks(smooth, prominence=prominence, distance=10)
+    peaks, props = find_peaks(smooth, prominence=prominence, distance=10)
     peak_wl = wave[peaks]
+    strongest = [
+        round(float(peak_wl[i]), 1)
+        for i in np.argsort(props["prominences"])[::-1][:5]
+    ]
     expected, matched = [], []
     for name, lam in LINES.items():
         obs = lam * (1.0 + z)
@@ -154,6 +160,8 @@ def identify_spectral_lines_impl(
     frac = len(matched) / max(len(expected), 1)
     return {
         "z_tested": z,
+        "n_peaks_detected": int(peaks.size),
+        "strongest_peaks_angstrom": strongest,
         "n_expected_in_coverage": len(expected),
         "n_matched": len(matched),
         "match_fraction": round(frac, 2),
