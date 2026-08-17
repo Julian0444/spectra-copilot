@@ -30,3 +30,27 @@ python eval/run_evals.py --resume           # full 150-case run (~US$ 3, Haiku)
 `ANTHROPIC_API_KEY` must be set for the agent runs. Every metric uses
 dz_n = |z − z_true| / (1 + z_true); 0.15 is the catastrophic-outlier
 threshold, 0.05 the quality threshold.
+
+## Results (run of 2026-08-17, committed as `results.csv`)
+
+150/150 cases completed with a structured `submit_report`, 0 errors, measured
+cost US$ 4.06 (`claude-haiku-4-5`, 3.27 M tokens). Headline numbers — the
+full discussion lives in the [top-level README](../README.md#end-to-end-evals-does-verification-actually-help-n--150):
+
+| system | rate < 0.15 | rate < 0.05 | MAE_norm |
+|---|---|---|---|
+| model v2.1 alone | 92.7 % | 77.3 % | 0.061 |
+| agent (Haiku + 5 tools incl. RAG) | 79.3 % | 72.0 % | 0.104 |
+
+Transitions: 118 both-right · 21 model-right/agent-wrong · 1 recovered
+outlier · 10 both-wrong. Confidence↔accuracy: high 88.9 % (n=63), medium
+77.1 % (n=70), low 52.9 % (n=17) — 17 of the 21 breaks were self-flagged
+medium/low, so gating on `high` (hybrid policy) recovers to 90.0 %.
+
+Notes for interpretation: the model-only row uses the tools' protocol
+(deterministic full-context call, the same first tool call the agent makes) —
+not comparable with the masked-evaluation η = 14.95 % of the model card. The
+agent ran with the plan-12 toolset (`lookup_reference` included). The z > 1.5
+stratified band is where the agent loses most ground (68.9 % vs 91.1 %):
+sparse line coverage makes the true z look "weak" to emission-line matching
+and Haiku overrules the model with low-z single-line hypotheses.

@@ -201,6 +201,55 @@ low-confidence outlier (z_confidence = 0.18), though its peak-based recovery
 lands on z ≈ 1.98 vs the catalog 1.574 — the strong UV lines at that z fall
 outside DESI coverage, an honest limitation of emission-peak verification.
 
+## End-to-end evals: does verification actually help? (n = 150)
+
+Hand-picked demos like the ones above are exactly what evals exist to keep
+honest. `eval/` runs the **whole system** — agent + tools + desi-fm v2.1 —
+against DESI pipeline redshifts on **150 real held-out spectra** (stratified:
+45 in the z > 1.5 failure band; selection deterministic, seed 7, labels
+asserted against the committed predictions CSV). Both systems answer the same
+question per case; the agent finishes with a structured `submit_report`
+(150/150 did — zero parsing, zero errors). Full methodology in
+[`eval/README.md`](eval/README.md), raw results in
+[`eval/results.csv`](eval/results.csv).
+
+| system (protocol of the tools) | rate < 0.15 | rate < 0.05 | MAE_norm |
+|---|---|---|---|
+| desi-fm v2.1 alone | **92.7 %** | **77.3 %** | **0.061** |
+| agent (`claude-haiku-4-5` + 5 tools + RAG) | 79.3 % | 72.0 % | 0.104 |
+| hybrid: agent only when it reports `high` confidence | 90.0 % | — | — |
+
+**The honest headline: with a cheap LLM, the verification loop hurts more
+than it helps.** The agent recovered only 1 of the model's 11 catastrophic
+outliers, and broke 21 predictions the model had right — the damage
+concentrating exactly in the stratified z > 1.5 band (agent 68.9 % vs model
+91.1 %), where so few catalog lines remain in DESI coverage that the *true*
+redshift also looks "weak" to emission-line matching; Haiku then overrules a
+correct prediction with a low-z single-line hypothesis, the very
+[line-degeneracy](refs/line-degeneracy-single-line.md) the system prompt
+warns about. The demo successes above (Opus recovering hand-picked outliers)
+do not generalize downward to Haiku at 1/25th the price.
+
+Two signals redeem the loop. First, **the agent knows when it is guessing** —
+its self-reported confidence tracks accuracy monotonically:
+
+| agent confidence | n | rate < 0.15 |
+|---|---|---|
+| high | 63 | 88.9 % |
+| medium | 70 | 77.1 % |
+| low | 17 | 52.9 % |
+
+17 of the 21 broken cases were self-flagged as medium/low. Second, that
+signal is actionable: the hybrid row above (trust the agent only on `high`,
+keep the model otherwise) recovers to 90.0 %. The eval did exactly what evals
+are for — it caught a deployment-relevant failure (don't let a cheap LLM
+overrule a well-calibrated model) that four cherry-picked demos had hidden.
+
+Measured cost of the full run: **US$ 4.06** (150 agent analyses,
+`claude-haiku-4-5`, 3.27 M tokens ≈ 21.8 k/case ≈ $0.027/case). The
+model-only baseline needs no API and is reproducible with
+`python eval/run_evals.py --baseline-only`.
+
 ## Semantic search (embeddings + FAISS)
 
 The foundation-model encoder doubles as an **embedding model**: `desi_fm`'s
