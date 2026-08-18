@@ -1,11 +1,36 @@
 # spectra-copilot
 
+[![ci](https://github.com/Julian0444/spectra-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/Julian0444/spectra-copilot/actions/workflows/ci.yml)
+
 LLM agent that analyzes astronomical spectra using the
 [desi-fm](https://github.com/Julian0444/desi-spectra-fm) foundation model as a
 tool — deterministic tools plus a Claude-API agent that calls the model,
 *physically verifies* its prediction against known spectral lines, and writes
 an observation report where every claim cites the tool that backs it. Every
 tool returns compact JSON conclusions, never raw arrays.
+
+**[🧠 The model: desi-spectra-fm](https://github.com/Julian0444/desi-spectra-fm)** ·
+**[🤗 Checkpoint + FAISS index](https://huggingface.co/jirustaroure/desi-spectra-fm)** ·
+**[▶ Model demo](https://huggingface.co/spaces/jirustaroure/desi-spectra-fm-demo)** ·
+**[📡 Model REST API](https://jirustaroure-desi-fm-api.hf.space/api/docs)**
+
+The 60-second version:
+
+- **5 tools + agent + [MCP server](#use-it-from-any-mcp-client)** — redshift prediction,
+  spectral-line verification, masked-reconstruction stability, FAISS semantic
+  search over 15k spectra, and BM25 reference lookup with a citation contract.
+- **[End-to-end evals on 150 held-out spectra](#end-to-end-evals-does-verification-actually-help-n--150)**
+  with an honest headline: the bare model beats its own cheap-LLM agent
+  (92.7 % vs 79.3 %). The agent's self-reported confidence tracks accuracy
+  monotonically, so a hybrid "trust the agent only when it says *high*"
+  policy recovers 90.0 %. **The eval caught a deployment-relevant failure
+  that four cherry-picked demos had hidden** — that is what evals are for.
+- **[Mini-RAG with verified citations](#mini-rag-cited-references-bm25)** —
+  every citation in every verified run matched a document actually retrieved
+  in that conversation: 6/6 backed, 0 invented (checked programmatically).
+- **35 tests covering tools, agent contract, MCP layer, RAG and evals — all
+  offline, green in CI.** The paid API calls are measured and logged
+  (~$0.027 per Haiku analysis, US$ 4.06 for the full 150-case eval).
 
 **Tools** (`copilot/tools.py`):
 
