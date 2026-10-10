@@ -8,3 +8,26 @@ docs/img/*.png
 data/
 !docs/img/umap_z.png
 eval/cases/*.npz
+
+# Local credentials and generated artifacts (historical tracked results stay tracked).
+.env
+.env.*
+!.env.example
+secrets/
+credentials/
+*.pem
+*.key
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.parquet
+*.arrow
+*.faiss
+*.log
+*.pid
+*.npz
+data/
+.agents/
+.claude/
+eval/runs/
