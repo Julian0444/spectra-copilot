@@ -43,11 +43,12 @@ def harness(tmp_path, monkeypatch):
     return mod, run, rows, out, cases
 
 
-def test_resume_early_hole_keeps_later_completed_rows(harness, monkeypatch, capsys):
+@pytest.mark.parametrize('incomplete_status', ['pending', 'error'])
+def test_resume_early_hole_keeps_later_completed_rows(harness, monkeypatch, capsys, incomplete_status):
     mod, run, rows, out, _ = harness
     run()
     existing = rows()
-    existing[0]['status'] = 'error'
+    existing[0]['status'] = incomplete_status
     mod.write_csv(out, existing)
     calls = []
     original = mod.tools.predict_redshift_impl
