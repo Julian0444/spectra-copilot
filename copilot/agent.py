@@ -14,6 +14,13 @@ are printed to stderr after each run.
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
+from functools import wraps
+from tempfile import TemporaryDirectory
+import hashlib
+import numpy as np
+from typing import Annotated, Literal
+from pydantic import Field
 import json
 import sys
 from pathlib import Path
@@ -22,7 +29,9 @@ import anthropic
 from anthropic import beta_tool
 
 from copilot import rag, tools
-from copilot.report import SYSTEM
+from copilot.report import SYSTEM, system_prompt
+from desi_fm.predict import model_identity, _prepare_inputs
+from desi_fm.inputs import read_npz, bounded_real, positive_int, SpectrumInputError
 
 DEFAULT_MODEL = "claude-opus-4-8"
 
@@ -46,7 +55,8 @@ def predict_redshift(npz_path: str) -> str:
     """Run the desi-fm v2.1 foundation model on a spectrum file.
 
     Returns z_pred_map (the official prediction), z_confidence in [0, 1] and
-    the secondary regression z_pred.
+    z_pred = expm1(E[log(1+z)]) from the same posterior.
+    Concentration is based on entropy, not calibrated accuracy probability.
 
     Args:
         npz_path: path to a .npz file containing 'flux' and 'wavelength' (Angstrom).
@@ -55,7 +65,7 @@ def predict_redshift(npz_path: str) -> str:
 
 
 @beta_tool
-def identify_spectral_lines(npz_path: str, z: float) -> str:
+def identify_spectral_lines(npz_path: str, z: Annotated[float, Field(ge=0, allow_inf_nan=False, strict=True)]) -> str:
     """Check which known emission lines match real peaks if the spectrum is at redshift z.
 
     Detects emission peaks; absorption-dominated spectra can look 'weak' even
@@ -71,7 +81,7 @@ def identify_spectral_lines(npz_path: str, z: float) -> str:
 
 
 @beta_tool
-def reconstruct_spectrum(npz_path: str, mask_ratio: float = 0.5) -> str:
+def reconstruct_spectrum(npz_path: str, mask_ratio: Annotated[float, Field(ge=0, le=.9, allow_inf_nan=False, strict=True)] = 0.5) -> str:
     """Mask a fraction of the model's 273 spectral tokens and re-predict z.
 
     Stability probe: if z under heavy masking stays close to the full-spectrum
@@ -85,7 +95,7 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: float = 0.5) -> str:
 
 
 @beta_tool
-def find_similar_spectra(npz_path: str, k: int = 5) -> str:
+def find_similar_spectra(npz_path: str, k: Annotated[int, Field(ge=1, le=100, strict=True)] = 5) -> str:
     """Find the k most similar spectra in a FAISS index of 15k DESI training spectra.
 
     The spectrum is embedded with the foundation model's encoder and matched
@@ -102,7 +112,7 @@ def find_similar_spectra(npz_path: str, k: int = 5) -> str:
 
 
 @beta_tool
-def lookup_reference(query: str, k: int = 3) -> str:
+def lookup_reference(query: str, k: Annotated[int, Field(ge=1, le=30, strict=True)] = 3) -> str:
     """Consult the spectral-line catalog and DESI reference notes (BM25 retrieval).
 
     Use it to sanity-check target-type vs redshift priors (BGS/LRG/ELG/QSO
@@ -117,31 +127,94 @@ def lookup_reference(query: str, k: int = 3) -> str:
     return json.dumps(rag.lookup_reference_impl(query, k))
 
 
-# Structured-output channel for the evals (plan 11): the submit_report tool
-# records its arguments here and eval/run_evals.py reads fields off the dict —
-# zero parsing of prose reports.
-SUBMITTED: dict = {}
-
-
 @beta_tool
 def submit_report(
-    z_final: float, confidence: str, lines_matched: int, summary: str
+    z_final: Annotated[float, Field(ge=0, allow_inf_nan=False, strict=True)],
+    confidence: Literal["high", "medium", "low"],
+    lines_matched: Annotated[int, Field(ge=0, le=15, strict=True)],
+    summary: str,
 ) -> str:
-    """Submit the final structured result of the analysis. Call exactly once, at the end.
+    """Submit the structured report once, after analysis.
 
     Args:
-        z_final: your final redshift estimate after verification.
-        confidence: one of "high", "medium", "low".
-        lines_matched: how many expected lines matched peaks at z_final.
-        summary: 2-3 sentence justification citing the tools used.
+        z_final: finite nonnegative redshift hypothesis (experimental).
+        confidence: categorical high, medium or low; not a probability.
+        lines_matched: integer from 0 through 15 catalog lines.
+        summary: nonempty justification citing the tools used.
     """
-    SUBMITTED["last"] = {
-        "z_final": float(z_final),
-        "confidence": confidence,
-        "lines_matched": int(lines_matched),
-        "summary": summary,
-    }
-    return "recorded"
+    if not summary.strip():
+        raise SpectrumInputError("summary must be nonempty")
+    return json.dumps(dict(z_final=z_final, confidence=confidence,
+                           lines_matched=lines_matched, summary=summary), allow_nan=False)
+
+
+@contextmanager
+def agent_input(source):
+    """Derived protocol v2. Labels, original paths and metadata stay outside LLM messages."""
+    batch = read_npz(source)
+    f, w, v, m = batch.single()
+    _prepare_inputs(tools._model(), f, w, v, m)  # reject no coverage before any LLM request
+    with TemporaryDirectory(prefix="spectra-input-") as directory:
+        target = Path(directory) / "spectrum.npz"
+        np.savez(target, flux=f, wavelength=w, ivar=v, mask=m,
+                 wavelength_unit="angstrom")
+        provenance = {"protocol": "opaque-scientific-input-v2",
+                      "source_sha256": hashlib.sha256(Path(source).read_bytes()).hexdigest(),
+                      "derived_sha256": hashlib.sha256(target.read_bytes()).hexdigest()}
+        yield str(target), provenance
+
+
+class RunTools:
+    """Per-run budget and report. Multiple submits never replace the first."""
+    def __init__(self, path, structured):
+        self.calls = 0
+        self.result = None
+        self.path = path
+        self.tools = [self.guard(t) for t in (predict_redshift, identify_spectral_lines,
+                     reconstruct_spectrum, find_similar_spectra, lookup_reference)]
+        if structured:
+            self.tools.append(self.guard(submit_report))
+
+    def guard(self, base):
+        @wraps(base.func)
+        def execute(*args, **kwargs):
+            if self.result is not None:
+                raise SpectrumInputError("Report already submitted; no further tools allowed")
+            if base.name == "submit_report":
+                value = base.func(*args, **kwargs)
+                self.result = json.loads(value)
+                return "recorded"
+            if self.calls >= 6:
+                raise SpectrumInputError("Tool budget exhausted: at most 6 analysis calls")
+            self.calls += 1
+            if "npz_path" in kwargs and kwargs["npz_path"] != self.path:
+                raise SpectrumInputError("Only the supplied opaque spectrum path is allowed")
+            return base.func(*args, **kwargs)
+        return beta_tool(execute)
+
+
+def execute_run(path, model, structured):
+    state = RunTools(path, structured)
+    client = anthropic.Anthropic()
+    runner = client.beta.messages.tool_runner(
+        model=model, max_tokens=8000 if structured else 16000,
+        max_iterations=8,
+        system=system_prompt(model_identity(tools._model())) + (STRUCTURED_RULE if structured else ""),
+        tools=state.tools,
+        messages=[{"role": "user", "content": f"Analyze the spectrum in {path} and " +
+                   ("submit the structured result via submit_report." if structured else "write the observation report.")}],
+        **request_kwargs(model))
+    history, final = [], None
+    usage = dict.fromkeys(USAGE_KEYS, 0)
+    for message in runner:
+        final = message
+        history.append({"role": "assistant", "content": message.to_dict()["content"]})
+        for key in USAGE_KEYS:
+            usage[key] += getattr(message.usage, key, None) or 0
+        response = runner.generate_tool_call_response()
+        if response is not None:
+            history.append(_jsonable(response))
+    return state, final, usage, history
 
 
 def request_kwargs(model: str) -> dict:
@@ -177,50 +250,18 @@ def _jsonable(obj):
 def run(
     npz_path: str, model: str = DEFAULT_MODEL, transcript: str | None = None
 ) -> str:
-    client = anthropic.Anthropic()
-    runner = client.beta.messages.tool_runner(
-        model=model,
-        max_tokens=16000,
-        system=SYSTEM,
-        tools=[
-            predict_redshift,
-            identify_spectral_lines,
-            reconstruct_spectrum,
-            find_similar_spectra,
-            lookup_reference,
-        ],
-        messages=[
-            {
-                "role": "user",
-                "content": f"Analyze the spectrum in {npz_path} and write the "
-                "observation report.",
-            }
-        ],
-        **request_kwargs(model),
-    )
-    history, final = [], None
-    usage = dict.fromkeys(USAGE_KEYS, 0)
-    for message in runner:  # the runner executes the tools and loops by itself
-        final = message
-        history.append({"role": "assistant", "content": message.to_dict()["content"]})
-        for key in USAGE_KEYS:
-            usage[key] += getattr(message.usage, key, None) or 0
-        tool_response = runner.generate_tool_call_response()  # cached; runs once
-        if tool_response is not None:
-            history.append(_jsonable(tool_response))
+    with agent_input(npz_path) as (path, provenance):
+        state, final, usage, history = execute_run(path, model, False)
     if final is None:
         raise RuntimeError("tool runner produced no messages")
     if transcript:
-        path = Path(transcript)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(history, indent=2, default=str))
+        target = Path(transcript)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(history, indent=2, default=str))
+        target.with_suffix(".input.json").write_text(json.dumps(provenance, indent=2))
     cost = estimate_cost_usd(model, usage)
     cost_txt = f" ~= ${cost:.4f}" if cost is not None else ""
-    print(
-        f"[usage] model={model} turns={len(history)} in={usage['input_tokens']} "
-        f"out={usage['output_tokens']}{cost_txt}",
-        file=sys.stderr,
-    )
+    print(f"[usage] model={model} in={usage['input_tokens']} out={usage['output_tokens']}{cost_txt}", file=sys.stderr)
     return "".join(b.text for b in final.content if b.type == "text")
 
 
@@ -239,39 +280,13 @@ def run_structured(npz_path: str, model: str = "claude-haiku-4-5") -> dict | Non
     payload gains tokens_in / tokens_out plus the full accumulated `usage`
     dict, so callers can estimate cost with estimate_cost_usd().
     """
-    SUBMITTED.pop("last", None)
-    client = anthropic.Anthropic()
-    runner = client.beta.messages.tool_runner(
-        model=model,
-        max_tokens=8000,
-        system=SYSTEM + STRUCTURED_RULE,
-        tools=[
-            predict_redshift,
-            identify_spectral_lines,
-            reconstruct_spectrum,
-            find_similar_spectra,
-            lookup_reference,
-            submit_report,
-        ],
-        messages=[
-            {
-                "role": "user",
-                "content": f"Analyze the spectrum in {npz_path} and submit the "
-                "structured result via submit_report.",
-            }
-        ],
-        **request_kwargs(model),
-    )
-    usage = dict.fromkeys(USAGE_KEYS, 0)
-    for message in runner:  # the runner executes the tools and loops by itself
-        for key in USAGE_KEYS:
-            usage[key] += getattr(message.usage, key, None) or 0
-    result = SUBMITTED.get("last")
+    with agent_input(npz_path) as (path, provenance):
+        state, final, usage, history = execute_run(path, model, True)
+    result = state.result
     if result is not None:
         result = dict(result)
-        result["tokens_in"] = usage["input_tokens"]
-        result["tokens_out"] = usage["output_tokens"]
-        result["usage"] = usage
+        result.update(tokens_in=usage["input_tokens"], tokens_out=usage["output_tokens"],
+                      usage=usage, input_provenance=provenance)
     return result
 
 

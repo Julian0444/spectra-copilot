@@ -3,7 +3,7 @@
 Each tool returns a compact JSON-friendly dict (conclusions, never raw
 arrays). They wrap the desi-fm foundation model (v2.1, classification head)
 plus classical signal processing, so an LLM agent can not only ask the model
-for a redshift but also *physically verify* it against known spectral lines.
+for a redshift but also compare it against known spectral lines with an experimental peak heuristic.
 
 Checkpoint resolution: the `DESI_FM_CKPT` environment variable (local path)
 takes precedence; otherwise the public v2.1 checkpoint is downloaded from
@@ -22,6 +22,8 @@ from scipy.ndimage import gaussian_filter1d
 from scipy.signal import find_peaks
 
 from desi_fm.predict import embed_spectrum, load_model_from_checkpoint, predict_spectrum
+from desi_fm.inputs import read_npz, bounded_real, positive_int, SpectrumInputError
+from desi_fm.data import preprocess_spectrum, SpectrumPreprocessConfig
 
 # Default location of the FAISS index built by scripts/build_index.py.
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -87,42 +89,32 @@ def _index():
 
 
 def _load(npz_path: str):
-    """Load flux/wavelength (+ optional ivar and bad-pixel mask) from a .npz.
-
-    2-D inputs are reduced to their first spectrum. Non-finite flux pixels are
-    zeroed and flagged as bad so they never reach the model or the peak finder.
-    """
-    d = np.load(npz_path)
-    if "flux" not in d.files or "wavelength" not in d.files:
-        raise KeyError(f"{npz_path} must contain 'flux' and 'wavelength'.")
-    flux = np.atleast_2d(np.asarray(d["flux"], dtype=np.float32))[0]
-    wave = np.atleast_2d(np.asarray(d["wavelength"], dtype=np.float32))[0]
-    ivar = (
-        np.atleast_2d(np.asarray(d["ivar"], dtype=np.float32))[0]
-        if "ivar" in d.files else None
-    )
-    mask = (
-        np.atleast_2d(np.asarray(d["mask"], dtype=bool))[0]
-        if "mask" in d.files else np.zeros_like(flux, dtype=bool)
-    )
-    bad = ~np.isfinite(flux)
-    if bad.any():
-        flux = np.where(bad, 0.0, flux).astype(np.float32)
-        mask = mask | bad
-    return flux, wave, ivar, mask
+    """Shared single-spectrum contract. Never expose labels or other metadata."""
+    return read_npz(npz_path).single()
 
 
 def _z_summary(result: dict) -> dict:
     """Honest redshift summary: z_pred_map (+ confidence) is the official
-    prediction of the v2.1 classification head; z_pred (regression) is
+    prediction of the v2.1 classification head; z_pred (expm1(E[log(1+z)])) is
     secondary. Falls back to z_pred alone for head-less checkpoints."""
+    try:
+        # Scalar v1 decodes to z > -1; classifier outputs must be nonnegative.
+        bounded_real(result["z_pred"], "model z_pred", 0 if "z_pred_map" in result else -1, float("inf"))
+        if "z_pred_map" in result:
+            bounded_real(result["z_pred_map"], "model z_pred_map", 0, float("inf"))
+            bounded_real(result["z_confidence"], "model z_confidence", 0, 1)
+    except SpectrumInputError as exc:
+        raise RuntimeError("Model returned an invalid redshift summary") from exc
     if "z_pred_map" in result:
         return {
             "z_pred_map": round(float(result["z_pred_map"]), 4),
             "z_confidence": round(float(result["z_confidence"]), 4),
             "z_pred": round(float(result["z_pred"]), 4),
+            "coverage": result["coverage"],
+            "model_identity": result["model_identity"],
         }
-    return {"z_pred": round(float(result["z_pred"]), 4)}
+    return {"z_pred": round(float(result["z_pred"]), 4),
+            "coverage": result["coverage"], "model_identity": result["model_identity"]}
 
 
 def official_z(summary: dict) -> float:
@@ -134,8 +126,8 @@ def predict_redshift_impl(npz_path: str) -> dict:
     """Predict the redshift of the spectrum in `npz_path` with desi-fm v2.1.
 
     Deterministic (mask_ratio=0). `z_pred_map` is the official prediction;
-    `z_confidence` in [0, 1] is the probability mass near the MAP bin (values
-    below ~0.3 flag likely catastrophic outliers).
+    `z_confidence` in [0, 1] is 1-H(p)/log(n_bins), an entropy-based
+    concentration score, not a calibrated probability of correctness.
     """
     flux, wave, ivar, mask = _load(npz_path)
     r = predict_spectrum(flux=flux, wavelength=wave, ivar=ivar, mask=mask, model=_model())
@@ -149,13 +141,15 @@ def reconstruct_spectrum_impl(npz_path: str, mask_ratio: float = 0.5) -> dict:
     predicted from the partial spectrum — a stability probe: if z under heavy
     masking stays close to the full-spectrum z, the prediction is robust.
     """
+    mask_ratio = bounded_real(mask_ratio, "mask_ratio", 0, .9)
     flux, wave, ivar, mask = _load(npz_path)
     r = predict_spectrum(
         flux=flux, wavelength=wave, ivar=ivar, mask=mask,
         model=_model(), mask_ratio=mask_ratio,
     )
     masked = r["spectrum_mask"]
-    out = {"mask_ratio": mask_ratio, "n_tokens_masked": int(masked.sum())}
+    out = {"mask_ratio": mask_ratio, "n_tokens_masked": int(masked.sum()),
+           "coverage": r["coverage"], "model_identity": r["model_identity"]}
     out["z_pred_under_masking"] = round(float(r.get("z_pred_map", r["z_pred"])), 4)
     return out
 
@@ -170,12 +164,17 @@ def find_similar_spectra_impl(npz_path: str, k: int = 5) -> dict:
     around a candidate z supports it through the embedding space — a signal
     independent of the classification head, though not of the shared encoder.
     """
+    k = positive_int(k, "k", 100)
     flux, wave, ivar, mask = _load(npz_path)
     emb = embed_spectrum(flux=flux, wavelength=wave, ivar=ivar, mask=mask, model=_model())
     emb = (emb / np.linalg.norm(emb)).astype(np.float32)[None, :]
     index, meta_z = _index()
-    k = max(1, min(int(k), index.ntotal))
+    if index.ntotal < 1 or len(meta_z) != index.ntotal or not np.isfinite(meta_z).all():
+        raise RuntimeError("Unusable reference index or metadata")
+    k = min(k, index.ntotal)
     sims, ids = index.search(emb, k)
+    if (ids < 0).any() or (ids >= len(meta_z)).any() or not np.isfinite(sims).all():
+        raise RuntimeError("Reference index returned invalid neighbors")
     neighbors = [
         {
             "rank": i + 1,
@@ -201,7 +200,7 @@ def identify_spectral_lines_impl(
 
     Detects *emission* peaks (prominence over a smoothed continuum) and
     matches them against the rest-frame catalog shifted by (1+z). The 12 A
-    default tolerance is ~5 DESI pixels. The strongest detected peaks are
+    default tolerance is an uncalibrated historical heuristic. The strongest detected peaks are
     reported (by prominence, strongest first) so an agent can derive
     alternative z hypotheses from an unexplained peak. Caveat:
     absorption-dominated spectra (e.g. passive galaxies with only Ca H&K) can
@@ -209,10 +208,27 @@ def identify_spectral_lines_impl(
     confirmation*, not refutation. A z that matches clearly fewer lines than
     an alternative z is the useful signal for validation.
     """
-    flux, wave, _, _ = _load(npz_path)
-    smooth = gaussian_filter1d(flux.astype(float), sigma=3.0)
-    prominence = 0.8 * float(np.std(flux - smooth))
-    peaks, props = find_peaks(smooth, prominence=prominence, distance=10)
+    z = bounded_real(z, "z", 0, float("inf"))
+    tol_angstrom = bounded_real(tol_angstrom, "tol_angstrom", .000001, float("inf"))
+    flux, wave, ivar, mask = _load(npz_path)
+    coverage = preprocess_spectrum(flux, ivar, wave, mask, SpectrumPreprocessConfig())["coverage"]
+    order = np.argsort(wave)
+    flux, wave, ivar, mask = flux[order], wave[order], ivar[order], mask[order]
+    good = np.isfinite(wave) & (wave > 0) & np.isfinite(flux) & np.isfinite(ivar) & (ivar > 0) & ~mask
+    # Run the unchanged peak heuristic on each contiguous usable region.
+    # Shared validity is a contract correction, not calibration of the matcher.
+    edges = np.diff(np.r_[False, good, False].astype(int))
+    regions = list(zip(np.flatnonzero(edges == 1), np.flatnonzero(edges == -1)))
+    all_peaks, all_prom = [], []
+    for lo, hi in regions:
+        segment = flux[lo:hi].astype(float)
+        smooth = gaussian_filter1d(segment, sigma=3.0)
+        prominence = 0.8 * float(np.std(segment - smooth))
+        found, props = find_peaks(smooth, prominence=prominence, distance=10)
+        all_peaks.extend((found + lo).tolist())
+        all_prom.extend(props["prominences"].tolist())
+    peaks = np.asarray(all_peaks, dtype=int)
+    props = {"prominences": np.asarray(all_prom)}
     peak_wl = wave[peaks]
     strongest = [
         round(float(peak_wl[i]), 1)
@@ -221,7 +237,7 @@ def identify_spectral_lines_impl(
     expected, matched = [], []
     for name, lam in LINES.items():
         obs = lam * (1.0 + z)
-        if not (wave[0] <= obs <= wave[-1]):
+        if not (wave[good].min() <= obs <= wave[good].max()):
             continue
         entry = {"line": name, "lambda_expected": round(obs, 1)}
         if peak_wl.size:
@@ -235,6 +251,7 @@ def identify_spectral_lines_impl(
         expected.append(entry)
     frac = len(matched) / max(len(expected), 1)
     return {
+        "coverage": coverage,
         "z_tested": z,
         "n_peaks_detected": int(peaks.size),
         "strongest_peaks_angstrom": strongest,

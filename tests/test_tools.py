@@ -89,7 +89,7 @@ def test_find_similar_retrieves_the_query_itself(tiny_index):
 
 
 def test_find_similar_clamps_k_to_index_size(tiny_index):
-    r = tools.find_similar_spectra_impl(tiny_index, k=999)
+    r = tools.find_similar_spectra_impl(tiny_index, k=100)
     assert r["k"] == 33 == len(r["neighbors"])
 
 
@@ -99,5 +99,8 @@ def test_load_handles_2d_and_nans(tmp_path):
     f2[0, 100] = np.nan
     p = tmp_path / "s2.npz"
     np.savez(p, flux=f2, wavelength=np.stack([w, w]))
-    r = tools.identify_spectral_lines_impl(str(p), 0.42)
-    assert r["verdict"] == "consistent"  # first spectrum, NaN neutralized
+    with pytest.raises(ValueError,match="exactly one"):
+        tools.identify_spectral_lines_impl(str(p), 0.42)
+    np.savez(p,flux=f2[:1],wavelength=w)
+    r=tools.identify_spectral_lines_impl(str(p), .42)
+    assert r["verdict"] == "consistent"

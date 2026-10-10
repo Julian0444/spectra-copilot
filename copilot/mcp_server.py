@@ -13,11 +13,14 @@ on the first model call.
 """
 
 from mcp.server.mcpserver import MCPServer
+from typing import Annotated
+from pydantic import Field
 
-from copilot import rag, tools
+from copilot import rag, tools, __version__
 
 mcp = MCPServer(
     "desi-fm",
+    version=__version__,
     instructions=(
         "Tools around the desi-fm spectral foundation model (DESI galaxy/QSO "
         "spectra). Typical loop: predict_redshift first; if z_confidence is "
@@ -38,16 +41,16 @@ def predict_redshift(npz_path: str) -> dict:
     """Predict a galaxy/QSO redshift from a DESI spectrum in a .npz file.
 
     Use this first on any spectrum. `z_pred_map` is the official prediction
-    (v2.1 classification head); `z_confidence` in [0, 1] flags likely
-    catastrophic outliers below ~0.3 — verify those with
-    identify_spectral_lines before trusting them. Deterministic; the first
+    (v2.1 classification head); `z_confidence` in [0, 1] is entropy-based concentration, not calibrated probability of accuracy.
+    The configured and bin-center ranges are in model_identity. Use
+    identify_spectral_lines for an experimental line check. Deterministic; the first
     call loads the model checkpoint and can take extra seconds.
     """
     return tools.predict_redshift_impl(npz_path)
 
 
 @mcp.tool()
-def identify_spectral_lines(npz_path: str, z: float) -> dict:
+def identify_spectral_lines(npz_path: str, z: Annotated[float, Field(ge=0, allow_inf_nan=False, strict=True)]) -> dict:
     """Physically test a redshift hypothesis against the spectrum's peaks.
 
     Use it to validate any z — the model's, the user's or your own: known
@@ -63,7 +66,7 @@ def identify_spectral_lines(npz_path: str, z: float) -> dict:
 
 
 @mcp.tool()
-def reconstruct_spectrum(npz_path: str, mask_ratio: float = 0.5) -> dict:
+def reconstruct_spectrum(npz_path: str, mask_ratio: Annotated[float, Field(ge=0, le=.9, allow_inf_nan=False, strict=True)] = 0.5) -> dict:
     """Probe prediction stability by masking part of the spectrum.
 
     Use it as a robustness check once you have a candidate z: a random
@@ -76,7 +79,7 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: float = 0.5) -> dict:
 
 
 @mcp.tool()
-def find_similar_spectra(npz_path: str, k: int = 5) -> dict:
+def find_similar_spectra(npz_path: str, k: Annotated[int, Field(ge=1, le=100, strict=True)] = 5) -> dict:
     """Find the k most similar spectra in a 15k-spectrum DESI reference index.
 
     Use it as a second, line-independent check on a candidate redshift: the
@@ -92,7 +95,7 @@ def find_similar_spectra(npz_path: str, k: int = 5) -> dict:
 
 
 @mcp.tool()
-def lookup_reference(query: str, k: int = 3) -> dict:
+def lookup_reference(query: str, k: Annotated[int, Field(ge=1, le=30, strict=True)] = 3) -> dict:
     """Consult the spectral-line catalog and DESI reference notes (BM25).
 
     Use it to sanity-check target-type vs redshift priors (BGS/LRG/ELG/QSO

@@ -15,10 +15,11 @@ EXAMPLES = Path(__file__).resolve().parent.parent / "examples"
 
 def test_system_prompt_states_v21_facts():
     # The prompt must teach the agent the v2.1 output contract: z_pred_map is
-    # official, confidence below ~0.3 flags outliers, the grid ceiling is 3.5.
+    # official, concentration is based on entropy and range comes from config.
     assert "z_pred_map" in SYSTEM
     assert "0.3" in SYSTEM
-    assert "3.5" in SYSTEM
+    assert "1 - H(p)/log(n_bins)" in SYSTEM
+    assert "expm1(E[log(1+z)])" in SYSTEM
     assert "identify_spectral_lines" in SYSTEM
     # Plan 10: the similarity tool must be framed as a complement to line
     # verification, not a replacement.

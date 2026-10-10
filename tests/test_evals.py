@@ -23,69 +23,111 @@ def _load_script(name):
 
 
 class _FakeMessage:
-    usage = SimpleNamespace(
-        input_tokens=100,
-        output_tokens=20,
-        cache_creation_input_tokens=0,
-        cache_read_input_tokens=0,
-    )
+    usage = SimpleNamespace(input_tokens=100, output_tokens=20,
+        cache_creation_input_tokens=0, cache_read_input_tokens=0)
+    content = [SimpleNamespace(type="text", text="simulated report")]
+    def to_dict(self):
+        return {"content": [{"type":"text", "text":"simulated report"}]}
 
 
-def _install_fake_runner(monkeypatch, submit_args=None, captured=None):
-    """anthropic.Anthropic -> a client whose tool_runner yields 2 fake turns
-    and (optionally) simulates the model calling submit_report."""
-
+def _install_fake_runner(monkeypatch, submit_args=None, captured=None, callback=None):
+    from desi_fm.model import DESIFoundationModel, DESIFoundationModelConfig
+    small = DESIFoundationModel(DESIFoundationModelConfig(n_pixels=64,n_tokens=8,d_model=16,n_layers=1,n_heads=2,n_z_bins=16))
+    monkeypatch.setattr(agent.tools, '_model', lambda: small)
+    class Runner:
+        def __init__(self, kwargs): self.kwargs=kwargs
+        def __iter__(self):
+            offered={t.name:t for t in self.kwargs['tools']}
+            if callback: callback(self.kwargs,offered)
+            if submit_args is not None: offered['submit_report'].call(submit_args)
+            yield _FakeMessage(); yield _FakeMessage()
+        def generate_tool_call_response(self): return None
     def tool_runner(**kwargs):
-        if captured is not None:
-            captured.update(kwargs)
-        if submit_args is not None:
-            agent.submit_report.call(submit_args)
-        return [_FakeMessage(), _FakeMessage()]
-
-    fake = SimpleNamespace(
-        beta=SimpleNamespace(messages=SimpleNamespace(tool_runner=tool_runner))
-    )
-    monkeypatch.setattr(agent.anthropic, "Anthropic", lambda: fake)
+        if captured is not None: captured.update(kwargs)
+        return Runner(kwargs)
+    fake=SimpleNamespace(beta=SimpleNamespace(messages=SimpleNamespace(tool_runner=tool_runner)))
+    monkeypatch.setattr(agent.anthropic, 'Anthropic', lambda: fake)
 
 
-def test_submit_report_records_typed_payload():
-    agent.SUBMITTED.pop("last", None)
-    out = agent.submit_report.call(
-        {"z_final": "0.42", "confidence": "high", "lines_matched": "7",
-         "summary": "8/11 lines matched (identify_spectral_lines)."}
-    )
-    assert out == "recorded"
-    rec = agent.SUBMITTED["last"]
-    assert rec["z_final"] == 0.42 and isinstance(rec["z_final"], float)
-    assert rec["lines_matched"] == 7 and isinstance(rec["lines_matched"], int)
-    assert rec["confidence"] == "high"
+def _source(tmp_path):
+    import numpy as np
+    path=tmp_path/'private_z_true_0.2036'/'heldout_z020.npz'
+    path.parent.mkdir()
+    w=np.geomspace(3600,9800,64).astype(np.float32)
+    np.savez(path,flux=np.sin(w/500),wavelength=w,z_true=.2036,
+             object_name='label_z020',metadata={'z_true':.2036})
+    return path
 
 
-def test_run_structured_returns_payload_with_token_accounting(monkeypatch):
-    captured = {}
-    _install_fake_runner(
-        monkeypatch,
-        submit_args={"z_final": 1.98, "confidence": "low", "lines_matched": 2,
-                     "summary": "ambiguous"},
-        captured=captured,
-    )
-    r = agent.run_structured("some.npz", model="claude-haiku-4-5")
-    assert r["z_final"] == 1.98 and r["confidence"] == "low"
-    assert r["tokens_in"] == 200 and r["tokens_out"] == 40  # 2 fake turns
-    assert r["usage"]["input_tokens"] == 200
-    # The request must offer submit_report, teach the extra rule, and keep
-    # the Haiku no-thinking contract of request_kwargs().
-    names = {t.name for t in captured["tools"]}
-    assert "submit_report" in names and "find_similar_spectra" in names
-    assert "lookup_reference" in names  # plan 12: the RAG tool is offered too
-    assert "submit_report exactly once" in captured["system"]
-    assert "thinking" not in captured
+def test_submit_report_returns_validated_payload():
+    import json, pytest
+    args=dict(z_final=.42,confidence='high',lines_matched=7,summary='fictional explanation')
+    rec=json.loads(agent.submit_report.call(args))
+    assert rec==args
+    for field,value in [('z_final',-10),('z_final',float('nan')),('z_final',True),
+                        ('confidence','banana'),('lines_matched',-5),('lines_matched',1.5),
+                        ('lines_matched','7'),('summary','')]:
+        with pytest.raises(ValueError): agent.submit_report.call(dict(args,**{field:value}))
 
 
-def test_run_structured_none_when_agent_never_submits(monkeypatch):
-    _install_fake_runner(monkeypatch, submit_args=None)
-    agent.SUBMITTED["last"] = {"z_final": 9.9}  # stale result from a prior run
-    assert agent.run_structured("some.npz") is None  # stale state must not leak
+def test_run_structured_returns_payload_with_token_accounting(monkeypatch,tmp_path):
+    captured={}
+    _install_fake_runner(monkeypatch,submit_args=dict(z_final=1.98,confidence='low',lines_matched=2,summary='ambiguous'),captured=captured)
+    source=_source(tmp_path);before=source.read_bytes()
+    r=agent.run_structured(str(source),model='claude-haiku-4-5')
+    assert r['z_final']==1.98 and r['tokens_in']==200 and r['tokens_out']==40
+    assert captured['max_iterations']==8
+    assert 'submit_report exactly once' in captured['system']
+    assert 'thinking' not in captured
+    assert source.read_bytes()==before
+    assert r['input_provenance']['source_sha256']
+
+
+def test_successive_runs_have_no_stale_report(monkeypatch,tmp_path):
+    source=_source(tmp_path)
+    _install_fake_runner(monkeypatch,submit_args=dict(z_final=.42,confidence='low',lines_matched=0,summary='ambiguous'))
+    assert agent.run_structured(str(source))['z_final']==.42
+    _install_fake_runner(monkeypatch)
+    assert agent.run_structured(str(source)) is None
+
+
+def test_agent_receives_no_labels_paths_or_metadata(monkeypatch,tmp_path):
+    import json,numpy as np
+    source=_source(tmp_path);payloads=[]
+    def callback(kwargs,offered):
+        text=kwargs['messages'][0]['content'];path=text.split(' in ')[1].split(' and ')[0]
+        assert Path(path).name=='spectrum.npz'
+        with np.load(path,allow_pickle=False) as data:
+            assert set(data.files)=={'flux','wavelength','ivar','mask','wavelength_unit'}
+        assert Path(path).parent!=source.parent
+        def prediction(p):
+            payloads.append({'path':p})
+            return {'z_pred_map':.7,'z_confidence':.4,'z_pred':.71}
+        monkeypatch.setattr(agent.tools,'predict_redshift_impl',prediction)
+        response=offered['predict_redshift'].call({'npz_path':path})
+        payloads.append({'request':kwargs['messages'],'system':kwargs['system'],
+                         'schemas':[t.to_dict() for t in kwargs['tools']], 'response':response})
+    _install_fake_runner(monkeypatch,callback=callback)
+    agent.run_structured(str(source));agent.run(str(source))
+    actual=json.dumps(payloads)
+    for forbidden in ('z_true','z020','0.2036','label_z020',str(source.parent),'8/11','0.227'):
+        assert forbidden not in actual
+    assert len(payloads)==4
+
+
+def test_budget_multi_submit_and_path_guard(monkeypatch):
+    import pytest
+    monkeypatch.setattr(agent.tools,'predict_redshift_impl',lambda p:{'z_pred_map':.4})
+    state=agent.RunTools('/tmp/spectrum.npz',True);offered={t.name:t for t in state.tools}
+    for _ in range(6): offered['predict_redshift'].call({'npz_path':state.path})
+    with pytest.raises(ValueError,match='budget'): offered['predict_redshift'].call({'npz_path':state.path})
+    args=dict(z_final=.42,confidence='low',lines_matched=0,summary='ambiguous')
+    offered['submit_report'].call(args)
+    with pytest.raises(ValueError,match='already'): offered['submit_report'].call(dict(args,z_final=2.))
+    assert state.result['z_final']==.42
+    other=agent.RunTools('/tmp/spectrum.npz',True)
+    with pytest.raises(ValueError,match='opaque'): other.tools[0].call({'npz_path':'heldout_z020.npz'})
+    assert other.result is None
 
 
 def test_select_cases_is_stratified_and_deterministic():
@@ -137,3 +179,14 @@ def test_dz_norm_matches_convention():
     run_evals = _load_script("run_evals")
     assert abs(run_evals.dz_norm(1.15, 1.0) - 0.075) < 1e-12  # |dz| / (1 + z_true)
     assert abs(run_evals.dz_norm(0.85, 1.0) - 0.075) < 1e-12
+
+
+def test_runner_multiple_submits_keep_first(monkeypatch,tmp_path):
+    import pytest
+    args=dict(z_final=.42,confidence='low',lines_matched=0,summary='ambiguous')
+    def callback(kwargs,offered):
+        offered['submit_report'].call(args)
+        with pytest.raises(ValueError,match='already'):
+            offered['submit_report'].call(dict(args,z_final=2.))
+    _install_fake_runner(monkeypatch,callback=callback)
+    assert agent.run_structured(str(_source(tmp_path)))['z_final']==.42
