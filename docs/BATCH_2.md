@@ -87,3 +87,19 @@ versions were tested. Contract suites use small seeded models; real-weight smoke
 is bounded and separate. UI hosting/ZeroGPU is simulated; deployment is pending.
 The dataset revision is the historical reference from batch 1, not a newly
 validated/downloaded corpus. Key revocation and publication remain pending.
+
+## Review follow-up on batch-3 branch
+
+Persistent input derivation rejects a provenance destination equal to or inside
+its resolved opaque input directory before writing anything, including symlink
+aliases. Existing derivatives/maps are unchanged; agent.run/run_structured
+retain their existing isolation.
+
+Default downloads now use the shared FM verified asset resolver, pinning
+checkpoint/index/metadata to `40ff2ed09e5e1584303052e1a5dfe218a4a396b3`.
+Published LFS sizes/hashes match the preserved local bytes. Both index files
+belong to this release; the historical encoder/index compatibility is still
+unknown because no generation manifest exists. No index was rebuilt.
+Mocked downloads test revision selection and identity rejection; no paid LLM
+is involved. Use these source revisions together. The old batch-2 wheels and
+acceptance manifests remain evidence for their original bytes only.

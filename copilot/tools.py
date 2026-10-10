@@ -24,6 +24,7 @@ from scipy.signal import find_peaks
 from desi_fm.predict import embed_spectrum, load_model_from_checkpoint, predict_spectrum
 from desi_fm.inputs import read_npz, bounded_real, positive_int, SpectrumInputError
 from desi_fm.data import preprocess_spectrum, SpectrumPreprocessConfig
+from desi_fm.assets import download_asset
 
 # Default location of the FAISS index built by scripts/build_index.py.
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -45,9 +46,7 @@ def _model():
 
 
 def _hub_checkpoint() -> str:
-    from huggingface_hub import hf_hub_download
-
-    return hf_hub_download("jirustaroure/desi-spectra-fm", "checkpoint_last.pt")
+    return download_asset("checkpoint_last.pt")
 
 
 def _index_paths() -> tuple[str, str]:
@@ -57,11 +56,9 @@ def _index_paths() -> tuple[str, str]:
     index_file, meta_file = local / "spectra.faiss", local / "spectra_meta.npz"
     if index_file.exists() and meta_file.exists():
         return str(index_file), str(meta_file)
-    from huggingface_hub import hf_hub_download
-
     return (
-        hf_hub_download("jirustaroure/desi-spectra-fm", "faiss/spectra.faiss"),
-        hf_hub_download("jirustaroure/desi-spectra-fm", "faiss/spectra_meta.npz"),
+        download_asset("faiss/spectra.faiss"),
+        download_asset("faiss/spectra_meta.npz"),
     )
 
 

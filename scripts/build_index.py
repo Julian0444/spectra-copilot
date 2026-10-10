@@ -55,9 +55,8 @@ def main() -> None:
     device = pick_device(args.device)
     ckpt = os.environ.get("DESI_FM_CKPT")
     if not ckpt:
-        from huggingface_hub import hf_hub_download
-
-        ckpt = hf_hub_download("jirustaroure/desi-spectra-fm", "checkpoint_last.pt")
+        from desi_fm.assets import download_asset
+        ckpt = download_asset("checkpoint_last.pt")
     model = load_model_from_checkpoint(ckpt, device)
     print(f"model: {ckpt} on {device} (d_model={model.config.d_model})", flush=True)
 
