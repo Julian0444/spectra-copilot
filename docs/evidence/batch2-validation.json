@@ -1,0 +1,277 @@
+{
+  "date_local": "2026-10-09",
+  "timezone": "America/Los_Angeles",
+  "scope": "exclusively batch 2",
+  "source": {
+    "fm": {
+      "branch": "codex/lote-2",
+      "implementation_head": "a337ac32f343740b04634540da13c7f750cd4008",
+      "code_sha256": {
+        "src/desi_fm/__init__.py": "da64b2dd45657dda388c280af97305459078843266a3abe632d2b47366c57976",
+        "src/desi_fm/api.py": "e8dcb938788018791c4bc0701ea619ecb6a5f0a9aa185bf00762402c0e5b5af5",
+        "src/desi_fm/data.py": "b78788db1155e5f111dd940310b20c5b0fd26647d0c23e1bae975edbe3fc5d7d",
+        "src/desi_fm/evaluate.py": "3216e2c35ca30b0ad9f471d1da480f1a86e23318f5fa6a8e224aeae923fc65d2",
+        "src/desi_fm/inputs.py": "c7a3ca7a9b2ba9a1a4a5398aa26ab529a163b7fd4c0a41d6318a17f5f9425a23",
+        "src/desi_fm/inspect_schema.py": "ed116a9c344c8d77acdc53d5b1d351f18496e4a418647406bd03a7bbecfc3c8c",
+        "src/desi_fm/model.py": "75012f0114496e6343b67c7bf84bfd736d2b48ba31baae07aee4b2a1072bc019",
+        "src/desi_fm/predict.py": "5d73adec302d5a57584c83277c5e0d5f8c7a257b8e91016cd7d137161cd123e7",
+        "src/desi_fm/train.py": "712af03239f140e6a195af441b574665db6ea764841e17a7a6d88201e0035dc1"
+      }
+    },
+    "copilot": {
+      "branch": "codex/lote-2",
+      "implementation_head": "6c56502b9177e525bb9b42cb5ced9bf0c8d77600",
+      "code_sha256": {
+        "copilot/__init__.py": "7b55669c070dae1e8feb62dcaffe12219e83a5484c0b00422c7436651fa0f053",
+        "copilot/__main__.py": "965ed24da20e556740e3c17644dc726fef11edb9210b0a9205e8bec6f77102fd",
+        "copilot/agent.py": "6d1e0e782def347862e23ea36e54209c4bbe791aebfab5c69ab22967386c2c8d",
+        "copilot/mcp_server.py": "ee59b554b3f121b2d3823f8c6f0beee1dfc690499c87a22372be7488c2e80a70",
+        "copilot/rag.py": "70ab64e6488b5e5e9d87d4da7a0e2a9528f3983a256b75fd322575bdbd1ce3ca",
+        "copilot/report.py": "4314da85211b5de9afb0dba11dd09ac9d9f331cb283c4e8c79f8bbb2659351ab",
+        "copilot/tools.py": "94d7e8c30ccb481aac546a447f3171ca6473e4d0d6e23194ae80e575ba6928d5"
+      }
+    }
+  },
+  "wheel_validation": {
+    "cwd": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009",
+    "python": "3.12.13 (main, Mar  3 2026, 12:39:30) [Clang 17.0.0 (clang-1700.6.3.2)]",
+    "imports": {
+      "desi_fm": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/lib/python3.12/site-packages/desi_fm/__init__.py",
+      "copilot": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/lib/python3.12/site-packages/copilot/__init__.py",
+      "rag": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/lib/python3.12/site-packages/copilot/rag.py"
+    },
+    "editable": false,
+    "PYTHONPATH": null,
+    "source_bytes_match_installed": true,
+    "resource_count": 16,
+    "corpus_revision": "9d195ca0986145606e41b6d426cb77adefabdd86df92153f1ea8251568351ef5",
+    "corpus_sha256": {
+      "refs/absorption-dominated-spectra.md": "035cf7db01f23136825dd37450356d9028fb6c0dd2f94caf420ee4bf4b3a3c3f",
+      "refs/balmer-series.md": "f508d78728b86e277ab749efe31b01b9372ed39ef7b5dc463f1f7f5837ab5507",
+      "refs/catastrophic-outliers.md": "a81cf593c1279dbcf9f6e195e0e4d094b2f11bd3c1a68450fdb507dc5faf02d3",
+      "refs/desi-edr.md": "c4a1f63ecb3aba47254f485f58e4cca2543f08ca263f39ba111f77e1a828daf0",
+      "refs/desi-overview.md": "2307e81d16a8d491303ff2defef87b2a31bc1b6a51d4e47f6b4986c00df17d88",
+      "refs/desi-spectrograph-coverage.md": "047afeab37465f22f88ddb03c2432622276cc1d12393e3cee573079219068826",
+      "refs/desi-sv3.md": "0846c39365c541a56e3caa4914d9b122a38745275eb37727271cc7e93db7ab3e",
+      "refs/desi-targets-bgs.md": "3df5229dc923654aaf00685fe39a7c5f82d856ccf7d1fc01d3e19c42c4525386",
+      "refs/desi-targets-elg.md": "af3b0607090a1eafd08160f7216946c46f12e3714ec32d1c09bc461069423b44",
+      "refs/desi-targets-lrg.md": "fc55e8a784a0e8a577e2e5394a3fc870c736bfad9570de2413be72ad23e2449e",
+      "refs/desi-targets-qso.md": "c69593598460184ab1397d9ed990d5a53e2c0f784a7f88deabe5f149f302bead",
+      "refs/line-degeneracy-single-line.md": "24916bf433c7d2924bceb99f798b14374ec2c5f4c26fb4ef2220d3d25b5310c1",
+      "refs/lines.json": "87656abb3b29869dfd974a1075acec30ddc43ecbf782f4e9a240322073b34636",
+      "refs/oii-doublet.md": "21acda74f0fe1f0ef505c6f5239b187052908f43f3e8024ab567a96b0484f293",
+      "refs/redrock-pipeline.md": "2781d93fdde9e3b42d667d4028d344d987238e1659e3a4c039dd29397c5f9059",
+      "refs/sky-residuals.md": "4a2e1ba2881aa4cfa2197aa08a2c685d726bab18364bf73a23187e4f63447212"
+    },
+    "query": {
+      "results": [
+        {
+          "id": "Halpha_6563",
+          "source": "line-catalog",
+          "snippet": "Halpha_6563 at rest 6562.8 A. Hydrogen Balmer alpha (Halpha) line at rest 6562.8 A. Strongest optical emission line in star-forming galaxies. At z > 0.49 it leaves the DESI optical range (9824 A ceiling), so any z above about 0.5 must be anchored by other lines such as [OII] or [OIII]. Commonly confused with [OII] 3727 and [OIII] 5007 in single-line spectra; that Halpha/[OII] confusion is a leadin"
+        },
+        {
+          "id": "line-degeneracy-single-line",
+          "source": "https://arxiv.org/abs/2306.06307",
+          "snippet": "The classic single-line degeneracy: one emission peak at observed wavelength L is consistent with several redshifts at once - Halpha gives z = L/6562.8 - 1, [OIII] 5007 gives z = L/5006.8 - 1, [OII] 3727 gives z = L/3727.1 - 1, and Lya gives z = L/1215.7 - 1. The Halpha vs [OII] confusion is the most common cause of catastrophic redshift errors in emission-line galaxies. Breaking the degeneracy re"
+        },
+        {
+          "id": "catastrophic-outliers",
+          "source": "https://github.com/Julian0444/desi-spectra-fm",
+          "snippet": "In this project a catastrophic outlier is a prediction with |z_pred - z_true| / (1 + z_true) > 0.15, the eta metric reported for desi-fm (the DESI pipeline uses an equivalent velocity-error criterion). The dominant causes are line misidentification (the Halpha/[OII]/[OIII] single-line confusion), low signal-to-noise spectra, and sky-subtraction residuals mistaken for emission lines. desi-fm v2.1 f"
+        }
+      ]
+    },
+    "run_identity_resource_check": "passed",
+    "stdio": "all five valid tools, invalid arguments/file, recovery",
+    "versions": {
+      "shellingham": "1.5.4",
+      "mcp-types": "2.0.0",
+      "starlette": "1.3.1",
+      "uvicorn": "0.52.1",
+      "pandas": "3.0.5",
+      "faiss-cpu": "1.15.0",
+      "rpds-py": "2026.6.3",
+      "multidict": "6.7.1",
+      "pydantic_core": "2.46.4",
+      "anthropic": "0.120.2",
+      "rank-bm25": "0.2.2",
+      "pyarrow": "25.0.0",
+      "iniconfig": "2.3.0",
+      "typer": "0.27.1",
+      "httpcore2": "2.9.1",
+      "click": "8.4.2",
+      "jsonschema-specifications": "2025.9.1",
+      "requests": "2.34.2",
+      "rich": "15.0.0",
+      "networkx": "3.6.1",
+      "PyJWT": "2.13.0",
+      "jsonschema": "4.26.0",
+      "contourpy": "1.3.3",
+      "sse-starlette": "3.4.6",
+      "propcache": "0.5.2",
+      "kiwisolver": "1.5.0",
+      "packaging": "26.2",
+      "yarl": "1.24.5",
+      "docstring_parser": "0.18.0",
+      "xxhash": "3.8.1",
+      "charset-normalizer": "3.4.9",
+      "matplotlib": "3.11.1",
+      "httpcore": "1.0.9",
+      "fonttools": "4.63.0",
+      "aiohappyeyeballs": "2.7.1",
+      "desi-fm": "0.2.0",
+      "sympy": "1.14.0",
+      "anyio": "4.14.2",
+      "pytest": "9.1.1",
+      "numpy": "2.5.1",
+      "jiter": "0.16.0",
+      "python-dotenv": "1.2.2",
+      "h11": "0.16.0",
+      "sniffio": "1.3.1",
+      "pycparser": "3.0",
+      "Pygments": "2.20.0",
+      "mdurl": "0.1.2",
+      "python-multipart": "0.0.32",
+      "python-dateutil": "2.9.0.post0",
+      "mpmath": "1.3.0",
+      "PyYAML": "6.0.3",
+      "fastapi": "0.143.0",
+      "mcp": "2.0.0",
+      "datasets": "5.0.1",
+      "frozenlist": "1.8.0",
+      "aiosignal": "1.4.0",
+      "certifi": "2026.7.22",
+      "torch": "2.13.0",
+      "opentelemetry-api": "1.44.0",
+      "setuptools": "83.0.0",
+      "cycler": "0.12.1",
+      "scipy": "1.18.0",
+      "Jinja2": "3.1.6",
+      "annotated-types": "0.8.0",
+      "referencing": "0.37.0",
+      "pyparsing": "3.3.2",
+      "filelock": "3.32.2",
+      "markdown-it-py": "4.2.0",
+      "annotated-doc": "0.0.5",
+      "MarkupSafe": "3.0.3",
+      "distro": "1.9.0",
+      "tqdm": "4.70.0",
+      "httpx2": "2.9.1",
+      "pluggy": "1.6.0",
+      "fsspec": "2026.6.0",
+      "attrs": "26.1.0",
+      "pydantic": "2.13.4",
+      "hf-xet": "1.5.2",
+      "urllib3": "2.7.0",
+      "httpx": "0.28.1",
+      "typing_extensions": "4.16.0",
+      "cffi": "2.1.0",
+      "aiohttp": "3.14.3",
+      "huggingface_hub": "1.26.0",
+      "multiprocess": "0.70.19",
+      "truststore": "0.10.4",
+      "idna": "3.18",
+      "typing-inspection": "0.4.2",
+      "pillow": "12.3.0",
+      "six": "1.17.0",
+      "spectra-copilot": "0.2.0",
+      "dill": "0.4.1",
+      "cryptography": "50.0.0",
+      "pip": "26.0"
+    },
+    "wheels": {
+      "spectra_copilot-0.2.0-py3-none-any.whl": "378fbefa08b57587cafb4411d691f1e78ff0b58863855490ed9cc96311d99e18",
+      "desi_fm-0.2.0-py3-none-any.whl": "333c917021d80e6b37af6a58c379856c1f89e715e5be45b35d9adc4a6a961ffd"
+    }
+  },
+  "historical_dataset_reference": {
+    "repository": "MultimodalUniverse/desi",
+    "data_dir": "edr_sv3",
+    "revision": "933b9056b93b0f3e7790ee28c43412b49c39e232",
+    "status": "historical lineage reference; no dataset downloaded or revalidated in batch 2"
+  },
+  "historical_preservation": {
+    "fm": 74,
+    "copilot": 169,
+    "all_sha256_and_sizes_unchanged": true,
+    "untracked_csv": "runs/desi_50k_big/predictions_heldout.csv remains untracked"
+  },
+  "protocol": {
+    "input": "spectra-input-v2",
+    "agent_input": "opaque-scientific-input-v2",
+    "evaluator_manifest_schema": 2,
+    "mask_ratio_for_parity": 0,
+    "seed": 17,
+    "tolerance_preprocessing": "exact",
+    "tolerance_prediction": 1e-06,
+    "tolerance_rounded_tools": 5.1e-05
+  },
+  "tests": [
+    {
+      "environment": "Python 3.9.6 system; FastAPI 0.128.8",
+      "command": "HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH=src python3 -m pytest tests/ -q",
+      "repo": "fm",
+      "result": "53 passed, 46 warnings"
+    },
+    {
+      "environment": "isolated wheel-env Python 3.12.13; FastAPI 0.143.0; Starlette 1.3.1",
+      "command": "HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH=src <wheel-env>/bin/python -m pytest tests/ -q",
+      "repo": "fm",
+      "result": "53 passed, 45 warnings"
+    },
+    {
+      "environment": "same isolated wheel-env; source imports for both batch-2 checkouts",
+      "command": "PYTHONPATH=<fm>/src HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 DESI_FM_CKPT=<fm>/runs/desi_80k_classhead_v21/checkpoint_last.pt SPECTRA_MCP_TRANSCRIPT=<private>/mcp-stdio.json <wheel-env>/bin/python -m pytest tests/ -q",
+      "repo": "copilot",
+      "result": "79 passed, 22 warnings"
+    },
+    {
+      "command": "PYTHONPATH=src HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 <python3.12> scripts/check_batch2_inference.py --copilot-root <copilot> --output docs/evidence/batch2-real-smoke.json",
+      "repo": "fm",
+      "result": "passed; v1 last and v2.1 best/last strict load; valid control tolerance 1e-6; raw sample deltas recorded"
+    },
+    {
+      "command": "env -u PYTHONPATH HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 DESI_FM_CKPT=<local-v2.1> DESI_FM_INDEX_DIR=<copilot>/data <wheel-env>/bin/python <copilot>/scripts/check_installed_batch2.py --fm-root <fm> --copilot-root <copilot> --wheels <private>/wheels --output <private>/wheel-validation.json",
+      "cwd": "outside both checkouts",
+      "result": "passed; site-packages imports, source byte parity, 16 resources, installed run identity and all five MCP tools plus errors/recovery"
+    },
+    {
+      "command": "<wheel-env>/bin/python -m pip check",
+      "result": "No broken requirements found."
+    },
+    {
+      "command": "git diff --check",
+      "repo": "both",
+      "result": "passed"
+    }
+  ],
+  "installation": {
+    "build": "SOURCE_DATE_EPOCH=1791586800 <python3.12> -m pip wheel --no-deps --no-build-isolation <repo> -w <private>/wheels",
+    "initial_resolution_failure": "FastAPI 0.128.8 requires Starlette <1; inherited development Starlette 1.3.1 conflicts. Not bypassed as acceptance. Fresh compatible environment uses FastAPI 0.143.0 and pip check passes.",
+    "final_environment": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env",
+    "local_artifact_directory": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheels",
+    "dependency_manifest": "batch2-dependencies.txt"
+  },
+  "source_imports_for_joint_suites": {
+    "fm": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING/src/desi_fm/__init__.py",
+    "copilot": "/Users/jirustaroure/proyectos/spectra-copilot/copilot/__init__.py"
+  },
+  "omitted": [
+    "training",
+    "dataset download",
+    "historical index regeneration",
+    "extended scientific benchmarks",
+    "paid LLM calls",
+    "deployment/publication/push/merge",
+    "full Python 3.10/3.11/3.13 matrix",
+    "real Gradio/ZeroGPU hosting"
+  ],
+  "blocked_batch2_tests": [],
+  "pending_outside_batch2": [
+    "historical Anthropic key revocation/consumer rotation unverified",
+    "publication of batch 1 and this local release",
+    "batch 3 local snapshot/ID loader and evaluation",
+    "batch 5 scientific matcher, hypothesis arithmetic and final copilot policy"
+  ]
+}

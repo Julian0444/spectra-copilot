@@ -1,0 +1,557 @@
+[
+  {
+    "initialize": {
+      "meta": null,
+      "protocol_version": "2025-11-25",
+      "capabilities": {
+        "experimental": {},
+        "logging": null,
+        "prompts": {
+          "list_changed": false
+        },
+        "resources": {
+          "subscribe": false,
+          "list_changed": false
+        },
+        "tools": {
+          "list_changed": false
+        },
+        "completions": null,
+        "extensions": null,
+        "tasks": null
+      },
+      "server_info": {
+        "name": "desi-fm",
+        "title": null,
+        "version": "0.2.0",
+        "description": null,
+        "website_url": null,
+        "icons": null
+      },
+      "instructions": "Tools around the desi-fm spectral foundation model (DESI galaxy/QSO spectra). Typical loop: predict_redshift first; if z_confidence is low (< 0.3) or the user asks for verification, test the redshift with identify_spectral_lines and derive alternative hypotheses from its strongest_peaks_angstrom; find_similar_spectra adds a line-independent check \u2014 neighbors whose catalog redshifts cluster around a candidate z support it; lookup_reference retrieves DESI reference notes (target-type z ranges, line degeneracies) to sanity-check a conclusion, citing sources by id. Inputs are .npz files containing 'flux' and 'wavelength' (Angstrom) arrays."
+    }
+  },
+  {
+    "tools": {
+      "meta": null,
+      "ttl_ms": 0,
+      "cache_scope": "private",
+      "next_cursor": null,
+      "tools": [
+        {
+          "name": "predict_redshift",
+          "title": null,
+          "description": "Predict a galaxy/QSO redshift from a DESI spectrum in a .npz file.\n\n    Use this first on any spectrum. `z_pred_map` is the official prediction\n    (v2.1 classification head); `z_confidence` in [0, 1] is entropy-based concentration, not calibrated probability of accuracy.\n    The configured and bin-center ranges are in model_identity. Use\n    identify_spectral_lines for an experimental line check. Deterministic; the first\n    call loads the model checkpoint and can take extra seconds.\n    ",
+          "input_schema": {
+            "properties": {
+              "npz_path": {
+                "title": "Npz Path",
+                "type": "string"
+              }
+            },
+            "required": [
+              "npz_path"
+            ],
+            "type": "object",
+            "title": "predict_redshiftArguments"
+          },
+          "execution": null,
+          "output_schema": null,
+          "icons": null,
+          "annotations": null,
+          "meta": null
+        },
+        {
+          "name": "identify_spectral_lines",
+          "title": null,
+          "description": "Physically test a redshift hypothesis against the spectrum's peaks.\n\n    Use it to validate any z \u2014 the model's, the user's or your own: known\n    rest-frame lines shifted by (1+z) are matched to detected emission peaks,\n    giving `match_fraction` and a verdict ('consistent' at >= 0.4). It also\n    reports `n_peaks_detected` and `strongest_peaks_angstrom` (top 5 by\n    prominence), so when a z fails you can derive alternative hypotheses by\n    assuming the strongest peak is H\u03b1, [OII] or Ly\u03b1 and re-test each one.\n    Needs no model. Caveat: a weak verdict is lack of confirmation, not\n    refutation \u2014 absorption-dominated spectra match poorly even at the true z.\n    ",
+          "input_schema": {
+            "properties": {
+              "npz_path": {
+                "title": "Npz Path",
+                "type": "string"
+              },
+              "z": {
+                "minimum": 0,
+                "title": "Z",
+                "type": "number"
+              }
+            },
+            "required": [
+              "npz_path",
+              "z"
+            ],
+            "type": "object",
+            "title": "identify_spectral_linesArguments"
+          },
+          "execution": null,
+          "output_schema": null,
+          "icons": null,
+          "annotations": null,
+          "meta": null
+        },
+        {
+          "name": "reconstruct_spectrum",
+          "title": null,
+          "description": "Probe prediction stability by masking part of the spectrum.\n\n    Use it as a robustness check once you have a candidate z: a random\n    `mask_ratio` fraction of the model's 273 tokens is hidden and the\n    redshift re-predicted. If `z_pred_under_masking` stays close to the\n    full-spectrum z, the prediction does not hinge on a single feature;\n    large swings mean fragile evidence.\n    ",
+          "input_schema": {
+            "properties": {
+              "npz_path": {
+                "title": "Npz Path",
+                "type": "string"
+              },
+              "mask_ratio": {
+                "default": 0.5,
+                "maximum": 0.9,
+                "minimum": 0,
+                "title": "Mask Ratio",
+                "type": "number"
+              }
+            },
+            "required": [
+              "npz_path"
+            ],
+            "type": "object",
+            "title": "reconstruct_spectrumArguments"
+          },
+          "execution": null,
+          "output_schema": null,
+          "icons": null,
+          "annotations": null,
+          "meta": null
+        },
+        {
+          "name": "find_similar_spectra",
+          "title": null,
+          "description": "Find the k most similar spectra in a 15k-spectrum DESI reference index.\n\n    Use it as a second, line-independent check on a candidate redshift: the\n    spectrum is embedded with the foundation model's encoder and matched by\n    cosine similarity against 15k DESI training spectra, each neighbor\n    reporting its catalog z. Neighbors whose redshifts cluster tightly around\n    a candidate z support it; scattered neighbor redshifts add doubt. The\n    signal comes from the embedding space, not the classification head \u2014 it\n    complements identify_spectral_lines, never replaces it. The first call\n    may download the index (~30 MB) from the Hub.\n    ",
+          "input_schema": {
+            "properties": {
+              "npz_path": {
+                "title": "Npz Path",
+                "type": "string"
+              },
+              "k": {
+                "default": 5,
+                "maximum": 100,
+                "minimum": 1,
+                "title": "K",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "npz_path"
+            ],
+            "type": "object",
+            "title": "find_similar_spectraArguments"
+          },
+          "execution": null,
+          "output_schema": null,
+          "icons": null,
+          "annotations": null,
+          "meta": null
+        },
+        {
+          "name": "lookup_reference",
+          "title": null,
+          "description": "Consult the spectral-line catalog and DESI reference notes (BM25).\n\n    Use it to sanity-check target-type vs redshift priors (BGS/LRG/ELG/QSO\n    expected ranges), line visibility windows, and to explain classic line\n    degeneracies (e.g. Halpha vs [OII] in single-line spectra). Returns up\n    to k documents, strongest match first, each with an `id` to cite in\n    square brackets, its public `source`, and a text snippet. The corpus is\n    ~30 short committed documents; queries with no term overlap return an\n    empty list. Needs no model and runs offline.\n    ",
+          "input_schema": {
+            "properties": {
+              "query": {
+                "title": "Query",
+                "type": "string"
+              },
+              "k": {
+                "default": 3,
+                "maximum": 30,
+                "minimum": 1,
+                "title": "K",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "type": "object",
+            "title": "lookup_referenceArguments"
+          },
+          "execution": null,
+          "output_schema": null,
+          "icons": null,
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "predict_redshift",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/input.npz"
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"z_pred_map\": 3.0496,\n  \"z_confidence\": 0.0,\n  \"z_pred\": 1.6482,\n  \"coverage\": {\n    \"contract\": \"spectra-input-v2\",\n    \"n_input_pixels\": 64,\n    \"n_valid_input_pixels\": 64,\n    \"n_model_pixels\": 64,\n    \"n_valid_model_pixels\": 64,\n    \"model_valid_fraction\": 1.0,\n    \"valid_wavelength_min_angstrom\": 3600.0,\n    \"valid_wavelength_max_angstrom\": 9800.0\n  },\n  \"model_identity\": {\n    \"config\": {\n      \"n_pixels\": 64,\n      \"n_tokens\": 8,\n      \"lambda_min\": 3600.0,\n      \"lambda_max\": 9800.0,\n      \"wavelength_grid\": \"log\",\n      \"d_model\": 16,\n      \"n_layers\": 1,\n      \"n_heads\": 2,\n      \"mlp_ratio\": 4.0,\n      \"dropout\": 0.4,\n      \"mask_ratio\": 0.35,\n      \"redshift_loss_weight\": 2.0,\n      \"reconstruction_loss_weight\": 1.0,\n      \"use_wavelength_embedding\": true,\n      \"use_learned_position\": true,\n      \"n_z_bins\": 16,\n      \"z_max\": 6.0,\n      \"z_label_smoothing\": 0.05,\n      \"normalize_redshift_ce\": false\n    },\n    \"checkpoint\": {\n      \"sha256\": \"6959ac189061623400543e1a6f7399fc7ed88fd34bff859cb482d688f0b0fdec\",\n      \"step\": null,\n      \"migration\": null\n    },\n    \"source\": \"checkpoint\",\n    \"redshift\": {\n      \"configured_range\": [\n        0,\n        6.0\n      ],\n      \"bin_center_range\": [\n        0.06269665062427521,\n        5.587015628814697\n      ],\n      \"z_pred\": \"expm1(E[log(1+z)])\",\n      \"z_confidence\": \"1 - H(p)/log(n_bins)\",\n      \"observed_max\": null\n    }\n  }\n}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": false,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "predict_redshift",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/gap.npz"
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"z_pred_map\": 3.0496,\n  \"z_confidence\": 0.0,\n  \"z_pred\": 1.6482,\n  \"coverage\": {\n    \"contract\": \"spectra-input-v2\",\n    \"n_input_pixels\": 64,\n    \"n_valid_input_pixels\": 56,\n    \"n_model_pixels\": 64,\n    \"n_valid_model_pixels\": 56,\n    \"model_valid_fraction\": 0.875,\n    \"valid_wavelength_min_angstrom\": 3600.0,\n    \"valid_wavelength_max_angstrom\": 9800.0\n  },\n  \"model_identity\": {\n    \"config\": {\n      \"n_pixels\": 64,\n      \"n_tokens\": 8,\n      \"lambda_min\": 3600.0,\n      \"lambda_max\": 9800.0,\n      \"wavelength_grid\": \"log\",\n      \"d_model\": 16,\n      \"n_layers\": 1,\n      \"n_heads\": 2,\n      \"mlp_ratio\": 4.0,\n      \"dropout\": 0.4,\n      \"mask_ratio\": 0.35,\n      \"redshift_loss_weight\": 2.0,\n      \"reconstruction_loss_weight\": 1.0,\n      \"use_wavelength_embedding\": true,\n      \"use_learned_position\": true,\n      \"n_z_bins\": 16,\n      \"z_max\": 6.0,\n      \"z_label_smoothing\": 0.05,\n      \"normalize_redshift_ce\": false\n    },\n    \"checkpoint\": {\n      \"sha256\": \"6959ac189061623400543e1a6f7399fc7ed88fd34bff859cb482d688f0b0fdec\",\n      \"step\": null,\n      \"migration\": null\n    },\n    \"source\": \"checkpoint\",\n    \"redshift\": {\n      \"configured_range\": [\n        0,\n        6.0\n      ],\n      \"bin_center_range\": [\n        0.06269665062427521,\n        5.587015628814697\n      ],\n      \"z_pred\": \"expm1(E[log(1+z)])\",\n      \"z_confidence\": \"1 - H(p)/log(n_bins)\",\n      \"observed_max\": null\n    }\n  }\n}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": false,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "predict_redshift",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/nonfinite.npz"
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"z_pred_map\": 3.0496,\n  \"z_confidence\": 0.0,\n  \"z_pred\": 1.6482,\n  \"coverage\": {\n    \"contract\": \"spectra-input-v2\",\n    \"n_input_pixels\": 64,\n    \"n_valid_input_pixels\": 56,\n    \"n_model_pixels\": 64,\n    \"n_valid_model_pixels\": 56,\n    \"model_valid_fraction\": 0.875,\n    \"valid_wavelength_min_angstrom\": 3600.0,\n    \"valid_wavelength_max_angstrom\": 9800.0\n  },\n  \"model_identity\": {\n    \"config\": {\n      \"n_pixels\": 64,\n      \"n_tokens\": 8,\n      \"lambda_min\": 3600.0,\n      \"lambda_max\": 9800.0,\n      \"wavelength_grid\": \"log\",\n      \"d_model\": 16,\n      \"n_layers\": 1,\n      \"n_heads\": 2,\n      \"mlp_ratio\": 4.0,\n      \"dropout\": 0.4,\n      \"mask_ratio\": 0.35,\n      \"redshift_loss_weight\": 2.0,\n      \"reconstruction_loss_weight\": 1.0,\n      \"use_wavelength_embedding\": true,\n      \"use_learned_position\": true,\n      \"n_z_bins\": 16,\n      \"z_max\": 6.0,\n      \"z_label_smoothing\": 0.05,\n      \"normalize_redshift_ce\": false\n    },\n    \"checkpoint\": {\n      \"sha256\": \"6959ac189061623400543e1a6f7399fc7ed88fd34bff859cb482d688f0b0fdec\",\n      \"step\": null,\n      \"migration\": null\n    },\n    \"source\": \"checkpoint\",\n    \"redshift\": {\n      \"configured_range\": [\n        0,\n        6.0\n      ],\n      \"bin_center_range\": [\n        0.06269665062427521,\n        5.587015628814697\n      ],\n      \"z_pred\": \"expm1(E[log(1+z)])\",\n      \"z_confidence\": \"1 - H(p)/log(n_bins)\",\n      \"observed_max\": null\n    }\n  }\n}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": false,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "reconstruct_spectrum",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/input.npz",
+      "mask_ratio": 0
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"mask_ratio\": 0.0,\n  \"n_tokens_masked\": 0,\n  \"coverage\": {\n    \"contract\": \"spectra-input-v2\",\n    \"n_input_pixels\": 64,\n    \"n_valid_input_pixels\": 64,\n    \"n_model_pixels\": 64,\n    \"n_valid_model_pixels\": 64,\n    \"model_valid_fraction\": 1.0,\n    \"valid_wavelength_min_angstrom\": 3600.0,\n    \"valid_wavelength_max_angstrom\": 9800.0\n  },\n  \"model_identity\": {\n    \"config\": {\n      \"n_pixels\": 64,\n      \"n_tokens\": 8,\n      \"lambda_min\": 3600.0,\n      \"lambda_max\": 9800.0,\n      \"wavelength_grid\": \"log\",\n      \"d_model\": 16,\n      \"n_layers\": 1,\n      \"n_heads\": 2,\n      \"mlp_ratio\": 4.0,\n      \"dropout\": 0.4,\n      \"mask_ratio\": 0.35,\n      \"redshift_loss_weight\": 2.0,\n      \"reconstruction_loss_weight\": 1.0,\n      \"use_wavelength_embedding\": true,\n      \"use_learned_position\": true,\n      \"n_z_bins\": 16,\n      \"z_max\": 6.0,\n      \"z_label_smoothing\": 0.05,\n      \"normalize_redshift_ce\": false\n    },\n    \"checkpoint\": {\n      \"sha256\": \"6959ac189061623400543e1a6f7399fc7ed88fd34bff859cb482d688f0b0fdec\",\n      \"step\": null,\n      \"migration\": null\n    },\n    \"source\": \"checkpoint\",\n    \"redshift\": {\n      \"configured_range\": [\n        0,\n        6.0\n      ],\n      \"bin_center_range\": [\n        0.06269665062427521,\n        5.587015628814697\n      ],\n      \"z_pred\": \"expm1(E[log(1+z)])\",\n      \"z_confidence\": \"1 - H(p)/log(n_bins)\",\n      \"observed_max\": null\n    }\n  },\n  \"z_pred_under_masking\": 3.0496\n}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": false,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "identify_spectral_lines",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/input.npz",
+      "z": 0.42
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"coverage\": {\n    \"contract\": \"spectra-input-v2\",\n    \"n_input_pixels\": 64,\n    \"n_valid_input_pixels\": 64,\n    \"n_model_pixels\": 7081,\n    \"n_valid_model_pixels\": 7081,\n    \"model_valid_fraction\": 1.0,\n    \"valid_wavelength_min_angstrom\": 3600.0,\n    \"valid_wavelength_max_angstrom\": 9800.0\n  },\n  \"z_tested\": 0.42,\n  \"n_peaks_detected\": 1,\n  \"strongest_peaks_angstrom\": [\n    7018.6\n  ],\n  \"n_expected_in_coverage\": 12,\n  \"n_matched\": 0,\n  \"match_fraction\": 0.0,\n  \"matched_lines\": [],\n  \"verdict\": \"weak_or_inconsistent\"\n}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": false,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "find_similar_spectra",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/input.npz",
+      "k": 1
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"k\": 1,\n  \"index_size\": 2,\n  \"neighbors\": [\n    {\n      \"rank\": 1,\n      \"similarity\": 1.0,\n      \"z\": 0.42\n    }\n  ],\n  \"neighbor_z_range\": [\n    0.42,\n    0.42\n  ],\n  \"neighbor_z_median\": 0.42\n}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": false,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "lookup_reference",
+    "arguments": {
+      "query": "Halpha OII confusion",
+      "k": 3
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"results\": [\n    {\n      \"id\": \"Halpha_6563\",\n      \"source\": \"line-catalog\",\n      \"snippet\": \"Halpha_6563 at rest 6562.8 A. Hydrogen Balmer alpha (Halpha) line at rest 6562.8 A. Strongest optical emission line in star-forming galaxies. At z > 0.49 it leaves the DESI optical range (9824 A ceiling), so any z above about 0.5 must be anchored by other lines such as [OII] or [OIII]. Commonly confused with [OII] 3727 and [OIII] 5007 in single-line spectra; that Halpha/[OII] confusion is a leadin\"\n    },\n    {\n      \"id\": \"line-degeneracy-single-line\",\n      \"source\": \"https://arxiv.org/abs/2306.06307\",\n      \"snippet\": \"The classic single-line degeneracy: one emission peak at observed wavelength L is consistent with several redshifts at once - Halpha gives z = L/6562.8 - 1, [OIII] 5007 gives z = L/5006.8 - 1, [OII] 3727 gives z = L/3727.1 - 1, and Lya gives z = L/1215.7 - 1. The Halpha vs [OII] confusion is the most common cause of catastrophic redshift errors in emission-line galaxies. Breaking the degeneracy re\"\n    },\n    {\n      \"id\": \"catastrophic-outliers\",\n      \"source\": \"https://github.com/Julian0444/desi-spectra-fm\",\n      \"snippet\": \"In this project a catastrophic outlier is a prediction with |z_pred - z_true| / (1 + z_true) > 0.15, the eta metric reported for desi-fm (the DESI pipeline uses an equivalent velocity-error criterion). The dominant causes are line misidentification (the Halpha/[OII]/[OIII] single-line confusion), low signal-to-noise spectra, and sky-subtraction residuals mistaken for emission lines. desi-fm v2.1 f\"\n    }\n  ]\n}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": false,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "predict_redshift",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/invalid.npz"
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool predict_redshift: Spectrum 0: fewer than 8 usable input pixels",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "predict_redshift",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/outside.npz"
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool predict_redshift: Fewer than 8 usable model-grid pixels; no usable coverage",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "find_similar_spectra",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/invalid.npz"
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool find_similar_spectra: Spectrum 0: fewer than 8 usable input pixels",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "predict_redshift",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/absent.npz"
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool predict_redshift: Could not read scientific inputs as a .npz archive: [Errno 2] No such file or directory: '/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/absent.npz'",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "identify_spectral_lines",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/input.npz",
+      "z": -10
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool identify_spectral_lines: 1 validation error for identify_spectral_linesArguments\nz\n  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-10, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/greater_than_equal",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "reconstruct_spectrum",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/input.npz",
+      "mask_ratio": 1.5
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool reconstruct_spectrum: 1 validation error for reconstruct_spectrumArguments\nmask_ratio\n  Input should be less than or equal to 0.9 [type=less_than_equal, input_value=1.5, input_type=float]\n    For further information visit https://errors.pydantic.dev/2.13/v/less_than_equal",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "reconstruct_spectrum",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/input.npz",
+      "mask_ratio": true
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool reconstruct_spectrum: 1 validation error for reconstruct_spectrumArguments\nmask_ratio\n  Input should be a valid number [type=float_type, input_value=True, input_type=bool]\n    For further information visit https://errors.pydantic.dev/2.13/v/float_type",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "find_similar_spectra",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/input.npz",
+      "k": 0
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool find_similar_spectra: 1 validation error for find_similar_spectraArguments\nk\n  Input should be greater than or equal to 1 [type=greater_than_equal, input_value=0, input_type=int]\n    For further information visit https://errors.pydantic.dev/2.13/v/greater_than_equal",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "find_similar_spectra",
+    "arguments": {
+      "npz_path": "/private/var/folders/sn/h7vh5zv940nbqdg9vwd2qtgm0000gn/T/pytest-of-jirustaroure/pytest-135/test_stdio_valid_invalid_and_r0/input.npz",
+      "k": "2"
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool find_similar_spectra: 1 validation error for find_similar_spectraArguments\nk\n  Input should be a valid integer [type=int_type, input_value='2', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.13/v/int_type",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "lookup_reference",
+    "arguments": {
+      "query": "DESI",
+      "k": 1.5
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "Error executing tool lookup_reference: 1 validation error for lookup_referenceArguments\nk\n  Input should be a valid integer [type=int_type, input_value=1.5, input_type=float]\n    For further information visit https://errors.pydantic.dev/2.13/v/int_type",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": true,
+      "result_type": "complete"
+    }
+  },
+  {
+    "tool": "lookup_reference",
+    "arguments": {
+      "query": "ELG redshift range"
+    },
+    "result": {
+      "meta": null,
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"results\": [\n    {\n      \"id\": \"desi-targets-elg\",\n      \"source\": \"https://arxiv.org/abs/2208.08513\",\n      \"snippet\": \"ELG (Emission Line Galaxy) targets are star-forming galaxies selected to lie at 0.6 < z < 1.6, the largest DESI target class. Their redshifts are measured primarily from the [OII] 3727 doublet, since Halpha has left the optical window above z = 0.49. Prior for verification: an emission-line spectrum whose only strong line sits between about 6000 and 9800 A is typical of an ELG with that line being\"\n    },\n    {\n      \"id\": \"oii-doublet\",\n      \"source\": \"https://arxiv.org/abs/2208.08513\",\n      \"snippet\": \"The [OII] line is actually a doublet (3726.0 and 3728.8 A rest, separation about 2.8 A rest, growing as (1+z) when observed). DESI's spectral resolution partially resolves this doublet, which is how Redrock secures ELG redshifts from what would otherwise be a single ambiguous line. A single narrow unresolved peak is therefore weaker evidence for [OII] than a peak with the characteristic doublet wi\"\n    },\n    {\n      \"id\": \"OII_3727\",\n      \"source\": \"line-catalog\",\n      \"snippet\": \"OII_3727 at rest 3727.1 A. [OII] doublet at rest 3727 A (3726.0 + 3728.8). Primary star-formation tracer and the main redshift feature for DESI ELGs at 0.6 < z < 1.6, where Halpha is out of range. Visible in DESI coverage up to z about 1.63. In single-line spectra [OII] is commonly confused with Halpha: the same observed peak gives z_OII = (1+z_Halpha)*6562.8/3727.1 - 1, a classic misidentificatio\"\n    }\n  ]\n}",
+          "annotations": null,
+          "meta": null
+        }
+      ],
+      "structured_content": null,
+      "is_error": false,
+      "result_type": "complete"
+    }
+  }
+]

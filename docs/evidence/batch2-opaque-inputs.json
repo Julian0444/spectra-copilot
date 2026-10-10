@@ -1,0 +1,26 @@
+{
+  "protocol": "opaque-scientific-input-v2",
+  "source_map": "private evaluator artifact: opaque-input-provenance.json",
+  "inputs": [
+    {
+      "input_id": "spectrum_0001",
+      "derived_sha256": "029bfca4e66ad6d7097d7814b4a8aff18869c9fae16f75683ab97d5b1ed562ff",
+      "bytes": 102441
+    },
+    {
+      "input_id": "spectrum_0002",
+      "derived_sha256": "1f2a78b85608ac97fd01f69f0c6e01a30ebe417ed28f6bc570e7ff9806d50732",
+      "bytes": 102441
+    },
+    {
+      "input_id": "spectrum_0003",
+      "derived_sha256": "34ba263b264499ba4500526553a134cd3dff03e083ff28768d11b5d047b4b9c4",
+      "bytes": 102441
+    },
+    {
+      "input_id": "spectrum_0004",
+      "derived_sha256": "fa9121ecbceb2b8f03f7e668d367e81556e9c28cb39f7cb0434a6a31eadb7b76",
+      "bytes": 79288
+    }
+  ]
+}
