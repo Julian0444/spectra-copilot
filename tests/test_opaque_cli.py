@@ -56,3 +56,18 @@ def test_provenance_inside_opaque_destination_rejected_before_write(tmp_path, al
         module.derive([source], destination, provenance)
     assert not destination.exists()
     assert not provenance.exists()
+
+
+def test_provenance_case_alias_on_case_insensitive_volume(tmp_path):
+    # macOS commonly aliases differently cased nonexistent child paths.
+    alias=tmp_path.with_name(tmp_path.name.swapcase())
+    if not alias.exists() or not alias.samefile(tmp_path):
+        pytest.skip('case-sensitive filesystem')
+    spec=importlib.util.spec_from_file_location('derive_agent_inputs',Path(__file__).resolve().parents[1]/'scripts/derive_agent_inputs.py')
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    source=tmp_path/'source.npz';w=np.geomspace(3600,9800,64).astype(np.float32)
+    np.savez(source,flux=np.sin(w/500),wavelength=w)
+    destination=tmp_path/'Opaque'
+    with pytest.raises(ValueError,match='outside'):
+        module.derive([source],destination,tmp_path/'opaque'/'map.json')
+    assert not destination.exists()

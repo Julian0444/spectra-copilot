@@ -3,15 +3,35 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import unicodedata
 import numpy as np
 from desi_fm.inputs import read_npz
+
+
+def _case_aliases(directory):
+    ancestor = directory
+    while not ancestor.exists():
+        ancestor = ancestor.parent
+    # Read-only probe of an existing entry on the destination volume. No output
+    # directory or probe file is created to learn its name comparison behavior.
+    for entry in ancestor.iterdir():
+        alternate = entry.with_name(entry.name.swapcase())
+        if alternate != entry:
+            return alternate.exists() and alternate.samefile(entry)
+    # If an empty/numeric-only directory cannot prove sensitivity, fail closed
+    # for differently cased descendants rather than creating a provenance leak.
+    return True
 
 
 def derive(sources, destination, provenance):
     destination,provenance=Path(destination),Path(provenance)
     resolved_destination = destination.resolve()
     resolved_provenance = provenance.resolve()
-    if resolved_provenance == resolved_destination or resolved_destination in resolved_provenance.parents:
+    destination_parts, provenance_parts = resolved_destination.parts, resolved_provenance.parts
+    if _case_aliases(resolved_destination):
+        destination_parts = tuple(unicodedata.normalize('NFD', p).casefold() for p in destination_parts)
+        provenance_parts = tuple(unicodedata.normalize('NFD', p).casefold() for p in provenance_parts)
+    if provenance_parts[:len(destination_parts)] == destination_parts:
         raise ValueError('Provenance must be outside the opaque input destination')
     if destination.exists() or provenance.exists():
         raise ValueError('Use new destination and provenance paths; originals are never overwritten')
