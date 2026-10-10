@@ -1,0 +1,23 @@
+{
+  "scope": "batch-2 review follow-ups and batch 3; local source execution",
+  "fm_scientific_implementation_head": "89cfea1ed07c8e9f5b9cc7921ef6add52f13c1ad",
+  "copilot_implementation_head": "72e4f0bae0204ff4ee9b3129259d732f72799d8e",
+  "tests": {
+    "repo": "copilot",
+    "environment": "same Python 3.12.13; source imports from both originals; LLM simulated",
+    "command": "PYTHONPATH=<FM>/src HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 DESI_FM_CKPT=<local-v21> <ENV>/bin/python -m pytest tests/ -q",
+    "result": "85 passed, 22 warnings in 4.01s",
+    "log": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-3-20261009/copilot-tests-final-85.txt"
+  },
+  "shared_evidence": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING/docs/evidence/batch3-validation.json",
+  "old_wheels_unchanged_and_not_revalidated_for_new_bytes": true,
+  "preserved_historical_files": 169,
+  "index_encoder_compatibility": "unknown; no rebuild or new compatibility claim",
+  "provenance_regressions": [
+    "nested map",
+    "parent symlink alias",
+    "case-insensitive volume alias",
+    "dangling directory entry before case probe"
+  ],
+  "no_paid_LLM": true
+}

@@ -103,3 +103,5 @@ unknown because no generation manifest exists. No index was rebuilt.
 Mocked downloads test revision selection and identity rejection; no paid LLM
 is involved. Use these source revisions together. The old batch-2 wheels and
 acceptance manifests remain evidence for their original bytes only.
+
+The follow-up also rejects aliases created by case-insensitive destination volumes before writing, including when the parent contains dangling symlinks. The probe reads existing directory entries; unknown sensitivity conservatively folds names. All final 85 Copilot tests pass, including these regressions.
