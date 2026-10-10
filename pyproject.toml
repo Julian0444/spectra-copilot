@@ -7,6 +7,7 @@ name = "spectra-copilot"
 version = "0.1.0"
 description = "LLM agent that analyzes astronomical spectra using the desi-fm foundation model as a tool"
 readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.10"
 dependencies = [
   "numpy",
