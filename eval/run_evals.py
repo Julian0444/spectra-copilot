@@ -1,155 +1,280 @@
-"""End-to-end evals: agent (Claude API + tools) vs the model alone (plan 11).
+"""Evaluate into a new, mode-specific run directory; preserve historical CSVs.
 
-Per case, two systems answer the same question ("what is z?"):
-- model-only baseline: tools.official_z(predict_redshift_impl(...)) — the
-  exact deterministic call behind the agent's first tool use;
-- the agent: copilot.agent.run_structured(...), the full verification loop
-  ending in a structured submit_report (no prose parsing).
+Each run owns results.csv and an immutable manifest.json. Resume requires the
+same selected cases, input bytes, checkpoint, code, assets and LLM model. Every
+CSV replacement is atomic and contains the entire selected case map, including
+pending/error rows. Completed rows survive interruptions; an in-flight request
+may need repeating (including its API cost). SIGKILL cannot flush in-flight work.
 
-Metrics use dz_n = |z - z_true| / (1 + z_true); 0.15 is the catastrophic
-outlier threshold, 0.05 the quality threshold. The model-only columns cover
-every case (they need no API), so agent errors never bias the baseline.
+    python eval/run_evals.py --baseline-only
+    python eval/run_evals.py --out eval/runs/experiment/results.csv
+    python eval/run_evals.py --out eval/runs/experiment/results.csv --resume
 
-The results CSV is rewritten after every case: a run killed mid-way (API
-credit, network) loses nothing — re-run with --resume to keep completed
-cases and retry the rest. Each failing case is retried once before being
-marked "error".
-
-    python eval/run_evals.py --limit 20                    # validate harness
-    python eval/run_evals.py                               # full run
-    python eval/run_evals.py --resume                      # continue a run
-    python eval/run_evals.py --baseline-only               # no API needed
+Agent runs make paid API calls. Baseline runs do not. Historical evaluations
+used strict error < 0.15 and < 0.05; these conventions remain unchanged here.
 """
-
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import csv
+from datetime import datetime, timezone
+import fcntl
+import hashlib
+import importlib.metadata
 import json
+import math
+import os
 from pathlib import Path
+import tempfile
+import uuid
 
 from copilot import agent, tools
 
 EVAL_DIR = Path(__file__).resolve().parent
 FIELDS = ["case", "z_true", "z_model", "z_final", "confidence",
           "dzn", "ok15", "ok05", "tokens", "status"]
+SCHEMA_VERSION = 1
 
 
 def dz_norm(z: float, z_true: float) -> float:
     return abs(z - z_true) / (1.0 + z_true)
 
 
-def write_csv(path: str, rows: list[dict]) -> None:
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=FIELDS, restval="")
-        w.writeheader()
-        w.writerows(rows)
+@contextmanager
+def atomic_file(path: Path):
+    """Flush a sibling temporary file, then replace; failures leave old bytes."""
+    path = Path(path)
+    fd, name = tempfile.mkstemp(prefix=f'.{path.name}.', dir=path.parent)
+    try:
+        with os.fdopen(fd, 'w', newline='', encoding='utf-8') as f:
+            yield f
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(name, path)
+        directory = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    finally:
+        if os.path.exists(name):
+            os.unlink(name)
 
 
-def summarize(rows: list[dict], model: str = "", usage_total: dict | None = None) -> dict:
-    """Aggregate metrics; robust to rows re-read from CSV (string values)."""
-    ok = [r for r in rows if r["status"] == "ok"]
-    model_dzn = [
-        dz_norm(float(r["z_model"]), float(r["z_true"]))
-        for r in rows if r.get("z_model") not in (None, "")
-    ]
-    out: dict = {
-        "n": len(rows),
-        "n_ok": len(ok),
-        "n_error": sum(r["status"] == "error" for r in rows),
-        "model_only": {
-            "n": len(model_dzn),
-            "rate_015": round(sum(d < 0.15 for d in model_dzn) / max(len(model_dzn), 1), 3),
-            "rate_005": round(sum(d < 0.05 for d in model_dzn) / max(len(model_dzn), 1), 3),
-            "mae_norm": round(sum(model_dzn) / max(len(model_dzn), 1), 4),
-        },
-    }
+def write_csv(path: str | Path, rows: list[dict]) -> None:
+    with atomic_file(Path(path)) as f:
+        writer = csv.DictWriter(f, fieldnames=FIELDS, restval='')
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def read_csv(path: Path) -> list[dict]:
+    with path.open(newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        if reader.fieldnames != FIELDS:
+            raise ValueError('Incompatible results schema')
+        return list(reader)
+
+
+def summarize(rows: list[dict]) -> dict:
+    """Metrics are derived only from persisted rows, never invocation usage."""
+    ok = [r for r in rows if r['status'] == 'ok']
+    model_dzn = [dz_norm(float(r['z_model']), float(r['z_true']))
+                 for r in rows if r.get('z_model') not in (None, '')]
+
+    def metrics(values):
+        n = len(values)
+        return {'n': n,
+                'rate_015': round(sum(d < .15 for d in values) / n, 3) if n else None,
+                'rate_005': round(sum(d < .05 for d in values) / n, 3) if n else None,
+                'mae_norm': round(sum(values) / n, 4) if n else None}
+
+    out = {'n': len(rows), 'n_ok': len(ok),
+           'n_baseline': sum(r['status'] == 'baseline' for r in rows),
+           'n_error': sum(r['status'] == 'error' for r in rows),
+           'n_pending': sum(r['status'] == 'pending' for r in rows),
+           'model_only': metrics(model_dzn)}
     if ok:
-        dzns = [float(r["dzn"]) for r in ok]
-        by_conf = {
-            level: {
-                "n": len(sub),
-                "rate_015": round(sum(int(r["ok15"]) for r in sub) / len(sub), 3),
-            }
-            for level in ("high", "medium", "low")
-            if (sub := [r for r in ok if r["confidence"] == level])
-        }
-        out["agent"] = {
-            "rate_015": round(sum(int(r["ok15"]) for r in ok) / len(ok), 3),
-            "rate_005": round(sum(int(r["ok05"]) for r in ok) / len(ok), 3),
-            "mae_norm": round(sum(dzns) / len(ok), 4),
-            "by_confidence": by_conf,
-            "total_tokens": sum(int(r["tokens"]) for r in ok),
-        }
-        if usage_total:
-            cost = agent.estimate_cost_usd(model, usage_total)
-            if cost is not None:
-                out["agent"]["est_cost_usd_this_run"] = round(cost, 2)
+        out['agent'] = metrics([float(r['dzn']) for r in ok])
+        out['agent']['by_confidence'] = {
+            level: {'n': len(sub),
+                    'rate_015': round(sum(int(r['ok15']) for r in sub) / len(sub), 3)}
+            for level in ('high', 'medium', 'low')
+            if (sub := [r for r in ok if r['confidence'] == level])}
+        out['agent']['total_tokens'] = sum(int(r['tokens']) for r in ok)
+        out['agent']['rate_015_all_cases'] = round(
+            sum(int(r['ok15']) for r in ok) / len(rows), 3)
     return out
 
 
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open('rb') as f:
+        for chunk in iter(lambda: f.read(4 * 1024 * 1024), b''):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def run_identity(items: list[str], labels: dict, cases: Path, baseline: bool,
+                 model: str) -> dict:
+    """Fingerprint actual local inputs and implementation, without storing secrets."""
+    import desi_fm
+    code = {'evaluator': sha256(Path(__file__))}
+    for prefix, directory in [('copilot', Path(tools.__file__).parent),
+                              ('desi_fm', Path(desi_fm.__file__).parent)]:
+        code.update({f'{prefix}/{p.name}': sha256(p) for p in sorted(directory.glob('*.py'))})
+    checkpoint = Path(os.environ.get('DESI_FM_CKPT') or tools._hub_checkpoint())
+    assets = {'checkpoint': sha256(checkpoint)}
+    if not baseline:
+        index, metadata = tools._index_paths()
+        assets.update(index=sha256(Path(index)), index_metadata=sha256(Path(metadata)))
+        refs = Path(tools.__file__).resolve().parent.parent / 'refs'
+        assets.update({f'refs/{p.name}': sha256(p) for p in sorted(refs.iterdir()) if p.is_file()})
+    versions = {}
+    for name in ('numpy', 'scipy', 'torch', 'anthropic', 'faiss-cpu', 'rank_bm25'):
+        try:
+            versions[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            versions[name] = None
+    return {'schema_version': SCHEMA_VERSION,
+            'mode': 'baseline' if baseline else 'agent',
+            'llm_model': None if baseline else model,
+            'protocol': {'model_input': 'full-spectrum', 'ok15': 'dzn < 0.15',
+                         'ok05': 'dzn < 0.05', 'agent_attempts': 2},
+            'cases': [{'case': c, 'z_true': labels[c],
+                       'sha256': sha256(cases / f'{c}.npz')} for c in items],
+            'code_sha256': code, 'assets_sha256': assets, 'versions': versions}
+
+
+def validate_rows(rows: list[dict], labels: dict, items: list[str], baseline: bool) -> dict:
+    saved = {}
+    statuses = {'pending', 'error', 'baseline' if baseline else 'ok'}
+    for r in rows:
+        case = r['case']
+        if case not in items or case in saved or r['status'] not in statuses:
+            raise ValueError('Unknown/duplicate case or incompatible row status')
+        if float(r['z_true']) != labels[case]:
+            raise ValueError('Saved label differs from manifest')
+        for key in ('z_model', 'z_final', 'dzn'):
+            if r[key] != '' and not math.isfinite(float(r[key])):
+                raise ValueError('Non-finite saved result')
+        if r['status'] in {'ok', 'baseline'} and r['z_model'] == '':
+            raise ValueError('Completed result lacks model prediction')
+        if r['status'] == 'ok':
+            dzn = dz_norm(float(r['z_final']), labels[case])
+            if (not math.isclose(float(r['dzn']), dzn, abs_tol=1e-12)
+                    or int(r['ok15']) != int(dzn < .15)
+                    or int(r['ok05']) != int(dzn < .05)
+                    or int(r['tokens']) < 0):
+                raise ValueError('Inconsistent saved agent result')
+        saved[case] = r
+    return saved
+
+
 def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="claude-haiku-4-5")
-    ap.add_argument("--limit", type=int, default=0, help="0 = all cases")
-    ap.add_argument("--cases", default=str(EVAL_DIR / "cases"))
-    ap.add_argument("--out", default=str(EVAL_DIR / "results.csv"))
-    ap.add_argument("--resume", action="store_true",
-                    help="keep status=ok rows already in --out, retry the rest")
-    ap.add_argument("--baseline-only", action="store_true",
-                    help="no API calls: model-only prediction per case")
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--model', default='claude-haiku-4-5')
+    ap.add_argument('--limit', type=int, default=0, help='0 = all; must match on resume')
+    ap.add_argument('--cases', default=str(EVAL_DIR / 'cases'))
+    ap.add_argument('--out', help='new CSV path; default: eval/runs/<mode>-<unique>/results.csv')
+    ap.add_argument('--resume', action='store_true', help='requires explicit --out and matching manifest')
+    ap.add_argument('--baseline-only', action='store_true', help='no API calls')
     a = ap.parse_args()
+    if a.limit < 0 or (a.resume and not a.out):
+        ap.error('--limit must be nonnegative; --resume requires --out')
+    cases = Path(a.cases)
+    labels = {}
+    with (cases / 'labels.csv').open(newline='') as f:
+        for r in csv.DictReader(f):
+            case, z = r['case'], float(r['z_true'])
+            if (case in labels or not case or Path(case).name != case
+                    or case in {'.', '..'} or not math.isfinite(z) or z < 0):
+                raise ValueError('Duplicate/invalid case or redshift label')
+            labels[case] = z
+    items = sorted(labels)[:a.limit or None]
+    if not items:
+        raise ValueError('No evaluation cases selected')
+    mode = 'baseline' if a.baseline_only else 'agent'
+    run_id = f'{mode}-{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}-{uuid.uuid4().hex[:8]}'
+    out = Path(a.out) if a.out else EVAL_DIR / 'runs' / run_id / 'results.csv'
+    manifest_path = out.with_suffix('.manifest.json')
+    out.parent.mkdir(parents=True, exist_ok=True)
+    # Advisory lock on a separate, persistent inode avoids two writers/resumers.
+    with out.with_suffix('.lock').open('a') as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise ValueError('Run is already in use') from None
+        if a.resume:
+            if not manifest_path.exists():
+                raise ValueError('Resume requires a manifest; historical CSVs cannot be adopted')
+            manifest = json.loads(manifest_path.read_text())
+            if manifest['identity']['mode'] != mode or manifest['identity']['llm_model'] != (None if a.baseline_only else a.model):
+                raise ValueError('Incompatible run mode or LLM model')
+        elif out.exists() or manifest_path.exists():
+            raise ValueError('Output already exists; use a new destination or compatible --resume')
+        identity = run_identity(items, labels, cases, a.baseline_only, a.model)
+        if a.resume:
+            if manifest['identity'] != identity:
+                raise ValueError('Incompatible run inputs, code, assets or protocol')
+        else:
+            manifest = {'run_id': run_id, 'identity': identity}
+            with atomic_file(manifest_path) as f:
+                json.dump(manifest, f, indent=2, allow_nan=False)
+                f.write('\n')
+        saved = validate_rows(read_csv(out), labels, items, a.baseline_only) if out.exists() else {}
+        rows = {c: saved.get(c, {'case': c, 'z_true': labels[c], 'status': 'pending'}) for c in items}
 
-    with open(Path(a.cases) / "labels.csv") as f:
-        labels = {r["case"]: float(r["z_true"]) for r in csv.DictReader(f)}
-    items = sorted(labels)[: a.limit or None]
+        def persist():
+            write_csv(out, [rows[c] for c in items])
 
-    done: dict[str, dict] = {}
-    if a.resume and Path(a.out).exists():
-        with open(a.out) as f:
-            done = {r["case"]: r for r in csv.DictReader(f) if r["status"] == "ok"}
-
-    rows, usage_total = [], {}
-    for i, case in enumerate(items):
-        if case in done:
-            rows.append(done[case])
-            continue
-        z_true = labels[case]
-        npz = str(Path(a.cases) / f"{case}.npz")
-        z_model = tools.official_z(tools.predict_redshift_impl(npz))
-        row = {"case": case, "z_true": z_true, "z_model": round(z_model, 4),
-               "status": "baseline"}
-        if not a.baseline_only:
-            r = None
-            for attempt in (1, 2):
+        persist()
+        try:
+            for i, case in enumerate(items):
+                previous = rows[case]
+                if previous['status'] == ('baseline' if a.baseline_only else 'ok'):
+                    continue
+                row = {'case': case, 'z_true': labels[case], 'status': 'error'}
+                rows[case] = row
+                npz = str(cases / f'{case}.npz')
                 try:
-                    r = agent.run_structured(npz, model=a.model)
-                except Exception as e:
-                    print(f"[{case}] attempt {attempt} ERROR {e!r}")
-                if r is not None:
-                    break
-            if r is None:
-                row["status"] = "error"
-            else:
-                dzn = dz_norm(r["z_final"], z_true)
-                for k, v in r["usage"].items():
-                    usage_total[k] = usage_total.get(k, 0) + v
-                row.update(
-                    z_final=r["z_final"], confidence=r["confidence"],
-                    dzn=round(dzn, 4), ok15=int(dzn < 0.15),
-                    ok05=int(dzn < 0.05),
-                    tokens=r["tokens_in"] + r["tokens_out"], status="ok",
-                )
-        rows.append(row)
-        write_csv(a.out, rows)  # after every case: a killed run loses nothing
-        z_final = row.get("z_final")
-        tail = (f"z_final={z_final:.3f}  ok15={bool(row.get('ok15'))}"
-                if z_final is not None else row["status"])
-        print(f"[{i + 1}/{len(items)}] {case}  z_true={z_true:.3f}  "
-              f"z_model={z_model:.3f}  {tail}")
+                    # Preserve a valid baseline across failed agent attempts/resumes.
+                    z_model = (float(previous['z_model']) if previous.get('z_model') not in (None, '')
+                               else float(tools.official_z(tools.predict_redshift_impl(npz))))
+                    if not math.isfinite(z_model):
+                        raise ValueError('Non-finite model prediction')
+                    row['z_model'] = z_model
+                    if a.baseline_only:
+                        row['status'] = 'baseline'
+                    else:
+                        for attempt in (1, 2):
+                            try:
+                                result = agent.run_structured(npz, model=a.model)
+                                if result is None:
+                                    continue
+                                z_final = float(result['z_final'])
+                                if not math.isfinite(z_final):
+                                    raise ValueError('Non-finite agent prediction')
+                                dzn = dz_norm(z_final, labels[case])
+                                row.update(z_final=z_final, confidence=result['confidence'],
+                                           dzn=dzn, ok15=int(dzn < .15), ok05=int(dzn < .05),
+                                           tokens=int(result['tokens_in']) + int(result['tokens_out']),
+                                           status='ok')
+                                break
+                            except Exception as exc:
+                                # Do not persist exception text: SDK errors may carry secrets.
+                                print(f'[{case}] attempt {attempt} ERROR {type(exc).__name__}')
+                except Exception as exc:
+                    print(f'[{case}] baseline ERROR {type(exc).__name__}')
+                persist()
+                print(f'[{i + 1}/{len(items)}] {case}: {row["status"]}')
+        finally:
+            persist()
+            summary = summarize(read_csv(out))
+            summary.update(run_id=manifest['run_id'], mode=mode, results=str(out))
+            print(json.dumps(summary, indent=2, allow_nan=False))
 
-    print(json.dumps(summarize(rows, a.model, usage_total), indent=2))
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
