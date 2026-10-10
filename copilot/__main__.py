@@ -7,9 +7,9 @@ Usage:
 import json
 import sys
 
-import numpy as np
 
 from copilot import tools
+from copilot.agent import agent_input
 
 
 def main() -> None:
@@ -18,17 +18,12 @@ def main() -> None:
         raise SystemExit(2)
     npz = sys.argv[1]
 
-    prediction = tools.predict_redshift_impl(npz)
-    z = tools.official_z(prediction)
-    report = {
-        "input": npz,
-        "predict_redshift": prediction,
-        "identify_spectral_lines": tools.identify_spectral_lines_impl(npz, z),
-    }
-
-    d = np.load(npz)
-    if "z_true" in d.files:
-        report["z_true_reference"] = round(float(np.asarray(d["z_true"]).ravel()[0]), 4)
+    with agent_input(npz) as (opaque, provenance):
+        prediction = tools.predict_redshift_impl(opaque)
+        z = tools.official_z(prediction)
+        report = {"input_id": "spectrum", "source_sha256": provenance["source_sha256"],
+                  "predict_redshift": prediction,
+                  "identify_spectral_lines": tools.identify_spectral_lines_impl(opaque, z)}
 
     print(json.dumps(report, indent=2, ensure_ascii=False))
 

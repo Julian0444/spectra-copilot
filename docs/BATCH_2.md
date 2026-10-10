@@ -30,6 +30,13 @@ and protocol `opaque-scientific-input-v2` are returned to the evaluator; human
 transcript runs save a separate `.input.json` provenance record. Original files
 are never rewritten. The fictional prompt example does not solve case_000.
 
+For external MCP clients, `scripts/derive_agent_inputs.py` creates persistent
+opaque files separately from historical examples. Its provenance map belongs
+with the evaluator and must be outside the agent's visible input directory.
+The CLI tool-chain summary also uses an opaque alias and emits no reference
+label or original path. Derived examples are ignored data, never incidental
+commits; their hashes and private source mapping are delivery artifacts.
+
 State is per execution. At most six analysis tool calls can execute; at most
 eight SDK iterations are permitted. A validated submit_report can be recorded
 once; later submissions/tools are rejected without replacing it. Structured
@@ -68,6 +75,10 @@ python -m venv /path/to/isolated-env
 cd /path/outside/checkouts
 env -u PYTHONPATH /path/to/isolated-env/bin/python -c 'from copilot.rag import lookup_reference_impl; print(lookup_reference_impl("Halpha OII confusion"))'
 ```
+
+The cross-interface source test requires the FM checkout (`SPECTRA_FM_SOURCE_ROOT`
+or a source import through PYTHONPATH). Wheel resource acceptance runs separately
+outside both checkouts, without PYTHONPATH or editable installations.
 
 The delivery manifest records actual wheel hashes, code revisions, installed
 versions/import paths, checkpoint and corpus hashes and test commands. Exact

@@ -31,3 +31,6 @@ data/
 .agents/
 .claude/
 eval/runs/
+
+# Derived opaque inputs; generation/provenance are recorded separately.
+eval/inputs-v2/

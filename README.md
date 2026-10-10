@@ -68,8 +68,13 @@ pip install -e ".[dev]"
 # optional: skip the ~104 MB Hub download by pointing at a local checkpoint
 export DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt
 pytest -q                                  # local/cached checkpoint needed by integration tests
-python -m copilot examples/heldout_z020.npz
+python -m copilot eval/inputs-v2/spectrum_0001.npz
 ```
+
+For external MCP clients, prepare opaque inputs with `scripts/derive_agent_inputs.py`
+and keep its source map with the evaluator; see [BATCH_2.md](docs/BATCH_2.md).
+Use the generated IDs in agent requests. The historical examples below retain
+their original names and labels as evaluation evidence.
 
 Without `DESI_FM_CKPT`, the public checkpoint is downloaded from
 [jirustaroure/desi-spectra-fm](https://huggingface.co/jirustaroure/desi-spectra-fm)
@@ -77,7 +82,7 @@ and cached. The `examples/` spectra are historical DESI validation objects (excl
 with strongly supported v1 exposure and checkpoint selection; not an independent test), each with its `z_true` for reference —
 `examples/trap_single_line.npz` is the synthetic exception, see below.
 
-Example output (`examples/heldout_z020.npz`, real galaxy at z_true = 0.204):
+Historical CLI output from contract v1 (`examples/heldout_z020.npz`, catalog z = 0.204). The current CLI omits labels and original paths and adds coverage/model identity:
 
 ```json
 {
@@ -124,8 +129,8 @@ reflect the current 5-tool set and exercise both newer tools.)
 
 ```bash
 # Set ANTHROPIC_API_KEY securely in your environment; never commit it.
-python -m copilot.agent examples/heldout_z020.npz
-python -m copilot.agent examples/trap_single_line.npz \
+python -m copilot.agent eval/inputs-v2/spectrum_0001.npz
+python -m copilot.agent eval/inputs-v2/spectrum_0004.npz \
     --model claude-haiku-4-5 --save-transcript eval/runs/new-trap.json
 ```
 
@@ -392,7 +397,7 @@ Or in **Claude Desktop**
 }
 ```
 
-Verified session (Claude Code driving the server on
+Historical session (before batch 2; Claude Code driving the server on
 `examples/heldout_z020.npz`, z_true = 0.204 — no agent code involved, just
 the MCP tools and the client's own reasoning):
 

@@ -2,6 +2,7 @@
 import ast
 import importlib.util
 import io
+import os
 import json
 from pathlib import Path
 import sys
@@ -17,7 +18,9 @@ from desi_fm.inputs import SpectrumInputError
 from desi_fm.model import DESIFoundationModel, DESIFoundationModelConfig
 from copilot import tools, agent
 
-FM_ROOT = Path(desi_fm.__file__).resolve().parents[2]
+FM_ROOT = Path(os.environ.get("SPECTRA_FM_SOURCE_ROOT", Path(desi_fm.__file__).resolve().parents[2]))
+if not (FM_ROOT / "tests/contract_fixtures.py").exists():
+    pytest.skip("Cross-interface acceptance requires the local FM source checkout; set SPECTRA_FM_SOURCE_ROOT", allow_module_level=True)
 spec = importlib.util.spec_from_file_location('contract_fixtures',FM_ROOT/'tests/contract_fixtures.py')
 fixture_module=importlib.util.module_from_spec(spec);spec.loader.exec_module(fixture_module)
 
