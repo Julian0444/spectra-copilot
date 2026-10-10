@@ -10,7 +10,7 @@ from pathlib import Path
 from copilot import agent, rag
 from copilot.report import SYSTEM
 
-REFS = Path(__file__).resolve().parent.parent / "refs"
+REFS = rag.REFS_DIR
 
 
 def test_corpus_is_committed_and_well_formed():
@@ -58,10 +58,11 @@ def test_off_corpus_query_returns_empty_not_noise():
     assert rag.lookup_reference_impl("zzz qqq xyzzy")["results"] == []
 
 
-def test_k_is_clamped():
-    docs = len(rag.valid_ids())
-    assert len(rag.lookup_reference_impl("DESI", k=999)["results"]) <= docs
-    assert len(rag.lookup_reference_impl("DESI", k=0)["results"]) == 1
+def test_invalid_k_is_rejected():
+    import pytest
+    for k in (999, 0, True, 1.5, "2"):
+        with pytest.raises(ValueError):
+            rag.lookup_reference_impl("DESI", k=k)
 
 
 def test_wrapped_agent_tool_matches_impl():
@@ -73,5 +74,6 @@ def test_system_prompt_has_citation_contract():
     # The agent must be told to cite retrieved ids and forbidden from
     # inventing sources — that rule is the whole point of the mini-RAG.
     assert "lookup_reference" in SYSTEM
-    assert "[line-catalog]" in SYSTEM
+    assert "[Halpha_6563]" in SYSTEM
+    assert "[line-catalog]" not in SYSTEM
     assert "never invent" in SYSTEM

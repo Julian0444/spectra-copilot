@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2209.14482
+The night sky emits a forest of bright OH emission lines redward of about 7000 A, which the DESI pipeline subtracts; imperfect subtraction leaves narrow residual spikes at known sky wavelengths. A narrow, isolated peak in the red part of a low signal-to-noise spectrum can therefore be a sky residual rather than a real galaxy line. Suspect this when a candidate line has no corroborating second line and the spectrum is otherwise featureless.

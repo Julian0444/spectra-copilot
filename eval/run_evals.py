@@ -29,12 +29,12 @@ from pathlib import Path
 import tempfile
 import uuid
 
-from copilot import agent, tools
+from copilot import agent, tools, rag
 
 EVAL_DIR = Path(__file__).resolve().parent
 FIELDS = ["case", "z_true", "z_model", "z_final", "confidence",
           "dzn", "ok15", "ok05", "tokens", "status"]
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 
 def dz_norm(z: float, z_true: float) -> float:
@@ -129,10 +129,9 @@ def run_identity(items: list[str], labels: dict, cases: Path, baseline: bool,
     if not baseline:
         index, metadata = tools._index_paths()
         assets.update(index=sha256(Path(index)), index_metadata=sha256(Path(metadata)))
-        refs = Path(tools.__file__).resolve().parent.parent / 'refs'
-        assets.update({f'refs/{p.name}': sha256(p) for p in sorted(refs.iterdir()) if p.is_file()})
+        assets.update(rag.corpus_hashes())
     versions = {}
-    for name in ('numpy', 'scipy', 'torch', 'anthropic', 'faiss-cpu', 'rank_bm25'):
+    for name in ('numpy', 'scipy', 'torch', 'anthropic', 'faiss-cpu', 'rank_bm25', 'mcp', 'pydantic', 'desi-fm', 'spectra-copilot'):
         try:
             versions[name] = importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:
@@ -141,7 +140,10 @@ def run_identity(items: list[str], labels: dict, cases: Path, baseline: bool,
             'mode': 'baseline' if baseline else 'agent',
             'llm_model': None if baseline else model,
             'protocol': {'model_input': 'full-spectrum', 'ok15': 'dzn < 0.15',
-                         'ok05': 'dzn < 0.05', 'agent_attempts': 2},
+                         'ok05': 'dzn < 0.05', 'agent_attempts': 2,
+                         'input_contract': 'spectra-input-v2',
+                         'agent_input': 'opaque-scientific-input-v2',
+                         'max_analysis_calls': 6, 'max_runner_iterations': 8},
             'cases': [{'case': c, 'z_true': labels[c],
                        'sha256': sha256(cases / f'{c}.npz')} for c in items],
             'code_sha256': code, 'assets_sha256': assets, 'versions': versions}

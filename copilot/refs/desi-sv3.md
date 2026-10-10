@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2306.06307
+SV3, also called the One-Percent Survey, was the final phase of DESI Survey Validation (April-May 2021). It observed 20 rosette-shaped fields with very high fiber-assignment completeness using target selections essentially identical to the main survey. SV3 spectra are the core of the Early Data Release, so redshift catalogs from it are representative of main-survey DESI data.

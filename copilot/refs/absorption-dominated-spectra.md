@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2208.08515
+Passive galaxies (typical of LRG targets) have spectra dominated by stellar absorption: the 4000 A break, Ca H and K, the G band and Mg b, with little or no emission. An emission-peak matcher will report a weak verdict on such a spectrum even when the redshift is exactly right - lack of emission-line confirmation is not refutation. For these objects the informative checks are the continuum break location, embedding-space neighbors, and whether the predicted z sits in the expected LRG range 0.4-1.1.

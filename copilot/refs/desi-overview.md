@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/1611.00036
+DESI (Dark Energy Spectroscopic Instrument) is a robotic, fiber-fed spectrograph on the 4-meter Mayall telescope at Kitt Peak, with 5000 fibers observing simultaneously. Its mission is to measure redshifts for tens of millions of galaxies and quasars to map the expansion history of the universe through baryon acoustic oscillations. Every spectrum analyzed by this copilot comes from DESI observations.

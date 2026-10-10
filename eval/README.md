@@ -90,3 +90,5 @@ and the contribution of coverage remain hypotheses until traces and a controlled
 intervention are available. This subset inherits v1 exposure and checkpoint
 selection from the historical validation set; it is not an independent test.
 The 90.0% hybrid is retrospective and remains below the 92.7% baseline.
+
+Batch 2 uses manifest schema/protocol v2 and opaque scientific inputs. It hashes the **installed** reference corpus through importlib.resources. Batch 1 manifests cannot resume across these changes; use a new run destination. Atomic writes, full-map preservation, locks and final persistence remain covered by tests. See [BATCH_2.md](../docs/BATCH_2.md).

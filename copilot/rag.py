@@ -16,11 +16,13 @@ from __future__ import annotations
 import json
 import re
 from functools import lru_cache
-from pathlib import Path
+from importlib.resources import files
+import hashlib
 
 from rank_bm25 import BM25Okapi
+from desi_fm.inputs import positive_int, SpectrumInputError
 
-REFS_DIR = Path(__file__).resolve().parent.parent / "refs"
+REFS_DIR = files("copilot").joinpath("refs")
 
 # Alphanumeric tokens only, so "[OII]" matches a query for "OII" and
 # "z=3.5" matches "3.5".
@@ -40,10 +42,10 @@ def _corpus() -> tuple[list[dict], BM25Okapi]:
             "source": "line-catalog",
             "text": f"{e['name']} at rest {e['rest_angstrom']} A. {e['text']}",
         })
-    for path in sorted(REFS_DIR.glob("*.md")):
+    for path in sorted((p for p in REFS_DIR.iterdir() if p.name.endswith(".md")), key=lambda p: p.name):
         lines = path.read_text().strip().splitlines()
         docs.append({
-            "id": path.stem,
+            "id": path.name[:-3],
             "source": lines[0].removeprefix("source:").strip(),
             "text": "\n".join(lines[1:]).strip(),
         })
@@ -63,9 +65,12 @@ def lookup_reference_impl(query: str, k: int = 3) -> dict:
     documents with zero term overlap are never returned, so an off-corpus
     query yields an empty list rather than noise.
     """
+    if not isinstance(query, str) or not query.strip():
+        raise SpectrumInputError("query: expected a nonempty string")
+    k = positive_int(k, "k", 30)
     docs, bm25 = _corpus()
     scores = bm25.get_scores(_tokenize(query))
-    k = max(1, min(int(k), len(docs)))
+    k = min(k, len(docs))
     top = sorted(range(len(docs)), key=lambda i: -scores[i])[:k]
     return {
         "results": [
@@ -78,3 +83,13 @@ def lookup_reference_impl(query: str, k: int = 3) -> dict:
             if scores[i] > 0
         ]
     }
+
+
+def corpus_hashes():
+    """Content identity works with installed wheel resources, without checkout paths."""
+    return {f"refs/{p.name}": hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted(REFS_DIR.iterdir(), key=lambda p:p.name) if p.is_file()}
+
+
+def corpus_revision():
+    return hashlib.sha256(json.dumps(corpus_hashes(), sort_keys=True).encode()).hexdigest()

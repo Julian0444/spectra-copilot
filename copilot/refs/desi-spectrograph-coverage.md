@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2209.14482
+Each DESI spectrograph has three arms - B (about 3600-5930 A), R (5660-7720 A) and Z (7470-9824 A) - whose spectra are calibrated and coadded onto a common wavelength grid covering roughly 3600 to 9824 A, with resolution R of 2000 to 5000. Any redshift hypothesis must place its predicted lines inside that window to be checkable: a line whose observed wavelength (1+z) * lambda_rest falls outside 3600-9824 A simply cannot be seen, which is a coverage limitation and not evidence against the hypothesis.

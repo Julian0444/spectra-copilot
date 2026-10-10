@@ -62,6 +62,8 @@ Prompt facts, label clues and tool contracts remain work for later batches.
 ## Quick start
 
 ```bash
+# First install the local FM 0.2.0 wheel (or local FM checkout).
+# Then install this checkout; see docs/BATCH_2.md for isolated wheel installation.
 pip install -e ".[dev]"
 # optional: skip the ~104 MB Hub download by pointing at a local checkpoint
 export DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt
@@ -274,7 +276,7 @@ unsupervised discovery or transfer. Reproduce the plot with
 
 The agent's missing ingredient was *priors*: knowing that ELGs live at
 0.6 < z < 1.6 turns "z_pred = 3.5 on an emission-line galaxy" from a number
-into a red flag. `refs/` holds a small committed corpus — `refs/lines.json`
+into a red flag. `copilot/refs/` holds the installed corpus — `copilot/refs/lines.json`
 (the 15-line catalog, extended with retrieval-friendly context: visibility
 windows in DESI coverage, known confusions) plus 15 short notes on DESI
 written from the public documentation (SV3, the BGS/LRG/ELG/QSO target
@@ -422,3 +424,5 @@ Code: [MIT, Julian Irusta Roure](LICENSE). DESI examples and derived data retain
 their [CC BY 4.0 attribution, EDR citation and modification notices](ATTRIBUTIONS.md).
 
 [Batch-1 execution and remaining limits](docs/BATCH_1.md).
+
+Batch 2 contracts, opaque agent inputs, executable limits and local wheel installation: [BATCH_2.md](docs/BATCH_2.md). Historical examples and transcripts retain their original labels and protocols; the runner strips label-bearing metadata and paths before any LLM request.

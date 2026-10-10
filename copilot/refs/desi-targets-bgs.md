@@ -1,0 +1,2 @@
+source: https://arxiv.org/abs/2208.08512
+BGS (Bright Galaxy Survey) targets are the brightest DESI galaxies (r < 19.5 for BGS Bright), observed during bright time. Their redshifts lie almost entirely at z < 0.5, with a median near z = 0.2. Prior for verification: a spectrum with strong low-z features (Halpha, [OIII], Hbeta all in coverage) matches the BGS regime; a BGS-like bright galaxy with a predicted z above about 0.6 is suspicious.
