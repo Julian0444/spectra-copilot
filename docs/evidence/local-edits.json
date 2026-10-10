@@ -1,0 +1,18 @@
+{
+  "initial_head": "52de8ec7629e9f636f600e56f01fa01bfe05a077",
+  "initial_branch": "main",
+  "records": [
+    {
+      "path": "README.md",
+      "preexisting_worktree_sha256": "c3a9eeae8da68a35ab67f3fab4174db10f67c0cee51daa71940c82414c2055b6",
+      "reconciled_sha256": "d4f806db32ca878ba38ef39b4fc7edc92ff9b3c6ca738e379984ca309f1a6bea",
+      "disposition": "Reviewed and reconciled in scoped documentation/hygiene commits; original file and initial patch kept privately."
+    },
+    {
+      "path": "eval/README.md",
+      "preexisting_worktree_sha256": "3994f4fbf1adb289beb054694c92a5939256ff0349f04361864457bbc66237dd",
+      "reconciled_sha256": "64087092e1edfa02797f4d9321a6b27aa25d80fcc576d77fb87e3b669043b843",
+      "disposition": "Reviewed and reconciled in scoped documentation/hygiene commits; original file and initial patch kept privately."
+    }
+  ]
+}

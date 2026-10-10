@@ -3,10 +3,11 @@
 [![ci](https://github.com/Julian0444/spectra-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/Julian0444/spectra-copilot/actions/workflows/ci.yml)
 
 LLM agent that analyzes astronomical spectra using the
-[desi-fm](https://github.com/Julian0444/desi-spectra-fm) foundation model as a
+[desi-fm](https://github.com/Julian0444/desi-spectra-fm) multitask transformer as a
 tool — deterministic tools plus a Claude-API agent that calls the model,
-*physically verifies* its prediction against known spectral lines, and writes
-an observation report where every claim cites the tool that backs it. Every
+cross-checks predictions with an emission-peak matching heuristic and writes
+reports intended to cite tools and references. Citation IDs do not establish
+scientific correctness. Every
 tool returns compact JSON conclusions, never raw arrays.
 
 **[🧠 The model: desi-spectra-fm](https://github.com/Julian0444/desi-spectra-fm)** ·
@@ -23,30 +24,35 @@ The 60-second version:
   with an honest headline: the bare model beats its own cheap-LLM agent
   (92.7 % vs 79.3 %). The agent's self-reported confidence tracks accuracy
   monotonically, so a hybrid "trust the agent only when it says *high*"
-  policy recovers 90.0 %. **The eval caught a deployment-relevant failure
-  that four cherry-picked demos had hidden** — that is what evals are for.
+  policy gets back to 90.0 % (by avoiding breaks, not by recovering
+  outliers). **The eval caught a deployment-relevant failure that four
+  cherry-picked demos had hidden** — that is what evals are for.
 - **[Mini-RAG with verified citations](#mini-rag-cited-references-bm25)** —
   every citation in every verified run matched a document actually retrieved
-  in that conversation: 6/6 backed, 0 invented (checked programmatically).
-- **35 tests covering tools, agent contract, MCP layer, RAG and evals — all
-  offline, green in CI.** The paid API calls are measured and logged
-  (~$0.027 per Haiku analysis, US$ 4.06 for the full 150-case eval).
+  in that conversation: 6/6 backed, 0 invented (checked by ID in the saved transcripts).
+- **Tests cover tools, the agent contract, MCP, RAG and evaluation persistence.**
+  Some integration tests require a local or previously cached checkpoint. They
+  simulate the LLM; no paid API call is needed for tests. Historical structured
+  evaluation cost was documented as US$4.06; that is not a current price quote.
+
+Local consolidation, October 2026, pending publication. The negative historical
+result remains authoritative for this version. The future product policy is to
+preserve the model redshift; the current agent can still propose replacements.
+Prompt facts, label clues and tool contracts remain work for later batches.
 
 **Tools** (`copilot/tools.py`):
 
 - `predict_redshift` — desi-fm v2.1 prediction: `z_pred_map` (official) +
-  `z_confidence` + `z_pred` (secondary regression head).
+  `z_confidence` + `z_pred` (`expm1(E[log(1+z)])` from the same classification posterior).
 - `identify_spectral_lines` — detects emission peaks and checks whether known
   lines (Lyα … [SII]) land where a given z predicts; it also reports the
   strongest detected peaks, so the agent can derive alternative z hypotheses
-  from an unexplained peak. This lets the agent *physically verify* the model
-  instead of just repeating it.
+  from an unexplained peak. This is a heuristic cross-check, not physical verification.
 - `reconstruct_spectrum` — masks a fraction of the model's tokens and
   re-predicts, probing the stability of the prediction.
 - `find_similar_spectra` — embeds the spectrum with the model's encoder and
   retrieves its nearest neighbors from a FAISS index of 15k DESI training
-  spectra, each with its catalog redshift — a second, line-independent
-  validation signal ([details below](#semantic-search-embeddings--faiss)).
+  spectra, each with its catalog redshift — another descriptive signal from the same supervised encoder ([details below](#semantic-search-embeddings--faiss)).
 - `lookup_reference` (`copilot/rag.py`) — BM25 retrieval over a committed
   corpus of DESI reference notes + the extended line catalog, so the agent can
   ground its reasoning in citable priors — target-type z ranges, line
@@ -59,14 +65,14 @@ The 60-second version:
 pip install -e ".[dev]"
 # optional: skip the ~104 MB Hub download by pointing at a local checkpoint
 export DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt
-pytest -q                                  # 35 passed
+pytest -q                                  # local/cached checkpoint needed by integration tests
 python -m copilot examples/heldout_z020.npz
 ```
 
 Without `DESI_FM_CKPT`, the public checkpoint is downloaded from
 [jirustaroure/desi-spectra-fm](https://huggingface.co/jirustaroure/desi-spectra-fm)
-and cached. The `examples/` spectra are real DESI held-out objects (never seen
-in training), each with its `z_true` for reference —
+and cached. The `examples/` spectra are historical DESI validation objects (excluded from v2.1 fine-tuning,
+with strongly supported v1 exposure and checkpoint selection; not an independent test), each with its `z_true` for reference —
 `examples/trap_single_line.npz` is the synthetic exception, see below.
 
 Example output (`examples/heldout_z020.npz`, real galaxy at z_true = 0.204):
@@ -108,123 +114,57 @@ exactly that z. The tool can catch and refine an off prediction, and a wrong z
 verify against lines → if `z_confidence < 0.3` or the match is weak, derive
 alternative hypotheses from the strongest peaks and compare their
 match_fractions before concluding; `find_similar_spectra` adds a
-line-independent neighbor check on the candidate z. (The reference transcripts
-below predate the similarity tool — it joined the toolset with the semantic
-search.)
+neighbor comparison from the same supervised encoder. (The four Opus reference
+transcripts below predate `find_similar_spectra` and `lookup_reference` and
+call only `predict_redshift` + `identify_spectral_lines`; the three
+`*_rag.json` transcripts in the same folder, run with `claude-haiku-4-5`,
+reflect the current 5-tool set and exercise both newer tools.)
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
+# Set ANTHROPIC_API_KEY securely in your environment; never commit it.
 python -m copilot.agent examples/heldout_z020.npz
 python -m copilot.agent examples/trap_single_line.npz \
-    --model claude-haiku-4-5 --save-transcript eval/transcripts/trap.json
+    --model claude-haiku-4-5 --save-transcript eval/runs/new-trap.json
 ```
 
-Measured cost per analysis (token usage is printed to stderr after each run):
-**`claude-opus-4-8`** (default) ≈ **$0.09–0.13**; **`claude-haiku-4-5`** ≈
-**$0.013** — cheap enough to iterate with, and it completes the full
-verify-then-refine loop too. Full transcripts of the four reference runs
-(including every tool call and result) are in
-[`eval/transcripts/`](eval/transcripts/).
+Historically documented cost per analysis in this report mode, with the original 3-tool set
+(`predict_redshift`, `identify_spectral_lines`, `reconstruct_spectrum`; token
+usage is printed to stderr after each run): **`claude-opus-4-8`** (default) ≈
+**$0.09–0.13**; **`claude-haiku-4-5`** ≈ **$0.013** — cheap enough to iterate
+with, and it completes the full verify-then-refine loop too. With the five-tool set, a historical
+Haiku report run cost ≈ $0.023 (as printed to stderr in the `*_rag.json`
+runs; the transcripts themselves do not record usage), and
+the structured eval mode averaged ≈ $0.027/case over 150 stratified spectra
+([evals section](#end-to-end-evals-does-verification-actually-help-n--150)).
+Full transcripts of the four reference runs (including every tool call and
+result) are in [`eval/transcripts/`](eval/transcripts/).
 
-### Example report — the agent beats its own model
+### Historical demonstrations and their limits
 
-On `heldout_z020.npz` the model alone is off by Δz ≈ 0.023 (a catastrophic
-outlier at |Δz|/(1+z) > 0.015). The agent catches it and recovers the true
-redshift (report verbatim, `claude-opus-4-8`):
+The unedited reports remain in [`eval/transcripts/`](eval/transcripts/).
+On `heldout_z020.npz`, the model gives 0.2267 versus catalog 0.2036:
+normalized error ≈0.0192, already within the 0.15 tolerance. The Opus report
+refines it to ≈0.204 but incorrectly calls the original a catastrophic error.
+On z≈2.87, model error ≈0.110 is also within tolerance.
 
-> ## Observation report
->
-> **Object**
-> Emission-line galaxy with a rich star-forming spectrum: [OII], full Balmer
-> series (Hα, Hβ, Hγ), [OIII] doublet, [NII], and [SII] all detected
-> (identify_spectral_lines at z = 0.2038).
->
-> **Redshift**
-> z ≈ 0.204. The model's official prediction z_pred_map = 0.2267
-> (z_confidence = 0.64, z_pred = 0.2314) is rejected: it matched only 2/11
-> lines (match_fraction = 0.18, predict_redshift + identify_spectral_lines).
-> Reassigning the strongest peak (7900.8 Å) to Hα 6563 gives z = 0.204, which
-> matches 8/11 lines (match_fraction = 0.73) with sub-Ångström residuals
-> (Hβ Δ0.0, [OIII] 5007 Δ0.0, Hα Δ0.5; identify_spectral_lines).
->
-> **Evidence**
-> z = 0.204 strongly favored: 8/11 lines matched (0.73) vs 2/11 (0.18) at
-> z_pred_map = 0.2267, 4/9 (0.44) at z = 0.578, and 2/7 (0.29) at z = 1.12
-> (identify_spectral_lines). Only z = 0.204 reproduces the coherent
-> Hα+[NII]+[SII] complex and the [OIII] doublet simultaneously, and its
-> matches have the smallest deltas (all ≤1.3 Å vs 3–12 Å for the z = 0.578
-> alternative).
->
-> **Confidence**
-> High on physical grounds. The line solution at z = 0.204 is internally
-> consistent and unambiguous relative to all competitors, even though the
-> foundation model itself misplaced the redshift.
->
-> **Notes**
-> This is a catastrophic-outlier case where z_confidence (0.64) was
-> misleadingly high — a reminder that verification, not confidence, is
-> decisive. The model's z_pred_map (0.2267) is offset by ~0.023 from the true
-> peak identification, likely fitting Hβ/[NII] to the wrong lines.
-> Recommended adopted value: z = 0.204.
+The single-line trap near 8,000 Å admits Hα at z≈0.219, [OIII] at z≈0.598
+or [OII] at z≈1.146. Both saved outcomes must be considered:
 
-The catalog value is z_true = 0.2036.
+| Saved run | Conditions | Outcome |
+|---|---|---|
+| [trap_single_line.json](eval/transcripts/trap_single_line.json) | `claude-opus-4-8`, original toolset; before FAISS/RAG | Reports indeterminate redshift and the competing assignments |
+| [trap_rag.json](eval/transcripts/trap_rag.json) | `claude-haiku-4-5`, five tools including FAISS/RAG | Reports high confidence after testing incorrectly calculated alternatives; false certainty |
 
-### The trap — refusing to invent certainty
+These are not controlled Opus/Haiku comparisons. In the second run the [OIII]
+and [OII] alternatives were calculated as 0.5883 and 1.1769; from 7,999.6 Å
+the correct values are approximately 0.5977 and 1.1464. Each correct assignment
+matches one line; no unique solution follows.
 
-`examples/trap_single_line.npz` (generated by
-`scripts/make_trap_example.py`) has a **single** emission line at 8000 Å on a
-noiseless continuum: it could be Hα at z = 0.219, [OIII] 5007 at z = 0.598 or
-[OII] 3727 at z = 1.146, and nothing breaks the tie. The right answer is to
-say so — and the agent does (report verbatim, `claude-opus-4-8`):
-
-> ## Observation report
->
-> **Object**
-> Single-line emission source; only one peak detected across coverage at
-> 7999.6 Å (identify_spectral_lines). Likely an emission-line galaxy/QSO, but
-> type unconstrained.
->
-> **Redshift**
-> Indeterminate — this is a single-line trap. The model's official
-> z_pred_map = 2.7922 (z_confidence = 0.1894, regression z_pred = 2.0089;
-> predict_redshift). That low confidence flags a likely catastrophic outlier,
-> and it is refuted: 0/3 expected lines matched at z = 2.7922, 0/4 at
-> z = 2.0089 (identify_spectral_lines).
->
-> The lone peak at 7999.6 Å can be assigned to any strong line, each giving a
-> self-consistent but unverifiable single-line solution:
-> - Hα 6563 → z = 0.2188: 1/11 matched (Δ=0.9 Å)
-> - [OIII] 5007 → z = 0.5977: 1/9 matched (Δ=0.3 Å)
-> - [OII] 3727 → z = 1.1464: 1/7 matched (Δ=0.2 Å)
-> (all identify_spectral_lines)
->
-> **Evidence**
-> No second confirming line exists at any hypothesis — no [OII]/Hβ/[OIII]
-> doublet partners, no Hα+[NII], no Lyα/CIV/MgII companions. Every candidate
-> matches exactly one line (its own assumed identity) and nothing else, so
-> match_fraction is dominated by how many lines each z predicts in-band, not
-> by real corroboration.
->
-> **Confidence**
-> Very low. No redshift is defensible. The model prediction (z≈2.79) is
-> rejected (0 matched lines); the three physical single-line solutions are
-> mutually indistinguishable on current evidence (each 1 matched line, sub-Å
-> residuals).
->
-> **Notes**
-> A redshift cannot be responsibly reported from one line. Resolving this
-> requires either (a) checking whether 7999.6 Å shows a resolved doublet
-> (favoring [OII] 3727) or asymmetry (favoring Lyα), or (b) deeper data to
-> detect a second line. Until then, z is ambiguous among {0.219, 0.598,
-> 1.146}, with the model's own z≈2.79 disfavored.
-
-The other two reference runs: on `heldout_z287.npz` (QSO, z_true = 2.866) the
-model predicts 2.441 but the agent re-anchors the strongest peak as Lyα and
-reports z ≈ 2.874 with the competing hypothesis stated; on
-`heldout_lowconf_z157.npz` the agent correctly discards the model's
-low-confidence outlier (z_confidence = 0.18), though its peak-based recovery
-lands on z ≈ 1.98 vs the catalog 1.574 — the strong UV lines at that z fall
-outside DESI coverage, an honest limitation of emission-peak verification.
+For `heldout_lowconf_z157.npz`, Opus replaces error ≈0.24 with ≈0.16: both
+are outliers at 0.15. Only Lyα is outside coverage at the catalog redshift;
+other UV lines remain in-band. Filenames reveal catalog-redshift clues, so
+these demonstrations are not blind evaluations. The prompt and tool issues
+are documented for later consolidation batches, not fixed by these text edits.
 
 ## End-to-end evals: does verification actually help? (n = 150)
 
@@ -244,19 +184,22 @@ question per case; the agent finishes with a structured `submit_report`
 | agent (`claude-haiku-4-5` + 5 tools + RAG) | 79.3 % | 72.0 % | 0.104 |
 | hybrid: agent only when it reports `high` confidence | 90.0 % | — | — |
 
-**The honest headline: with a cheap LLM, the verification loop hurts more
-than it helps.** The agent recovered only 1 of the model's 11 catastrophic
-outliers, and broke 21 predictions the model had right — the damage
-concentrating exactly in the stratified z > 1.5 band (agent 68.9 % vs model
-91.1 %), where so few catalog lines remain in DESI coverage that the *true*
-redshift also looks "weak" to emission-line matching; Haiku then overrules a
-correct prediction with a low-z single-line hypothesis, the very
-[line-degeneracy](refs/line-degeneracy-single-line.md) the system prompt
-warns about. The demo successes above (Opus recovering hand-picked outliers)
-do not generalize downward to Haiku at 1/25th the price.
+**The agent harms the measured result:** 139/150 successes for the model,
+119/150 for the agent. It breaks 21 correct predictions, recovers 1 of 11
+outliers and leaves 10 wrong. In z>1.5, model success is 41/45 versus 31/45.
+Weak matcher confirmation is associated with the broken predictions; absent
+full per-case traces and a controlled intervention, the mechanism remains a
+hypothesis. Coverage alone has not been shown to explain the failures.
 
-Two signals redeem the loop. First, **the agent knows when it is guessing** —
-its self-reported confidence tracks accuracy monotonically:
+The sample is stratified (seed 7; quotas 40/35/30/25/10/10 across six z bins),
+selected from the non-independent historical validation set. Both tools and
+baseline use full spectra; the model card's 14.95% uses random 50% masking.
+11/150 model errors is a measured 7.33% for this sample. Population reweighting
+(6.54%) and paired-difference estimation (8.19%) are estimates, not full-set
+measurements or independent generalization rates.
+
+Neither confidence-based signal beats the model alone. Verbal confidence
+orders historical success but is not a calibrated probability:
 
 | agent confidence | n | rate < 0.15 |
 |---|---|---|
@@ -266,12 +209,19 @@ its self-reported confidence tracks accuracy monotonically:
 
 17 of the 21 broken cases were self-flagged as medium/low. Second, that
 signal is actionable: the hybrid row above (trust the agent only on `high`,
-keep the model otherwise) recovers to 90.0 %. The eval did exactly what evals
-are for — it caught a deployment-relevant failure (don't let a cheap LLM
-overrule a well-calibrated model) that four cherry-picked demos had hidden.
+keep the model otherwise) gets back to 90.0 % — by avoiding 17 of the 21
+breaks (the other 4 were reported `high`), not by recovering outliers: the
+single outlier the agent did recover (`case_088`) came with `medium`
+confidence, so the `high`-only gate hands it back to the model. The eval did
+exactly what evals are for — it caught a deployment-relevant failure (don't
+let this agent overrule the model on the basis of an unvalidated confidence policy) that four cherry-picked
+demos had hidden.
 
-Measured cost of the full run: **US$ 4.06** (150 agent analyses,
-`claude-haiku-4-5`, 3.27 M tokens ≈ 21.8 k/case ≈ $0.027/case). The
+Historically documented cost of the full run: **US$ 4.06** (150 agent analyses in the
+structured mode — `run_structured`, 5 tools + `submit_report` —
+`claude-haiku-4-5`, 3.27 M tokens ≈ 21.8 k/case ≈ $0.027/case; the report
+mode of the demos above is cheaper per run, see
+[The agent](#the-agent-claude-api)). The
 model-only baseline needs no API and is reproducible with
 `python eval/run_evals.py --baseline-only`.
 
@@ -303,8 +253,8 @@ prediction was off (z_pred_map = 0.2267):
 ```
 
 The five nearest neighbors cluster tightly around the true redshift — evidence
-from the embedding space, independent of the classification head, that backs
-the line-verified z ≈ 0.204 over the model's own 0.2267. The tool is equally
+from the same encoder trained with supervised redshift loss. It is not an
+independent confirmation of the line-based hypothesis. The tool is equally
 honest about failure modes: on the low-confidence outlier
 (`heldout_lowconf_z157.npz`) the neighbor redshifts scatter across
 [0.13, 1.39] — the embedding is not distinctive, doubt confirmed — and the
@@ -315,11 +265,10 @@ The same embeddings, projected with UMAP and colored by catalog redshift:
 
 ![UMAP of the embedding space, colored by redshift](docs/img/umap_z.png)
 
-Nobody told the model to order spectra by redshift — the smooth z gradient is
-structure it learned from masked-spectrum pretraining alone. That is the
-foundation-model claim in one picture: representations reusable downstream,
-not just a z head. (Reproduce with `scripts/build_index.py` +
-`scripts/plot_umap.py`.)
+The encoder was trained jointly with a supervised redshift loss. This UMAP of
+15,000 training objects is descriptive; the gradient does not demonstrate
+unsupervised discovery or transfer. Reproduce the plot with
+`scripts/build_index.py` and `scripts/plot_umap.py` using the historical assets.
 
 ## Mini-RAG: cited references (BM25)
 
@@ -335,8 +284,7 @@ line. `copilot/rag.py` indexes the ~30 documents with **BM25**
 (`rank_bm25`) behind the `lookup_reference(query)` tool.
 
 BM25 is a deliberate choice, not a placeholder: for ~30 short, technical
-documents with controlled vocabulary, embeddings add a model dependency
-without adding recall, while BM25 keeps retrieval deterministic, offline and
+documents with controlled vocabulary, embeddings would add a model dependency (no recall comparison has been measured), while BM25 keeps retrieval deterministic, offline and
 testable in CI. A real query:
 
 ```json
@@ -353,7 +301,7 @@ testable in CI. A real query:
 
 The system prompt closes the loop with a citation contract: when the agent
 uses retrieved information it must cite the document id in square brackets
-(`[line-catalog]`, `[desi-targets-elg]`), and it may cite **only** ids
+(`[desi-targets-elg]`, `[oii-doublet]`), and it may cite **only** ids
 returned by `lookup_reference` in that conversation — never invent a
 reference. `rag.valid_ids()` exposes the citable set so evals can verify
 that no cited source was hallucinated. The classic failure the corpus
@@ -366,7 +314,7 @@ consulted `lookup_reference` unprompted when the redshift was ambiguous, and
 **all 6 citations across the 3 reports matched documents actually returned in
 that conversation** — zero invented references (checked against
 `rag.valid_ids()` and the transcripts in `eval/transcripts/*_rag.json`).
-The low-confidence outlier report, verbatim (`claude-haiku-4-5`, $0.023 —
+The low-confidence outlier report, verbatim (`claude-haiku-4-5`, $0.023 as printed to stderr in that run —
 note how both citations do real work as priors):
 
 > ## Observation report
@@ -448,7 +396,7 @@ the MCP tools and the client's own reasoning):
 
 1. `predict_redshift` → `z_pred_map = 0.2267`, `z_confidence = 0.64`.
 2. `identify_spectral_lines(z=0.2267)` → **weak** (2/11 lines,
-   match_fraction 0.18): the physics does not confirm the model.
+   match_fraction 0.18): the peak-matching heuristic does not confirm the model.
 3. `reconstruct_spectrum(mask_ratio=0.5)` → `z_pred_under_masking = 0.2031`,
    a notable swing — fragile evidence.
 4. The client reads the strongest peak (7900.8 Å) as Hα and re-tests
@@ -467,3 +415,10 @@ semantic-search section — z ∈ [0.187, 0.202] around the true 0.204.)
   (code) · [HF checkpoint](https://huggingface.co/jirustaroure/desi-spectra-fm)
   · [live demo](https://huggingface.co/spaces/jirustaroure/desi-spectra-fm-demo)
   · [REST API](https://jirustaroure-desi-fm-api.hf.space/api/docs)
+
+## License and data
+
+Code: [MIT, Julian Irusta Roure](LICENSE). DESI examples and derived data retain
+their [CC BY 4.0 attribution, EDR citation and modification notices](ATTRIBUTIONS.md).
+
+[Batch-1 execution and remaining limits](docs/BATCH_1.md).

@@ -1,0 +1,41 @@
+{
+  "date_local": "2026-10-09",
+  "timezone": "America/Los_Angeles",
+  "network_for_tests": "Hub offline; local checkpoint; no paid LLM calls",
+  "historical_assets": "All inventoried SHA-256 and sizes unchanged (74 model repository + 169 copilot repository).",
+  "tests": [
+    {
+      "command": "env -u ANTHROPIC_API_KEY HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt PYTHONPATH=/path/to/desi-spectra-fm/src:/path/to/spectra-copilot .venv/bin/python -m pytest tests/ -q",
+      "python": "3.12",
+      "result": {
+        "passed": 58,
+        "warnings": 1
+      },
+      "notes": "Existing PyTorch nested tensor warning; mocked LLM, local checkpoint."
+    },
+    {
+      "command": "env -u ANTHROPIC_API_KEY HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 PYTHONPATH=/path/to/desi-spectra-fm/src:/path/to/spectra-copilot .venv/bin/python -m pytest tests/test_eval_persistence.py tests/test_evals.py -q",
+      "result": {
+        "passed": 29
+      },
+      "notes": "Temporary files and simulated inference/API in persistence regressions."
+    }
+  ],
+  "before_fix": {
+    "result": "1 failed",
+    "defect": "Reopening the first of three completed cases left one CSV row while summary reported three."
+  },
+  "acceptance_cases": [
+    "First pending or failed row, later completed rows survive every write.",
+    "Normal completion and no-op resume summarize persisted data.",
+    "KeyboardInterrupt on first, middle or last case; resume retains all cases.",
+    "Agent failures retried; successful baseline reused; baseline failure does not abort later cases.",
+    "Unique mode-specific outputs; rejection of existing, legacy, mode/model/selection/input/checkpoint/protocol-incompatible runs.",
+    "Failed atomic replacement leaves old bytes intact; concurrent writer rejected."
+  ],
+  "preservation_checks": [
+    "Initial hashes of both preexisting edited readmes verified against private copies.",
+    "169 artifact SHA-256 values and sizes unchanged.",
+    "git diff --check passed; 8/8 representative secret/heavy paths ignored; no credential-pattern hits in current tracked text."
+  ]
+}

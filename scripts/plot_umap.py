@@ -1,9 +1,9 @@
 """UMAP of the FAISS index embeddings, colored by catalog redshift.
 
 Reads data/spectra_embeddings.npy + data/spectra_meta.npz (written by
-scripts/build_index.py) and renders docs/img/umap_z.png. The model was never
-told to order spectra by redshift — if the embedding space shows a smooth z
-gradient, that structure was learned from the spectra alone.
+scripts/build_index.py) and renders docs/img/umap_z.png. The encoder was trained
+jointly with supervised redshift loss. This visualization of training objects
+does not establish unsupervised discovery or transfer.
 
 Requires: pip install umap-learn matplotlib
 Usage:    python scripts/plot_umap.py
