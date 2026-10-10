@@ -58,13 +58,19 @@ def test_provenance_inside_opaque_destination_rejected_before_write(tmp_path, al
     assert not provenance.exists()
 
 
-def test_provenance_case_alias_on_case_insensitive_volume(tmp_path):
+@pytest.mark.parametrize("dangling", [False, True])
+def test_provenance_case_alias_on_case_insensitive_volume(tmp_path, monkeypatch, dangling):
     # macOS commonly aliases differently cased nonexistent child paths.
     alias=tmp_path.with_name(tmp_path.name.swapcase())
     if not alias.exists() or not alias.samefile(tmp_path):
         pytest.skip('case-sensitive filesystem')
     spec=importlib.util.spec_from_file_location('derive_agent_inputs',Path(__file__).resolve().parents[1]/'scripts/derive_agent_inputs.py')
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    if dangling:
+        broken = tmp_path/'broken-link'
+        broken.symlink_to(tmp_path/'missing-target')
+        original_iterdir = Path.iterdir
+        monkeypatch.setattr(Path, 'iterdir', lambda path: iter([broken, tmp_path/'source.npz']) if path == tmp_path else original_iterdir(path))
     source=tmp_path/'source.npz';w=np.geomspace(3600,9800,64).astype(np.float32)
     np.savez(source,flux=np.sin(w/500),wavelength=w)
     destination=tmp_path/'Opaque'

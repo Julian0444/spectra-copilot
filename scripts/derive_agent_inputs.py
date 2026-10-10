@@ -15,6 +15,8 @@ def _case_aliases(directory):
     # Read-only probe of an existing entry on the destination volume. No output
     # directory or probe file is created to learn its name comparison behavior.
     for entry in ancestor.iterdir():
+        if not entry.exists():
+            continue  # dangling symlinks cannot reveal the volume's behavior
         alternate = entry.with_name(entry.name.swapcase())
         if alternate != entry:
             return alternate.exists() and alternate.samefile(entry)
@@ -25,6 +27,8 @@ def _case_aliases(directory):
 
 def derive(sources, destination, provenance):
     destination,provenance=Path(destination),Path(provenance)
+    if destination.exists() or provenance.exists():
+        raise ValueError('Use new destination and provenance paths; originals are never overwritten')
     resolved_destination = destination.resolve()
     resolved_provenance = provenance.resolve()
     destination_parts, provenance_parts = resolved_destination.parts, resolved_provenance.parts
@@ -33,8 +37,6 @@ def derive(sources, destination, provenance):
         provenance_parts = tuple(unicodedata.normalize('NFD', p).casefold() for p in provenance_parts)
     if provenance_parts[:len(destination_parts)] == destination_parts:
         raise ValueError('Provenance must be outside the opaque input destination')
-    if destination.exists() or provenance.exists():
-        raise ValueError('Use new destination and provenance paths; originals are never overwritten')
     rows=[]
     # Validate all scientific inputs before creating an output directory.
     parsed=[(Path(source),read_npz(source).single()) for source in sources]
