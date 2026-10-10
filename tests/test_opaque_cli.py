@@ -34,3 +34,25 @@ def test_persistent_opaque_derivative_is_separate_and_traceable(tmp_path):
     assert provenance.parent!=destination
     import pytest
     with pytest.raises(ValueError):m.derive([source],destination,provenance)
+
+
+import pytest
+
+@pytest.mark.parametrize("alias", [False, True])
+def test_provenance_inside_opaque_destination_rejected_before_write(tmp_path, alias):
+    spec = importlib.util.spec_from_file_location("derive_agent_inputs", Path(__file__).resolve().parents[1]/"scripts/derive_agent_inputs.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    destination = tmp_path/"opaque"
+    parent = tmp_path
+    if alias:
+        parent = tmp_path/"alias"
+        parent.symlink_to(tmp_path, target_is_directory=True)
+    provenance = parent/"opaque"/"nested"/"map.json"
+    source = tmp_path/"heldout_z020.npz"
+    w = np.geomspace(3600, 9800, 64).astype(np.float32)
+    np.savez(source, flux=np.sin(w/500), wavelength=w)
+    with pytest.raises(ValueError, match="outside"):
+        module.derive([source], destination, provenance)
+    assert not destination.exists()
+    assert not provenance.exists()

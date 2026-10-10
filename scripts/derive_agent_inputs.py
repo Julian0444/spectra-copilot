@@ -9,6 +9,10 @@ from desi_fm.inputs import read_npz
 
 def derive(sources, destination, provenance):
     destination,provenance=Path(destination),Path(provenance)
+    resolved_destination = destination.resolve()
+    resolved_provenance = provenance.resolve()
+    if resolved_provenance == resolved_destination or resolved_destination in resolved_provenance.parents:
+        raise ValueError('Provenance must be outside the opaque input destination')
     if destination.exists() or provenance.exists():
         raise ValueError('Use new destination and provenance paths; originals are never overwritten')
     rows=[]
