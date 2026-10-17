@@ -247,22 +247,40 @@ def _jsonable(obj):
     return obj
 
 
+class AgentRunError(RuntimeError):
+    """Incomplete report, with safe per-run diagnostics available to callers."""
+    def __init__(self, code, history, usage):
+        super().__init__(code)
+        self.code, self.history, self.usage = code, history, usage
+
+
 def run(
     npz_path: str, model: str = DEFAULT_MODEL, transcript: str | None = None
 ) -> str:
     with agent_input(npz_path) as (path, provenance):
         state, final, usage, history = execute_run(path, model, False)
-    if final is None:
-        raise RuntimeError("tool runner produced no messages")
+    text = "" if final is None else "".join(b.text for b in final.content if b.type == "text")
+    reason = getattr(final, 'stop_reason', None)
+    tool_pending = final is not None and any(b.type == 'tool_use' for b in final.content)
+    turns = sum(m['role'] == 'assistant' for m in history)
+    code = ('no_messages' if final is None else
+            'iteration_limit' if turns >= 8 and (tool_pending or reason == 'tool_use') else
+            'incomplete_report' if tool_pending or reason in {'max_tokens', 'tool_use'} else
+            'empty_report' if not text.strip() else None)
     if transcript:
         target = Path(transcript)
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(json.dumps(history, indent=2, default=str))
         target.with_suffix(".input.json").write_text(json.dumps(provenance, indent=2))
+        target.with_suffix('.status.json').write_text(json.dumps(
+            {'status': 'error' if code else 'ok', 'code': code, 'iterations': turns,
+             'stop_reason': reason, 'usage': usage}, indent=2))
     cost = estimate_cost_usd(model, usage)
     cost_txt = f" ~= ${cost:.4f}" if cost is not None else ""
     print(f"[usage] model={model} in={usage['input_tokens']} out={usage['output_tokens']}{cost_txt}", file=sys.stderr)
-    return "".join(b.text for b in final.content if b.type == "text")
+    if code:
+        raise AgentRunError(code, history, usage)
+    return text
 
 
 STRUCTURED_RULE = (
@@ -290,7 +308,7 @@ def run_structured(npz_path: str, model: str = "claude-haiku-4-5") -> dict | Non
     return result
 
 
-def main() -> None:
+def main() -> int:
     p = argparse.ArgumentParser(
         description="Agent that analyzes a spectrum and writes a cited report."
     )
@@ -298,8 +316,13 @@ def main() -> None:
     p.add_argument("--model", default=DEFAULT_MODEL)
     p.add_argument("--save-transcript", default=None, metavar="PATH")
     args = p.parse_args()
-    print(run(args.npz_path, args.model, args.save_transcript))
+    try:
+        print(run(args.npz_path, args.model, args.save_transcript))
+    except AgentRunError as exc:
+        print(json.dumps({'status': 'error', 'code': exc.code}), file=sys.stderr)
+        return 2
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

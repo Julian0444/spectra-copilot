@@ -1,0 +1,99 @@
+{
+  "platform": "macOS local; Linux/Windows untested",
+  "real_asset_calls": 170,
+  "scenarios": [
+    {
+      "scenario": "par_SS_cold",
+      "n_calls": 12,
+      "n_failed": 0,
+      "status": "completed",
+      "server_cleanup": "ya terminado"
+    },
+    {
+      "scenario": "par_mixed",
+      "n_calls": 17,
+      "n_failed": 0,
+      "status": "completed",
+      "server_cleanup": "ya terminado"
+    },
+    {
+      "scenario": "par_noS",
+      "n_calls": 36,
+      "n_failed": 0,
+      "status": "completed",
+      "server_cleanup": "ya terminado"
+    },
+    {
+      "scenario": "par_noS_then_seqS",
+      "n_calls": 20,
+      "n_failed": 0,
+      "status": "completed",
+      "server_cleanup": "ya terminado"
+    },
+    {
+      "scenario": "seqS_interleaved_par_noS",
+      "n_calls": 31,
+      "n_failed": 0,
+      "status": "completed",
+      "server_cleanup": "ya terminado"
+    },
+    {
+      "scenario": "seqS_then_par_IS",
+      "n_calls": 13,
+      "n_failed": 0,
+      "status": "completed",
+      "server_cleanup": "ya terminado"
+    },
+    {
+      "scenario": "seqS_then_par_LS",
+      "n_calls": 13,
+      "n_failed": 0,
+      "status": "completed",
+      "server_cleanup": "ya terminado"
+    },
+    {
+      "scenario": "seqS_then_par_SS",
+      "n_calls": 13,
+      "n_failed": 0,
+      "status": "completed",
+      "server_cleanup": "ya terminado"
+    },
+    {
+      "scenario": "seq_control",
+      "n_calls": 15,
+      "n_failed": 0,
+      "status": "completed",
+      "server_cleanup": "ya terminado"
+    }
+  ],
+  "red": {
+    "scenario": "seqS_then_par_IS",
+    "exit": 1,
+    "failed_calls": 1,
+    "diagnostic": "timeout after worker overlap; process cleaned"
+  },
+  "before_regressions": "9 failed against 188a38f in private copy; actual SDK HTTP simulated",
+  "after_regressions": "42 passed; includes stdio and failure-reporting regressions",
+  "assets": {
+    "checkpoint_sha256": "40247cbe0e706a66084d001b36424081554c26d3eb75c1f8b0ebec89cf5afe5a",
+    "faiss_sha256": "fc13007f951e2d1c1dc7e30338f6de4203b65d5c9c44fddc1d39ce4da921968b"
+  },
+  "logs": {
+    "mcp-seqS_then_par_IS.log": "fe0cfc27507cd08da0c704e124bc617e90e7afd74f6f31e6980eae0b639b4c2e",
+    "mcp-red.log": "89b567ab7e12bdac4647e141a1312d3b5f6f2adc59aa1b7977c34cb43c63aa8a",
+    "mcp-seqS_interleaved_par_noS.log": "ece9bf9478c213f7527a9d9734faf300adb7a5a88bd4c502c06fba803d026564",
+    "mcp-par_mixed.log": "774428b3d5cace0cf8a6ef622d6ae35f4c164f18e0877d7f8baa84b4f53dd794",
+    "mcp-par_SS_cold.log": "010e93fe023e652b8f805dea6770df1f6aa09f01a9b4aa4dc67b7fd99c76c349",
+    "failures-green.log": "e7972b9d01d56cfd073ba16fe2e850e4d1de100fd0ea557dd53fe6d6f4354ebc",
+    "mcp-seq_control.log": "a6d7a6e761bb6a1ec8f6185b5ad50a2c7faf30fb58a9a1f0d7207f3bdb526af6",
+    "e-final-tests.log": "f82b2c3b9c20ca15bac5bd44e08e0aa88a14ef8810dee659c262ba6bf7ad04a8",
+    "mcp-tests.log": "f8944c891c780f63d28cda6f9a1596276c14a7f7b87ffb9a9893310337c12823",
+    "mcp-green.log": "d040a7a002e2c4ef2c54305b1df4e1f979a0997f5fc7e9074748fa52a2a7e4b1",
+    "mcp-seqS_then_par_LS.log": "6a7e7dcae6864c796d98cbcb2af9c93b6ed67753bb11382191203d8584c8e025",
+    "e-before-regressions.log": "f3a42deba9facebc65f32b61eb288525f585052f6bf3b19d7c58711ed0ef75cb",
+    "mcp-par_noS.log": "7c9fc05a5dcae8a9e6642cb73db18d99b0dfc01f807d4b87aedf178442c68cfb",
+    "failures-red.log": "b13b1d8113f197f4f2313013e03c55952ffbc8f1d3a258492b72d3f08ace4767",
+    "mcp-seqS_then_par_SS.log": "31dfb899e98373ee2f0ce4de0060a5b05dc13df4aeb49788ee4fa34067cc9e83",
+    "mcp-par_noS_then_seqS.log": "f986aebbf0452b294ed152e1ea4f19bf7bc5f1589a005189d82d3cb36d7bb914"
+  }
+}

@@ -92,3 +92,28 @@ selection from the historical validation set; it is not an independent test.
 The 90.0% hybrid is retrospective and remains below the 92.7% baseline.
 
 Batch 2 uses manifest schema/protocol v2 and opaque scientific inputs. It hashes the **installed** reference corpus through importlib.resources. Batch 1 manifests cannot resume across these changes; use a new run destination. Atomic writes, full-map preservation, locks and final persistence remain covered by tests. See [BATCH_2.md](../docs/BATCH_2.md).
+
+## 5A: summary and process status
+
+Every persistence writes the complete CSV atomically, then atomically replaces
+`<name>.summary.json` beside it. The summary includes `run_id`, mode,
+`results_sha256`, total selected `n`, success/error/pending counts and both system
+denominators even when zero. Check the hash when consuming a pair: a hard kill
+between the two replacements can leave an older summary, never a truncated file.
+Compatible resume rebuilds it from the full CSV without changing run identity.
+
+Exit code 0 requires all requested results valid; 2 means partial completion;
+3 means zero valid results in the requested mode (a valid baseline alone does
+not make an agent run successful). Rates over successful reports are conditional;
+all-case rates keep errors/pending in the denominator. `completion_status` is
+`complete`, `partial`, `failed` or initially `pending`. Interruption propagates a
+nonzero process status after final persistence. Invalid identity/corrupt data and
+I/O errors remain failures and do not adopt historical CSVs. Failed-call usage
+is unknown and still excluded from token totals.
+
+Report-mode agent exhaustion raises `AgentRunError(code="iteration_limit")`;
+CLI exits 2 and prints a machine-readable error instead of empty text/preamble.
+With `--save-transcript`, the sanitized trace, input hashes and `.status.json`
+remain available. The exception also carries the safe trace and accumulated
+usage. This is failure handling only; structured-report policy and model_z
+protection remain 5B.

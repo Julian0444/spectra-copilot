@@ -28,6 +28,7 @@ import os
 from pathlib import Path
 import tempfile
 import uuid
+import sys
 
 from copilot import agent, tools, rag
 
@@ -95,8 +96,12 @@ def summarize(rows: list[dict]) -> dict:
            'n_error': sum(r['status'] == 'error' for r in rows),
            'n_pending': sum(r['status'] == 'pending' for r in rows),
            'model_only': metrics(model_dzn)}
+    out['agent'] = metrics([float(r['dzn']) for r in ok])
+    out['agent']['by_confidence'] = {}
+    out['agent']['total_tokens'] = sum(int(r['tokens']) for r in ok)
+    out['agent']['rate_015_all_cases'] = (round(sum(int(r['ok15']) for r in ok) / len(rows), 3)
+                                         if rows else None)
     if ok:
-        out['agent'] = metrics([float(r['dzn']) for r in ok])
         out['agent']['by_confidence'] = {
             level: {'n': len(sub),
                     'rate_015': round(sum(int(r['ok15']) for r in sub) / len(sub), 3)}
@@ -174,7 +179,7 @@ def validate_rows(rows: list[dict], labels: dict, items: list[str], baseline: bo
     return saved
 
 
-def main() -> None:
+def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--model', default='claude-haiku-4-5')
     ap.add_argument('--limit', type=int, default=0, help='0 = all; must match on resume')
@@ -201,6 +206,7 @@ def main() -> None:
     run_id = f'{mode}-{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}-{uuid.uuid4().hex[:8]}'
     out = Path(a.out) if a.out else EVAL_DIR / 'runs' / run_id / 'results.csv'
     manifest_path = out.with_suffix('.manifest.json')
+    summary_path = out.with_suffix('.summary.json')
     out.parent.mkdir(parents=True, exist_ok=True)
     # Advisory lock on a separate, persistent inode avoids two writers/resumers.
     with out.with_suffix('.lock').open('a') as lock:
@@ -214,7 +220,7 @@ def main() -> None:
             manifest = json.loads(manifest_path.read_text())
             if manifest['identity']['mode'] != mode or manifest['identity']['llm_model'] != (None if a.baseline_only else a.model):
                 raise ValueError('Incompatible run mode or LLM model')
-        elif out.exists() or manifest_path.exists():
+        elif out.exists() or manifest_path.exists() or summary_path.exists():
             raise ValueError('Output already exists; use a new destination or compatible --resume')
         identity = run_identity(items, labels, cases, a.baseline_only, a.model)
         if a.resume:
@@ -230,6 +236,17 @@ def main() -> None:
 
         def persist():
             write_csv(out, [rows[c] for c in items])
+            summary = summarize(read_csv(out))
+            valid = summary['n_baseline'] if a.baseline_only else summary['n_ok']
+            status = ('complete' if valid == len(items) else 'partial' if valid else
+                      'pending' if summary['n_pending'] == len(items) else 'failed')
+            summary.update(run_id=manifest['run_id'], mode=mode, results=str(out),
+                           results_sha256=sha256(out), n_valid_results=valid,
+                           completion_status=status, exit_code=0 if status == 'complete' else 2 if valid else 3)
+            with atomic_file(summary_path) as f:
+                json.dump(summary, f, indent=2, allow_nan=False)
+                f.write('\n')
+            return summary
 
         persist()
         try:
@@ -272,11 +289,10 @@ def main() -> None:
                 persist()
                 print(f'[{i + 1}/{len(items)}] {case}: {row["status"]}')
         finally:
-            persist()
-            summary = summarize(read_csv(out))
-            summary.update(run_id=manifest['run_id'], mode=mode, results=str(out))
+            summary = persist()
             print(json.dumps(summary, indent=2, allow_nan=False))
+        return summary['exit_code']
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

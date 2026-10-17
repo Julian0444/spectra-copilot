@@ -92,7 +92,7 @@ el código vigente. Nuevas versiones y aceptación instalada quedan para 5C.
 |---|---|---|---|---|
 | H-01 conclusión | Acotar a pares seleccionados; sensibilidades posteriores | 5A A | Hecho | batch5a-analysis.md/json; BATCH_4B.md |
 | H-02 superficies | Retirar imagen del recorrido; 12% histórico; hechos del prompt | 5A A | Hecho local | README/model card/report/MCP; publicación pendiente |
-| H-03 concurrencia | Hilos FAISS, estado cacheado y stdio | 5A E | Pendiente | Reproducción Claude V-MCP-CONCURRENCY |
+| H-03 concurrencia | Hilos FAISS, estado cacheado y stdio | 5A E | Hecho | batch5a-E.json; stdio concurrente |
 | H-04 wheels | Rotular 0.2.0 como lote 2; nuevas versiones/instalación | 5A A / 5C | Texto hecho; paquete pendiente | README; BATCH_2.md |
 | H-05 localidad | TARGETID/brick; no afirmar independencia física | 5A A | Hecho | batch5a-analysis.json; fuentes oficiales abajo |
 | H-06 cobertura | Pérdidas/gradientes, normalización, métricas/guardas y mutaciones | 5A B | Pendiente | Sondas inspeccionadas, suites/probes de Claude |
@@ -103,9 +103,9 @@ el código vigente. Nuevas versiones y aceptación instalada quedan para 5C.
 | H-11 comparabilidad | No comparar 12% histórico con 9,29% CNN | 5A A | Hecho | README/model card/BATCH_4B.md |
 | H-12 reproducción lote 3 | Acotar dispositivos e igualdad de hash de código | 5A A | Acotado, no nueva inferencia | Adenda BATCH_3.md; sonda inspeccionada |
 | H-13 residuos | Contratos, descripciones, corpus, conteos históricos | 5A A | Hecho local | diff de A |
-| H-14 evaluador | Resumen atómico y fallos con salida no cero | 5A E | Pendiente | tests por añadir |
+| H-14 evaluador | Resumen atómico y fallos con salida no cero | 5A E | Hecho | test_failure_reporting.py; batch5a-E.json |
 | H-15 huecos | Coordenadas ausentes/NaN, doble hueco, interfaces | 5A B | Pendiente | reproducción por añadir |
-| H-16 agotamiento | Estado explícito, trazas y salida CLI | 5A E | Pendiente | tests por añadir |
+| H-16 agotamiento | Estado explícito, trazas y salida CLI | 5A E | Hecho | test_failure_reporting.py; batch5a-E.json |
 | H-17 alcance revisión | Separar recálculo, generador y efectos de caché | 5A A | Hecho | Corrección identificada en consenso §12.1 |
 | H-18 autoría | Preguntas para Julian, sin respuesta atribuida | Humano | Pendiente | Preguntas abajo |
 
@@ -132,3 +132,36 @@ Preguntas breves para Julian (H-18, respuesta personal todavía pendiente):
 - ¿Qué decisiones y comprobaciones realizaste personalmente?
 
 Punto de control A: recálculo sin inferencia completado, 18 pruebas de hechos/runner/tools Copilot aprobadas; diff sin errores de whitespace. Cambios de A son descripciones y evidencia, no nueva política ni algoritmo.
+
+### E: entregado localmente
+
+MCP: un RLock reentrante serializa las cargas cacheadas y las operaciones que
+usan modelo/índice. Evita restauraciones solapadas de flags eval/train y cargas
+duplicadas. FAISS configura un hilo en cada búsqueda, aunque el worker cambie;
+no depende de OMP_NUM_THREADS del usuario. Se conserva el workaround existente
+de doble runtime OpenMP; no se promete compatibilidad universal. Tools sin modelo
+pueden solaparse. No se entrena concurrentemente el objeto servido.
+
+Reproducción stdio adaptada de Claude: timeout real, salida 1, diagnóstico y
+limpieza exclusiva del servidor creado. Tras corregir: nueve escenarios en
+servidores nuevos, **170 llamadas reales sin fallos** (secuencial, búsquedas
+solapadas, carga en frío, mixtas, búsqueda secuencial después de solapamiento).
+macOS comprobado; Linux/Windows no probados. Las pruebas sintéticas stdio verifican
+las cinco tools, entradas distintas, recuperación y ausencia de mezcla de respuestas;
+los errores de dominio llevan `is_error` y `error.code=invalid_input`, con tipo.
+Los errores de schema/tipo llegan como validación MCP/Pydantic. Timeout falla;
+el transcript se conserva incluso si falla una aserción.
+
+Evaluador: resumen atómico al lado del CSV y vinculado por su SHA-256, denominador
+completo y estados explícitos; salida 0/2/3 para completo/parcial/cero válidos.
+Reanudación e identidad intactas; históricos no adoptados. Ambos archivos son
+atómicos individualmente: un corte entre reemplazos se detecta por el hash y se
+repara al reanudar. Informe del agente agotado devuelve error explícito y CLI 2,
+con traza saneada y sidecar de estado si se solicita transcript. No cambia política.
+
+Regresiones E: 9 fallan en la copia anterior `188a38f`; 42 pruebas pertinentes
+pasan después. El agotamiento usa SDK Anthropic real con HTTP simulado (ocho
+respuestas tool_use, con/sin preámbulo), sin API remota. Evidencia Copilot:
+`docs/evidence/batch5a-E.json`; comandos: pytest tests/test_failure_reporting.py
+ tests/test_eval_persistence.py tests/test_evals.py tests/test_mcp_stdio.py
+ tests/test_tool_concurrency.py -q -p no:cacheprovider, con PYTHONPATH a fuentes.
