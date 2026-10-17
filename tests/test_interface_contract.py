@@ -49,7 +49,7 @@ def interfaces(monkeypatch):
         loaded.append(module)
     return model,TestClient(api.app),*loaded
 
-@pytest.mark.parametrize('name',['valid','nonfinite','masked','partial','reordered','gap'])
+@pytest.mark.parametrize('name',['valid','nonfinite','masked','partial','reordered','gap','ivar'])
 def test_actual_interfaces_share_results(name,interfaces,tmp_path):
     model,client,demo,tester=interfaces
     arrays=fixture_module.spectra()[name]
@@ -123,3 +123,31 @@ def test_cli_matches_python_and_keeps_metadata_json(interfaces,tmp_path):
         assert actual['z_pred'][0]==pytest.approx(expected['z_pred'],abs=1e-6)
         assert json.loads(str(actual['coverage_json']))==[expected['coverage']]
         assert json.loads(str(actual['model_identity_json']))['checkpoint']['sha256']
+
+
+@pytest.mark.parametrize('quality',['mask','ivar'])
+def test_quality_reaches_model_through_real_handlers(quality,interfaces,tmp_path,monkeypatch):
+    """Certifies handler propagation, not installed Gradio layout or hosting."""
+    model,client,demo,tester=interfaces
+    arrays=fixture_module.spectra()['valid'].copy()
+    expected=np.ones(64,bool);expected[20:28]=False
+    arrays[quality]=~expected if quality=='mask' else expected.astype(float)
+    arrays['flux']=arrays['flux'].copy();arrays['flux'][~expected]=1e6
+    path=tmp_path/'quality.npz';np.savez(path,**arrays)
+    seen=[];forward=model.forward
+    def observe(flux,valid,*args,**kwargs):
+        seen.append(valid.detach().cpu().numpy().astype(bool))
+        return forward(flux,valid,*args,**kwargs)
+    monkeypatch.setattr(model,'forward',observe)
+    calls=[lambda:client.post('/predict',files={'file':('quality.npz',path.read_bytes())}),
+           lambda:client.post('/predict_json',json={k:v.tolist() for k,v in arrays.items()}),
+           lambda:demo.analyze(str(path),0),lambda:tester.predict_ui(str(path),0),
+           lambda:tools.predict_redshift_impl(str(path)),
+           lambda:tools.reconstruct_spectrum_impl(str(path),0)]
+    for call in calls:
+        seen.clear();result=call()
+        if hasattr(result,'status_code'):assert result.status_code==200,result.text
+        assert seen,'Handler did not invoke the model'
+        for valid in seen:np.testing.assert_array_equal(valid,expected[None,:])
+    import matplotlib.pyplot as plt
+    plt.close('all')

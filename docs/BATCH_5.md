@@ -1,6 +1,6 @@
 # Lote 5 — consolidación por fases
 
-## 5A (en curso, 2026-10-16)
+## 5A (entrega técnica local, 2026-10-16)
 
 Alcance vigente: A documentación → E MCP/evaluador/fallos → B contratos/regresiones.
 5A no incluye política explicativa, rediseño del matcher, aceptación CNN, LLM
@@ -73,11 +73,10 @@ para reproducir lo histórico, nunca actualizar hashes de run.json. Para obtener
 ese código sin mover las ramas actuales, desde FM y con destinos nuevos:
 
 ```sh
-mkdir /ruta/nueva/codigo-4b
-git archive 4387dd36c6ad640f00c6d9fc3bf6448ef3644d50 | tar -x -C /ruta/nueva/codigo-4b
-# 4B source scientific files are identical to e5888d1; report generation also
-# requires Git metadata: use a separate local clone and detached checkout of
-# 4387dd3 if invoking report_batch4b.py (never change the working original).
+git clone --no-hardlinks --no-checkout "/ruta/al/FM-original" /ruta/nueva/codigo-4b
+git -C /ruta/nueva/codigo-4b checkout --detach 4387dd36c6ad640f00c6d9fc3bf6448ef3644d50
+# Ejecutar con ese checkout como cwd/PYTHONPATH y con el entorno registrado.
+# No mover el original ni modificar hashes de artefactos. No abre test por sí solo.
 ```
 
 Para lote 3, código registrado `008ce03da7d8c3d74d522b03eedbf3d61b7e861a` y
@@ -95,8 +94,8 @@ el código vigente. Nuevas versiones y aceptación instalada quedan para 5C.
 | H-03 concurrencia | Hilos FAISS, estado cacheado y stdio | 5A E | Hecho | batch5a-E.json; stdio concurrente |
 | H-04 wheels | Rotular 0.2.0 como lote 2; nuevas versiones/instalación | 5A A / 5C | Texto hecho; paquete pendiente | README; BATCH_2.md |
 | H-05 localidad | TARGETID/brick; no afirmar independencia física | 5A A | Hecho | batch5a-analysis.json; fuentes oficiales abajo |
-| H-06 cobertura | Pérdidas/gradientes, normalización, métricas/guardas y mutaciones | 5A B | Pendiente | Sondas inspeccionadas, suites/probes de Claude |
-| H-07 reproducción | Preservar camino histórico; paquete portable/respaldo | 5A / 5C / externo | Preservación iniciada; portable/respaldo pendientes | manifiesto privado; instrucciones abajo |
+| H-06 cobertura | Pérdidas/gradientes, normalización, métricas/guardas y mutaciones | 5A B | Hecho | batch5a-B.json; pruebas de gradiente/guardas y 18 mutaciones |
+| H-07 reproducción | Preservar camino histórico; paquete portable/respaldo | 5A / 5C / externo | Preservación verificada; portable/respaldo pendientes | manifiesto privado; instrucciones abajo |
 | H-08 cronología | Declarar plan durante serie y apertura automática | 5A A | Hecho | Adenda BATCH_4B.md / ANALYSIS.md; timeline de Claude |
 | H-09 solapamientos | Cola 2.114/333/312; excluir 4B de aceptación futura | 5A A / 5B | Límite documentado; congelado futuro pendiente | batch5a-analysis.json |
 | H-10 selección B-101 | Margen 2 objetos y sensibilidad de estratos | 5A A | Hecho | batch5a-analysis.md; STRATA.md |
@@ -104,7 +103,7 @@ el código vigente. Nuevas versiones y aceptación instalada quedan para 5C.
 | H-12 reproducción lote 3 | Acotar dispositivos e igualdad de hash de código | 5A A | Acotado, no nueva inferencia | Adenda BATCH_3.md; sonda inspeccionada |
 | H-13 residuos | Contratos, descripciones, corpus, conteos históricos | 5A A | Hecho local | diff de A |
 | H-14 evaluador | Resumen atómico y fallos con salida no cero | 5A E | Hecho | test_failure_reporting.py; batch5a-E.json |
-| H-15 huecos | Coordenadas ausentes/NaN, doble hueco, interfaces | 5A B | Pendiente | reproducción por añadir |
+| H-15 huecos | Coordenadas ausentes/NaN, doble hueco, interfaces | 5A B | Hecho | contrato v3; 9 fallos antes y suite después |
 | H-16 agotamiento | Estado explícito, trazas y salida CLI | 5A E | Hecho | test_failure_reporting.py; batch5a-E.json |
 | H-17 alcance revisión | Separar recálculo, generador y efectos de caché | 5A A | Hecho | Corrección identificada en consenso §12.1 |
 | H-18 autoría | Preguntas para Julian, sin respuesta atribuida | Humano | Pendiente | Preguntas abajo |
@@ -165,3 +164,67 @@ respuestas tool_use, con/sin preámbulo), sin API remota. Evidencia Copilot:
 `docs/evidence/batch5a-E.json`; comandos: pytest tests/test_failure_reporting.py
  tests/test_eval_persistence.py tests/test_evals.py tests/test_mcp_stdio.py
  tests/test_tool_concurrency.py -q -p no:cacheprovider, con PYTHONPATH a fuentes.
+
+### B: contratos y regresiones comprobados
+
+La intervención se verifica con pérdida observada en backward y gradientes antes
+del clipping: la diferencia A−B coincide con la derivada reconstructiva calculada
+con una MSE de píxeles independiente del sumador del Trainer. B tiene gradiente
+reconstructivo cero y mantiene clasificación; A propaga reconstrucción al encoder.
+Tres semillas, inicialización completa, muestras/posiciones/máscaras/inputs iguales.
+Una perturbación de los píxeles ocultos a través de ExperimentData.batch no puede
+cambiar centros, escalas ni píxeles visibles. Los registros de ejecuciones futuras
+añaden coeficiente efectivo y pérdida total; ningún run.json histórico cambia.
+
+Las pruebas de métricas usan errores constantes 0,125 / 0,15 / 0,16: exigen los
+intervalos exactos y distinguen 0,10 de 0,15 y > de >= sin depender del RNG.
+La guarda neural de entorno se aísla haciendo que ridge sí coincida con el entorno
+actual. Se exige el error específico y ninguna carga de test, apertura o salida;
+otras guardas no pueden producir un falso aprobado. También se prueba el
+congelado con nueve candidatos y ridge de otro entorno homogéneo.
+
+H-15: 9 casos fallaban antes (coordenadas ausentes/NaN/Inf × orden original,
+invertido/permutado). Se usa el menor paso vecino para no puentear dos huecos
+separados por una muestra. Contrato `spectra-input-v3`, derivado futuro
+`batch4-grid-v2:unnormalized-spectra-input-v3`; es una regla local conservadora,
+no una garantía física para cualquier muestreo. No se modifica el derivado 4B.
+Índices de elegibilidad v2 y matrices v1 no se aceptan como nuevos derivados v3.
+El lector raw por ID sigue pudiendo leer el índice verificado histórico.
+
+La fixture gap elimina coordenadas y ya no equivale a masked. Se prueba falta de
+wavelength, NaN/Inf, doble hueco, orden, mask/ivar y cobertura insuficiente. Los
+handlers reales API (upload/JSON), demo, tester y tools predict/reconstruct reciben
+mask e ivar hasta el tensor de validez del modelo. Gradio/Spaces solo se simulan
+como anfitriones: esto no certifica UI instalada, hosting ni quick start (5C).
+
+**Mutaciones acotadas:** 18 defectos detectados en copias temporales y un cambio
+equivalente 1.→1.0 que pasa. Incluyen coeficientes cero/uno/invertidos, normalización
+con ocultos, muestras/inicialización/máscaras no emparejadas, umbrales/límites,
+ambas guardas de entorno, regla antigua de huecos y pérdida de calidad en
+API/demo/tools. Cada baseline pasa; timeout/colección rota no cuentan como detección.
+Reproductor FM: `scripts/check_batch5a_mutations.py --copilot /ruta/copilot
+--output /destino/nuevo`; requiere intérprete de pruebas y PYTHONPATH a fuentes.
+Evidencia ligera: [batch5a-B.json](evidence/batch5a-B.json), con comandos/mutaciones
+y hashes de logs privados. No campaña general ni datos reales en esas sondas.
+
+### Comprobación final de 5A
+
+FM: 130 passed en Python 3.9.6 y 130 en 3.12.13. Copilot: 97 passed en 3.12.13.
+Suites completas `python -m pytest tests -q -p no:cacheprovider`, imports desde
+los originales mediante PYTHONPATH; no del wheel antiguo. Warnings existentes
+PyTorch; en 3.9 también urllib3/LibreSSL y matplotlib/pyparsing. Sin omisiones.
+`pip check` 3.12 pasa. El Python 3.9 global conserva conflictos preexistentes de
+Copilot/MCP/Anthropic, torchvision/torch y grpcio: no se modifica ni se certifica
+como instalación limpia; la suite FM sí pasa. Copilot requiere Python >=3.10.
+Hay intérpretes 3.11.15 y 3.14.7 sin dependencias del proyecto; no se aprovisionaron
+ni se probaron. Linux/Windows, Gradio real, wheels vigentes y portabilidad no se
+certifican aquí. No llamadas reales al LLM ni inferencia nueva sobre test 4B.
+
+El inventario posterior conserva exactamente los hashes y tamaños de los tres
+directorios inmutables y activos locales inventariados. Se comprobaron además
+74/74 históricos FM, 169/169 Copilot y siete parquet contra sus manifiestos.
+Los 25 archivos científicos de FM `4387dd3` coinciden con frozen.json (huella
+828a7187545d30c9dbab55a9b49cc64925cfbdbeaa9160f3f52567c6f6f2152c).
+No se ejecutó el evaluador histórico: comprobar código preservado no es repetir
+inferencia ni certificar portabilidad. Respaldo independiente, rotación de claves
+y explicación personal de Julian siguen pendientes con los estados arriba.

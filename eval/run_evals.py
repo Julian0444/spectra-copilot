@@ -31,6 +31,7 @@ import uuid
 import sys
 
 from copilot import agent, tools, rag
+from desi_fm.inputs import CONTRACT_VERSION
 
 EVAL_DIR = Path(__file__).resolve().parent
 FIELDS = ["case", "z_true", "z_model", "z_final", "confidence",
@@ -146,7 +147,7 @@ def run_identity(items: list[str], labels: dict, cases: Path, baseline: bool,
             'llm_model': None if baseline else model,
             'protocol': {'model_input': 'full-spectrum', 'ok15': 'dzn < 0.15',
                          'ok05': 'dzn < 0.05', 'agent_attempts': 2,
-                         'input_contract': 'spectra-input-v2',
+                         'input_contract': CONTRACT_VERSION,
                          'agent_input': 'opaque-scientific-input-v2',
                          'max_analysis_calls': 6, 'max_runner_iterations': 8},
             'cases': [{'case': c, 'z_true': labels[c],
