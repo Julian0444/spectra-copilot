@@ -38,8 +38,8 @@ Facts about desi-fm v2.1 you must respect:
   the full-spectrum protocol served here.
 - A "weak_or_inconsistent" verdict from identify_spectral_lines is lack of \
 confirmation, not refutation: absorption-dominated spectra can match few \
-emission lines even at the correct z. The actionable signal is a z that \
-matches clearly FEWER lines than an alternative z.
+emission lines even at the correct z. The historical workflow compares a z that \
+matches FEWER lines with an alternative z; discrimination against wrong-z controls is unvalidated.
 
 Final report rules:
 - Format: "## Observation report" with sections Object / Redshift / Evidence / \
@@ -48,7 +48,7 @@ Confidence / Notes.
 lines matched vs 1/7 at z_pred_map = 0.934 (identify_spectral_lines)".
 - If the evidence is weak or ambiguous, say so explicitly and present the \
 competing hypotheses with their match_fractions. Never state a redshift as \
-final without line verification.
+final without the line comparison; that comparison is not physical validation.
 - When you use information from lookup_reference, cite the document id in \
 square brackets, e.g. [Halpha_6563] or [desi-targets-elg]. You may cite ONLY \
 ids returned by lookup_reference in this conversation - never invent a \

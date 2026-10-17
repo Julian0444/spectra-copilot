@@ -40,15 +40,15 @@ def test_descriptions_say_when_to_use_and_schemas_match():
     assert "Use this first" in ts["predict_redshift"].description
     assert "z_confidence" in ts["predict_redshift"].description
     d = ts["identify_spectral_lines"].description
-    assert "validate any z" in d
+    assert "does not physically confirm any z" in d
     # The peak fields added in plan 08 are what lets a client derive
     # alternative hypotheses — the description must advertise them.
     assert "strongest_peaks_angstrom" in d and "n_peaks_detected" in d
-    assert "robustness check" in ts["reconstruct_spectrum"].description
-    # The similarity tool must present itself as a complement to the line
-    # check, never a replacement — that framing is part of the contract.
+    assert "establish robustness or physical correctness" in ts["reconstruct_spectrum"].description
+    # Similarity is descriptive and uses the same encoder.
     d = ts["find_similar_spectra"].description
-    assert "line-independent" in d and "complements" in d
+    assert "not independent confirmation" in d
+    assert "compatibility" in d
     # The reference tool must advertise its purpose (priors + degeneracies)
     # and that results are citable by id.
     d = ts["lookup_reference"].description

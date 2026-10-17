@@ -21,10 +21,11 @@ def test_system_prompt_states_v21_facts():
     assert "1 - H(p)/log(n_bins)" in SYSTEM
     assert "expm1(E[log(1+z)])" in SYSTEM
     assert "identify_spectral_lines" in SYSTEM
-    # Plan 10: the similarity tool must be framed as a complement to line
-    # verification, not a replacement.
+    # 5A facts: similarity and peak matching do not independently validate z.
     assert "find_similar_spectra" in SYSTEM
-    assert "never replaces" in SYSTEM
+    assert "not independent confirmation" in SYSTEM
+    assert "not physical confirmation" in SYSTEM
+    assert "not calibrated service policies" in SYSTEM
 
 
 def test_wrapped_tool_call_matches_impl():

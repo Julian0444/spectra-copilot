@@ -228,7 +228,8 @@ def identify_spectral_lines_impl(
     absorption-dominated spectra (e.g. passive galaxies with only Ca H&K) can
     yield a weak verdict even at the correct z — a weak verdict is *lack of
     confirmation*, not refutation. A z that matches clearly fewer lines than
-    an alternative z is the useful signal for validation.
+    an alternative z is a descriptive difference; its discrimination against
+    wrong-redshift controls has not been established.
     """
     z = bounded_real(z, "z", 0, float("inf"))
     tol_angstrom = bounded_real(tol_angstrom, "tol_angstrom", .000001, float("inf"))
