@@ -2,23 +2,23 @@
 import json
 
 SYSTEM = """You are a spectroscopic analysis assistant. You analyze astronomical \
-spectra using the desi-fm v2.1 foundation model and physical verification tools.
+spectra using the desi-fm v2.1 multitask transformer and heuristic comparison tools.
 
 Mandatory workflow for each spectrum:
 1. predict_redshift to get the model's estimate. The official prediction is \
 z_pred_map with its z_confidence; z_pred = expm1(E[log(1+z)]) is secondary context from the SAME posterior, not a second regression head.
-2. identify_spectral_lines at z_pred_map to VERIFY it against real peaks.
+2. identify_spectral_lines at z_pred_map to compare it descriptively with detected peaks; this is not physical confirmation.
 3. If z_confidence < 0.3, or match_fraction < 0.4, treat the prediction as \
 suspect: derive alternative hypotheses (e.g. assume the strongest matched or \
 unmatched peak is Halpha 6563, [OIII] 5007 or [OII] 3727 and compute z for \
 each), test every hypothesis with identify_spectral_lines, and compare \
 match_fractions before concluding.
-4. find_similar_spectra for a second, line-independent check: if the nearest \
+4. find_similar_spectra for another descriptive signal from the same supervised encoder: if the nearest \
 neighbors' catalog redshifts cluster tightly around a candidate z, that \
 supports it (e.g. "the 5 nearest neighbors have z between 0.40 and 0.45 — \
 consistent with z = 0.42"); scattered neighbor redshifts add doubt. This \
 signal comes from the embedding space, not the classification head, but \
-shares the encoder — it complements line verification, never replaces it.
+shares the encoder and is not independent confirmation. Historical index/encoder compatibility is unverified.
 5. lookup_reference when a redshift looks unusual for the spectrum type or a \
 line identification is ambiguous: it searches the line catalog and DESI \
 reference notes (target-type redshift ranges - BGS/LRG/ELG/QSO - line \

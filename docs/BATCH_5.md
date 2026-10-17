@@ -1,0 +1,134 @@
+# Lote 5 — consolidación por fases
+
+## 5A (en curso, 2026-10-16)
+
+Alcance vigente: A documentación → E MCP/evaluador/fallos → B contratos/regresiones.
+5A no incluye política explicativa, rediseño del matcher, aceptación CNN, LLM
+real, instalación limpia, publicación ni reconstrucción FAISS. v2.1 sigue por
+defecto; la protección de model_z aún NO está implementada (5B).
+
+Bases exactas: FM 4387dd36c6ad640f00c6d9fc3bf6448ef3644d50; Copilot
+6d4d8ed8acaeeec0d7cba64b37421f6459ce5c6e. Ramas nuevas `codex/lote-5a` en
+los originales. Solo FM tenía `runs/desi_50k_big/predictions_heldout.csv`
+sin versionar; se conserva y no se añade. Directorio privado nuevo:
+`~/.local/state/spectra-consolidation/lote-5a-20261016-6bz7d49b/`.
+Estados, logs, cachés, temporales e inventarios allí; no se modifica el entorno
+histórico ni se hacen llamadas pagas. Los imports de pruebas apuntan a fuentes.
+
+### A: resultado y límites
+
+En los tres pares de checkpoints seleccionados mediante la regla de validación,
+A tuvo menos outliers que B y se cumplió el criterio predefinido. La generalización
+del beneficio a otras semillas o checkpoints no está establecida. El intervalo
+principal está condicionado a esos pares. A empeora en objetos con advertencia;
+su MAE empeora en 17 y 101; la mejora media la impulsa 42. La CNN ganó una
+comparación práctica que también cambia entrada durante entrenamiento. El
+12% histórico de v2.1 y el 9,29% de CNN en otro test no miden superioridad.
+El único resultado medido del agente sigue siendo negativo: 139/150 → 119/150.
+
+Los recálculos posteriores de FM `scripts/analyze_batch5a.py` leen NPZ persistidos
+y metadatos sin inferencia: tabla de 180 validaciones, diferencias por paso,
+márgenes de selección, promedios de los k mejores scores y ΔMAE por semilla.
+No son reglas nuevas ni autorizan elegir otros checkpoints. No se añade un
+intervalo entre semillas como sustituto del análisis predefinido (n=3 es escaso).
+JSON/figuras congelados se preservan. Copilot remite a la evidencia FM.
+
+No existen columnas explícitas RA/DEC; `object_id` procede de TARGETID según el
+[conversor fijado](https://github.com/MultimodalUniverse/MultimodalUniverse/blob/0c77e592470c3dc92147ee7d02f7e5cb65b8ebd5/scripts/desi/desi.py).
+La [definición oficial de bits](https://github.com/desihub/desitarget/blob/main/py/desitarget/data/targetmask.yaml)
+asigna OBJID 0–21, BRICKID 22–41 y RELEASE 42–57. Las
+[releases 9010/9011](https://www.legacysurvey.org/release/) corresponden a DR9;
+[BRICKID identifica una celda de cielo](https://www.legacysurvey.org/dr9/files/).
+La comprobación restringe su aplicación a IDs DR9 sin flags mock/sky/Gaia/reservados
+y con brick válido: 82.468/84.759 elegibles, 339 bricks en esa población.
+9.720/9.721 IDs DR9 del test comparten brick con train. Localidad no identifica
+observaciones repetidas de la misma fuente. No se rehacen splits ni se afirma
+independencia física. La sensibilidad por brick sin cambios apreciables de
+Claude es evidencia posterior, no prueba de efecto nulo ni de independencia.
+
+De la cola histórica de 2.759 filas elegibles, 2.114 están en train CNN, 333 en
+validación de selección y 312 en test 4B ya abierto, recalculado por ordinal/ID
+desde SQLite y splits. No queda una reserva confirmatoria intacta. Una comparación
+futura CNN/v2.1 requiere datos adicionales y control de solapamientos: otra
+release DESI no garantiza independencia.
+
+H-12: se inspeccionó la sonda CPU de Claude de 25 objetos y su salida; no se
+repite inferencia en 5A. No extender el control original de nueve objetos ni la
+repetición MPS exacta a todas las reconstrucciones CPU/MPS. El comparador exige
+igualdad de huella de fuentes, no un commit literal. Véase adenda BATCH_3.md de FM.
+
+### Preservación y reproducción histórica
+
+Inventario inicial SHA-256/tamaños completo: 658 archivos de lote-4b-01,
+6.059.818.657 bytes; 18 archivos de batch4a-v1, 3.014.928.724 bytes; juntos
+**9.074.747.381 bytes (~9,075 GB)**. Preparación: 171 archivos / 87.279.004 bytes,
+incluidas cachés existentes. También se inventariaron activos históricos locales.
+No es un respaldo. **Respaldo independiente pendiente**: no hay destino
+independiente autorizado; copiar los tres directorios a uno nuevo autorizado
+y verificar tamaños y hashes. Otra carpeta en el mismo disco no basta.
+Rotación de claves: **sin verificar**, no completada por documentar el pendiente.
+
+Si cambia identidad científica en 5A, conservar las guardas: usar código registrado
+para reproducir lo histórico, nunca actualizar hashes de run.json. Para obtener
+ese código sin mover las ramas actuales, desde FM y con destinos nuevos:
+
+```sh
+mkdir /ruta/nueva/codigo-4b
+git archive 4387dd36c6ad640f00c6d9fc3bf6448ef3644d50 | tar -x -C /ruta/nueva/codigo-4b
+# 4B source scientific files are identical to e5888d1; report generation also
+# requires Git metadata: use a separate local clone and detached checkout of
+# 4387dd3 if invoking report_batch4b.py (never change the working original).
+```
+
+Para lote 3, código registrado `008ce03da7d8c3d74d522b03eedbf3d61b7e861a` y
+el entorno/activos de su manifiesto. Esto documenta el camino histórico; no
+certifica todavía reproducción portable ni autoriza otra inferencia de test.
+Los wheels 0.2.0 archivados certifican exclusivamente el lote 2 y no contienen
+el código vigente. Nuevas versiones y aceptación instalada quedan para 5C.
+
+### Matriz H-01–H-18
+
+| Hallazgo | Acción | Fase | Estado | Evidencia |
+|---|---|---|---|---|
+| H-01 conclusión | Acotar a pares seleccionados; sensibilidades posteriores | 5A A | Hecho | batch5a-analysis.md/json; BATCH_4B.md |
+| H-02 superficies | Retirar imagen del recorrido; 12% histórico; hechos del prompt | 5A A | Hecho local | README/model card/report/MCP; publicación pendiente |
+| H-03 concurrencia | Hilos FAISS, estado cacheado y stdio | 5A E | Pendiente | Reproducción Claude V-MCP-CONCURRENCY |
+| H-04 wheels | Rotular 0.2.0 como lote 2; nuevas versiones/instalación | 5A A / 5C | Texto hecho; paquete pendiente | README; BATCH_2.md |
+| H-05 localidad | TARGETID/brick; no afirmar independencia física | 5A A | Hecho | batch5a-analysis.json; fuentes oficiales abajo |
+| H-06 cobertura | Pérdidas/gradientes, normalización, métricas/guardas y mutaciones | 5A B | Pendiente | Sondas inspeccionadas, suites/probes de Claude |
+| H-07 reproducción | Preservar camino histórico; paquete portable/respaldo | 5A / 5C / externo | Preservación iniciada; portable/respaldo pendientes | manifiesto privado; instrucciones abajo |
+| H-08 cronología | Declarar plan durante serie y apertura automática | 5A A | Hecho | Adenda BATCH_4B.md / ANALYSIS.md; timeline de Claude |
+| H-09 solapamientos | Cola 2.114/333/312; excluir 4B de aceptación futura | 5A A / 5B | Límite documentado; congelado futuro pendiente | batch5a-analysis.json |
+| H-10 selección B-101 | Margen 2 objetos y sensibilidad de estratos | 5A A | Hecho | batch5a-analysis.md; STRATA.md |
+| H-11 comparabilidad | No comparar 12% histórico con 9,29% CNN | 5A A | Hecho | README/model card/BATCH_4B.md |
+| H-12 reproducción lote 3 | Acotar dispositivos e igualdad de hash de código | 5A A | Acotado, no nueva inferencia | Adenda BATCH_3.md; sonda inspeccionada |
+| H-13 residuos | Contratos, descripciones, corpus, conteos históricos | 5A A | Hecho local | diff de A |
+| H-14 evaluador | Resumen atómico y fallos con salida no cero | 5A E | Pendiente | tests por añadir |
+| H-15 huecos | Coordenadas ausentes/NaN, doble hueco, interfaces | 5A B | Pendiente | reproducción por añadir |
+| H-16 agotamiento | Estado explícito, trazas y salida CLI | 5A E | Pendiente | tests por añadir |
+| H-17 alcance revisión | Separar recálculo, generador y efectos de caché | 5A A | Hecho | Corrección identificada en consenso §12.1 |
+| H-18 autoría | Preguntas para Julian, sin respuesta atribuida | Humano | Pendiente | Preguntas abajo |
+
+### Handoff 5B / 5C
+
+1. Antes de cambiar política o matcher, definir y congelar desarrollo/aceptación
+   con IDs y rúbrica. Excluir test 4B; no ajustar con los 150 históricos ni
+   presentarlos después como aceptación ciega nueva. Resolver la reserva de datos.
+2. Proteger model_z por código y separar alternativas; reproducir discriminación
+   del matcher contra controles en desarrollo. Por defecto retirar “confirmación”
+   sin respaldo y conservar medidas descriptivas; no buscar reglas indefinidamente.
+3. Resolver B7/B9 y evaluar operativamente CNN-17 sin desplegarla ni afirmar
+   superioridad frente a v2.1.
+4. 5C: LLM real solo con modelo/muestra/límites/presupuesto autorizados; versiones,
+   wheels, instalación aislada, CI, Gradio real, quick start, captura/demostración,
+   paquete portable y preparación de publicación.
+
+Preguntas breves para Julian (H-18, respuesta personal todavía pendiente):
+- ¿Cuál era la hipótesis y qué resultado la habría debilitado?
+- ¿Qué cambió entre A y B y qué se mantuvo emparejado?
+- ¿Cómo se seleccionaron checkpoints y cuándo se abrió test?
+- ¿Qué resultados favorecen A y cuáles contradicen una mejora uniforme?
+- ¿Qué no permite concluir CNN/v2.1, n=3 o un brick compartido?
+- ¿Qué decisiones y comprobaciones realizaste personalmente?
+
+Punto de control A: recálculo sin inferencia completado, 18 pruebas de hechos/runner/tools Copilot aprobadas; diff sin errores de whitespace. Cambios de A son descripciones y evidencia, no nueva política ni algoritmo.

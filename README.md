@@ -62,8 +62,9 @@ Prompt facts, label clues and tool contracts remain work for later batches.
 ## Quick start
 
 ```bash
-# First install the local FM 0.2.0 wheel (or local FM checkout).
-# Then install this checkout; see docs/BATCH_2.md for isolated wheel installation.
+# Development from matched source checkouts only: first install the current FM checkout.
+# Archived 0.2.0 wheels certify batch 2 only and lack current modules.
+# Definitive versions, wheels and clean installation acceptance belong to 5C.
 pip install -e ".[dev]"
 # optional: skip the ~104 MB Hub download by pointing at a local checkpoint
 export DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt
@@ -112,8 +113,9 @@ Historical CLI output from contract v1 (`examples/heldout_z020.npz`, catalog z =
 Note what the line tool buys the agent: at the model's `z_pred_map = 0.2267`
 only 2/11 lines match, but at the true `z = 0.2036` the same spectrum matches
 **8/11 (`consistent`)** — and the strongest peak (7900.8 Å) read as Hα gives
-exactly that z. The tool can catch and refine an off prediction, and a wrong z
-(e.g. 0.85) stays weak. That contrast is what the agent exploits.
+exactly that z. This selected example illustrates the heuristic; it does not establish
+discrimination against incorrect redshifts. Incorrect candidates can also receive
+`consistent`. Matcher controls and acceptance are pending in 5B.
 
 ## The agent (Claude API)
 
@@ -202,8 +204,10 @@ The sample is stratified (seed 7; quotas 40/35/30/25/10/10 across six z bins),
 selected from the non-independent historical validation set. Both tools and
 baseline use full spectra; the model card's 14.95% uses random 50% masking.
 11/150 model errors is a measured 7.33% for this sample. Population reweighting
-(6.54%) and paired-difference estimation (8.19%) are estimates, not full-set
-measurements or independent generalization rates.
+(6.54%) and paired-difference estimation (8.19%) are historical antecedents.
+Batch 3 subsequently measured **240/2,000 = 12.00%** under the full-spectrum
+v2 contract. It remains a non-independent historical diagnostic. It cannot
+be compared to CNN’s 9.29% on the different 4B test, where v2.1 was not evaluated.
 
 Neither confidence-based signal beats the model alone. Verbal confidence
 orders historical success but is not a calibrated probability:
@@ -264,9 +268,9 @@ from the same encoder trained with supervised redshift loss. It is not an
 independent confirmation of the line-based hypothesis. The tool is equally
 honest about failure modes: on the low-confidence outlier
 (`heldout_lowconf_z157.npz`) the neighbor redshifts scatter across
-[0.13, 1.39] — the embedding is not distinctive, doubt confirmed — and the
-synthetic single-line trap peaks at similarity 0.90 vs ~0.99 for real DESI
-spectra: far from the data manifold, neighbors not to be trusted.
+[0.13, 1.39]. The synthetic single-line trap peaks at similarity 0.90 vs ~0.99
+in these selected real examples. These are descriptive observations, not
+validated distance thresholds or independent evidence of correctness.
 
 The same embeddings, projected with UMAP and colored by catalog redshift:
 
@@ -431,3 +435,5 @@ their [CC BY 4.0 attribution, EDR citation and modification notices](ATTRIBUTION
 [Batch-1 execution and remaining limits](docs/BATCH_1.md).
 
 Batch 2 contracts, opaque agent inputs, executable limits and local wheel installation: [BATCH_2.md](docs/BATCH_2.md). Historical examples and transcripts retain their original labels and protocols; the runner strips label-bearing metadata and paths before any LLM request.
+
+Current consolidation: [batch 5A](docs/BATCH_5.md). v2.1 remains the default. Model-z protection and the explanatory policy are pending in 5B; current code still permits experimental agent replacements. Archived 0.2.0 wheels certify batch 2, not current source.

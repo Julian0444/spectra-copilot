@@ -1,8 +1,8 @@
-"""MCP server exposing the desi-fm foundation model as tools.
+"""MCP server exposing the desi-fm multitask transformer as tools.
 
 Any MCP client (Claude Code, Claude Desktop, the inspector, ...) gets the
 same deterministic toolset the Claude-API agent uses: redshift prediction,
-physical line verification and masked reconstruction. The client's LLM does
+heuristic line comparison and masked reconstruction. The client's LLM does
 the reasoning; these tools only report measurements.
 
 Run standalone:  python -m copilot.mcp_server
@@ -22,12 +22,12 @@ mcp = MCPServer(
     "desi-fm",
     version=__version__,
     instructions=(
-        "Tools around the desi-fm spectral foundation model (DESI galaxy/QSO "
+        "Tools around the desi-fm spectral multitask transformer (DESI galaxy/QSO "
         "spectra). Typical loop: predict_redshift first; if z_confidence is "
         "low (< 0.3) or the user asks for verification, test the redshift "
         "with identify_spectral_lines and derive alternative hypotheses from "
         "its strongest_peaks_angstrom; find_similar_spectra adds a "
-        "line-independent check — neighbors whose catalog redshifts cluster "
+        "descriptive signal from the same supervised encoder, not independent confirmation — neighbors whose catalog redshifts cluster "
         "around a candidate z support it; lookup_reference retrieves DESI "
         "reference notes (target-type z ranges, line degeneracies) to "
         "sanity-check a conclusion, citing sources by id. Inputs are .npz "
@@ -51,9 +51,9 @@ def predict_redshift(npz_path: str) -> dict:
 
 @mcp.tool()
 def identify_spectral_lines(npz_path: str, z: Annotated[float, Field(ge=0, allow_inf_nan=False, strict=True)]) -> dict:
-    """Physically test a redshift hypothesis against the spectrum's peaks.
+    """Compare a redshift hypothesis heuristically with detected emission peaks.
 
-    Use it to validate any z — the model's, the user's or your own: known
+    This does not physically confirm any z. For a supplied hypothesis, known
     rest-frame lines shifted by (1+z) are matched to detected emission peaks,
     giving `match_fraction` and a verdict ('consistent' at >= 0.4). It also
     reports `n_peaks_detected` and `strongest_peaks_angstrom` (top 5 by
@@ -72,8 +72,8 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: Annotated[float, Field(ge=0,
     Use it as a robustness check once you have a candidate z: a random
     `mask_ratio` fraction of the model's 273 tokens is hidden and the
     redshift re-predicted. If `z_pred_under_masking` stays close to the
-    full-spectrum z, the prediction does not hinge on a single feature;
-    large swings mean fragile evidence.
+    full-spectrum z, that describes stability for this draw; it does not
+    establish robustness or physical correctness.
     """
     return tools.reconstruct_spectrum_impl(npz_path, mask_ratio)
 
@@ -82,13 +82,13 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: Annotated[float, Field(ge=0,
 def find_similar_spectra(npz_path: str, k: Annotated[int, Field(ge=1, le=100, strict=True)] = 5) -> dict:
     """Find the k most similar spectra in a 15k-spectrum DESI reference index.
 
-    Use it as a second, line-independent check on a candidate redshift: the
-    spectrum is embedded with the foundation model's encoder and matched by
+    Use it as a descriptive comparison, not independent confirmation: the
+    spectrum is embedded with the multitask transformer's encoder and matched by
     cosine similarity against 15k DESI training spectra, each neighbor
     reporting its catalog z. Neighbors whose redshifts cluster tightly around
     a candidate z support it; scattered neighbor redshifts add doubt. The
     signal comes from the embedding space, not the classification head — it
-    complements identify_spectral_lines, never replaces it. The first call
+    shares the supervised encoder; historical index compatibility is unverified. The first call
     may download the index (~30 MB) from the Hub.
     """
     return tools.find_similar_spectra_impl(npz_path, k)
@@ -103,7 +103,7 @@ def lookup_reference(query: str, k: Annotated[int, Field(ge=1, le=30, strict=Tru
     degeneracies (e.g. Halpha vs [OII] in single-line spectra). Returns up
     to k documents, strongest match first, each with an `id` to cite in
     square brackets, its public `source`, and a text snippet. The corpus is
-    ~30 short committed documents; queries with no term overlap return an
+    16 committed resources; queries with no term overlap return an
     empty list. Needs no model and runs offline.
     """
     return rag.lookup_reference_impl(query, k)

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "spectra-copilot"
 version = "0.2.0"
-description = "LLM agent that analyzes astronomical spectra using the desi-fm foundation model as a tool"
+description = "Experimental spectral-analysis agent using the DESI multitask transformer and heuristic tools"
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.10"

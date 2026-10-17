@@ -1,7 +1,7 @@
 """Deterministic tools for the spectra-copilot agent.
 
 Each tool returns a compact JSON-friendly dict (conclusions, never raw
-arrays). They wrap the desi-fm foundation model (v2.1, classification head)
+arrays). They wrap the desi-fm multitask transformer (v2.1, classification head)
 plus classical signal processing, so an LLM agent can not only ask the model
 for a redshift but also compare it against known spectral lines with an experimental peak heuristic.
 
@@ -136,7 +136,7 @@ def reconstruct_spectrum_impl(npz_path: str, mask_ratio: float = 0.5) -> dict:
 
     Reports how many of the model's 273 tokens were hidden and the redshift
     predicted from the partial spectrum — a stability probe: if z under heavy
-    masking stays close to the full-spectrum z, the prediction is robust.
+    masking stays close to full-spectrum z, this describes one draw, not validated robustness.
     """
     mask_ratio = bounded_real(mask_ratio, "mask_ratio", 0, .9)
     flux, wave, ivar, mask = _load(npz_path)
@@ -156,10 +156,10 @@ def find_similar_spectra_impl(npz_path: str, k: int = 5) -> dict:
 
     The spectrum is embedded with the encoder (mean-pooled spectral tokens)
     and searched against a FAISS index of 15k DESI *training* spectra, so
-    held-out queries are never in the index. Similarity is cosine in [-1, 1].
+    query/index disjointness is not guaranteed for arbitrary inputs. Similarity is cosine in [-1, 1].
     Each neighbor comes with its catalog redshift: a tight neighbor z range
     around a candidate z supports it through the embedding space — a signal
-    independent of the classification head, though not of the shared encoder.
+    from the same supervised encoder, not independent confirmation.
     """
     k = positive_int(k, "k", 100)
     flux, wave, ivar, mask = _load(npz_path)

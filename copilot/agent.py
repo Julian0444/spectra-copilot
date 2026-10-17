@@ -52,7 +52,7 @@ USAGE_KEYS = (
 
 @beta_tool
 def predict_redshift(npz_path: str) -> str:
-    """Run the desi-fm v2.1 foundation model on a spectrum file.
+    """Run the desi-fm v2.1 multitask transformer on a spectrum file.
 
     Returns z_pred_map (the official prediction), z_confidence in [0, 1] and
     z_pred = expm1(E[log(1+z)]) from the same posterior.
@@ -85,7 +85,7 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: Annotated[float, Field(ge=0,
     """Mask a fraction of the model's 273 spectral tokens and re-predict z.
 
     Stability probe: if z under heavy masking stays close to the full-spectrum
-    z, the prediction is robust.
+    z in one draw, that is descriptive stability, not validated robustness.
 
     Args:
         npz_path: path to the spectrum .npz file.
@@ -98,11 +98,11 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: Annotated[float, Field(ge=0,
 def find_similar_spectra(npz_path: str, k: Annotated[int, Field(ge=1, le=100, strict=True)] = 5) -> str:
     """Find the k most similar spectra in a FAISS index of 15k DESI training spectra.
 
-    The spectrum is embedded with the foundation model's encoder and matched
+    The spectrum is embedded with the multitask transformer's encoder and matched
     by cosine similarity; each neighbor reports its catalog redshift. A tight
-    neighbor z range around a candidate z is independent supporting evidence
-    (embedding space, not the classification head); scattered neighbor
-    redshifts mean the embedding is not distinctive.
+    neighbor z range is descriptive, not independent confirmation: embeddings
+    share the supervised encoder. Historical index/encoder compatibility is
+    unverified; scattered redshifts describe those retrieved neighbors.
 
     Args:
         npz_path: path to the spectrum .npz file.
