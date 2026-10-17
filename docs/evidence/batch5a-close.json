@@ -1,0 +1,89 @@
+{
+  "date_local": "2026-10-16",
+  "status": "5A technically delivered locally; 5B/5C not executed",
+  "implementation_heads": {
+    "FM": "913fdc9561bf8ace10a4f640a2aa6246c99295c0",
+    "Copilot": "3095458c443729e92d4ff71fa08f0ddfb3727a18"
+  },
+  "branch": "codex/lote-5a",
+  "preservation": {
+    "groups": {
+      "lote-4b-01": {
+        "files": 658,
+        "bytes": 6059818657
+      },
+      "preparation": {
+        "files": 171,
+        "bytes": 87279004
+      },
+      "batch4a-v1": {
+        "files": 18,
+        "bytes": 3014928724
+      },
+      "FINAL PROJECT DEEP LEARNING": {
+        "files": 162,
+        "bytes": 2508937756
+      },
+      "spectra-copilot": {
+        "files": 165,
+        "bytes": 77911544
+      }
+    },
+    "changed_or_missing": 0,
+    "added_to_inventory": 0,
+    "before_manifest_sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239",
+    "after_manifest_sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239",
+    "registered_history": {
+      "FINAL PROJECT DEEP LEARNING": {
+        "checked": 74,
+        "mismatches": []
+      },
+      "spectra-copilot": {
+        "checked": 169,
+        "mismatches": []
+      },
+      "raw_snapshot": {
+        "checked": 7,
+        "mismatches": []
+      },
+      "registered_4B_source": {
+        "commit": "4387dd36c6ad640f00c6d9fc3bf6448ef3644d50",
+        "files_checked": 25,
+        "mismatches": [],
+        "frozen_sha256": "828a7187545d30c9dbab55a9b49cc64925cfbdbeaa9160f3f52567c6f6f2152c"
+      },
+      "untracked_csv_sha256": "db2a7f4d26780d0787f9f9bea9118f7ccd992494b0a7cd382d9152ff92ce4eab"
+    }
+  },
+  "review": {
+    "FM": {
+      "base_is_ancestor": true,
+      "forbidden_binary_or_data_files": [],
+      "secret_candidates": [],
+      "largest_changed_file_bytes": 74698,
+      "commits": [
+        "913fdc9 fix: version gap support and verify experiment behavior with bounded mutations",
+        "e3ea253 docs: reproduce B-101 validation sensitivity and qualify demo labels",
+        "82639aa docs: record batch 5A MCP and failure-handling acceptance",
+        "d0b968c docs: qualify selected-checkpoint evidence and record batch 5A limits"
+      ]
+    },
+    "Copilot": {
+      "base_is_ancestor": true,
+      "forbidden_binary_or_data_files": [],
+      "secret_candidates": [],
+      "largest_changed_file_bytes": 23582,
+      "commits": [
+        "3095458 test: preserve quality inputs across handlers and record current input contract",
+        "619ecb8 docs: test descriptive tool claims and remove unsupported confirmation language",
+        "76a41f8 fix: serialize cached inference and configure FAISS in every search thread",
+        "c589378 fix: persist evaluation status and fail explicitly on incomplete reports",
+        "188a38f docs: align tool descriptions and historical results with measured evidence"
+      ]
+    }
+  },
+  "independent_backup": "pending: no independent authorized destination; same-disk preservation is not a backup",
+  "key_rotation": "unverified",
+  "human_explanation": "pending Julian; questions in BATCH_5.md",
+  "full_tests": "FM: 130 in Python 3.9 and 130 in 3.12; Copilot: 97 in 3.12; see batch5a-B.json for limitations"
+}

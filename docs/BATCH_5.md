@@ -93,9 +93,9 @@ el código vigente. Nuevas versiones y aceptación instalada quedan para 5C.
 | H-02 superficies | Retirar imagen del recorrido; 12% histórico; hechos del prompt | 5A A | Hecho local | README/model card/report/MCP; publicación pendiente |
 | H-03 concurrencia | Hilos FAISS, estado cacheado y stdio | 5A E | Hecho | batch5a-E.json; stdio concurrente |
 | H-04 wheels | Rotular 0.2.0 como lote 2; nuevas versiones/instalación | 5A A / 5C | Texto hecho; paquete pendiente | README; BATCH_2.md |
-| H-05 localidad | TARGETID/brick; no afirmar independencia física | 5A A | Hecho | batch5a-analysis.json; fuentes oficiales abajo |
+| H-05 localidad | TARGETID/brick; no afirmar independencia física | 5A A | Hecho | batch5a-analysis.json; fuentes oficiales citadas en A |
 | H-06 cobertura | Pérdidas/gradientes, normalización, métricas/guardas y mutaciones | 5A B | Hecho | batch5a-B.json; pruebas de gradiente/guardas y 18 mutaciones |
-| H-07 reproducción | Preservar camino histórico; paquete portable/respaldo | 5A / 5C / externo | Preservación verificada; portable/respaldo pendientes | manifiesto privado; instrucciones abajo |
+| H-07 reproducción | Preservar camino histórico; paquete portable/respaldo | 5A / 5C / externo | Preservación verificada; portable/respaldo pendientes | manifiesto privado; camino histórico documentado arriba |
 | H-08 cronología | Declarar plan durante serie y apertura automática | 5A A | Hecho | Adenda BATCH_4B.md / ANALYSIS.md; timeline de Claude |
 | H-09 solapamientos | Cola 2.114/333/312; excluir 4B de aceptación futura | 5A A / 5B | Límite documentado; congelado futuro pendiente | batch5a-analysis.json |
 | H-10 selección B-101 | Margen 2 objetos y sensibilidad de estratos | 5A A | Hecho | batch5a-analysis.md; STRATA.md |
@@ -228,3 +228,39 @@ Los 25 archivos científicos de FM `4387dd3` coinciden con frozen.json (huella
 No se ejecutó el evaluador histórico: comprobar código preservado no es repetir
 inferencia ni certificar portabilidad. Respaldo independiente, rotación de claves
 y explicación personal de Julian siguen pendientes con los estados arriba.
+
+### Commits y punto de continuidad
+
+| Ticket | FM | Copilot |
+|---|---|---|
+| A: documentos/hechos/sensibilidades | d0b968c, e3ea253 | 188a38f, 619ecb8 |
+| E: fallos y concurrencia | 82639aa (registro) | c589378, 76a41f8 |
+| B: contratos, pruebas y evidencia | 913fdc9 | 3095458 |
+
+Rama `codex/lote-5a` en ambos originales. HEAD de implementación comprobada:
+FM `913fdc9561bf8ace10a4f640a2aa6246c99295c0`, Copilot
+`3095458c443729e92d4ff71fa08f0ddfb3727a18`; el commit posterior de cierre añade
+solo este registro/evidencia. Los HEAD de cierre se registran en el consenso §13.
+FM conserva únicamente el CSV sin versionar previo; Copilot limpio. El consenso
+se mantiene fuera de estos repositorios. No se añadieron secretos, pesos, datasets,
+wheels, CSV históricos ni logs voluminosos. `git diff --check` aprobado.
+
+**5A técnicamente entregado:** A, E y B implementados y comprobados. Ninguna
+corrección obligatoria de esta fase queda abierta. H-04/H-07/H-09 conservan sus
+partes asignadas a 5B/5C o a acciones externas; H-12 queda acotado, sin promesa
+portable. No se declara cerrado el proyecto. Véase [evidencia de cierre](evidence/batch5a-close.json).
+
+Siguiente paso exacto: abrir 5B desde estos originales, registrar el nuevo estado
+y **definir y congelar IDs de desarrollo/aceptación y rúbrica antes de editar
+política o matcher**. Excluir test 4B y no reutilizar los 150 históricos como
+aceptación ciega. La cola 2.759 ya está repartida 2.114/333/312 y no resuelve esa
+reserva. Después: protección model_z/separación de alternativas, controles del
+matcher, B7/B9 y evaluación operativa CNN-17 sin despliegue. Si el matcher no
+sostiene discriminación, retirar por defecto “confirmación” y conservar medidas
+descriptivas. No ajustar indefinidamente para salvar el veredicto.
+
+Las acciones de 5C y las autorizaciones LLM siguen siendo independientes de esta
+entrega. No se publicó ni se empezó 5B. Respaldar como mínimo lote-4b-01,
+lote-4b-preparation-20261010 y batch4a-v1 en un destino independiente autorizado,
+con directorio nuevo y verificación SHA-256/tamaños. Para la conservación completa,
+incluir también raw/índice locales, pesos e históricos de ambos repositorios.
