@@ -28,7 +28,7 @@ def test_stdio_valid_invalid_and_recovery(tmp_path):
     emb=embed_spectrum(f,w,model=model);emb/=np.linalg.norm(emb)
     faiss=tools._faiss();index=faiss.IndexFlatIP(emb.size);index.add(np.stack([emb,-emb]).astype(np.float32))
     faiss.write_index(index,str(tmp_path/'spectra.faiss'));np.savez(tmp_path/'spectra_meta.npz',z=np.array([.42,1.]))
-    env={k:v for k,v in os.environ.items() if k not in {'ANTHROPIC_API_KEY'}}
+    env={k:v for k,v in os.environ.items() if k != 'ANTHROPIC_API_KEY' and not k.startswith(('OMP_', 'KMP_', 'MKL_'))}
     env.update(DESI_FM_CKPT=str(ckpt),DESI_FM_INDEX_DIR=str(tmp_path),HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1')
     transcript=[]
     async def check():
@@ -44,12 +44,35 @@ def test_stdio_valid_invalid_and_recovery(tmp_path):
                     assert r.is_error != valid, r.content
                     if valid:return json.loads(r.content[0].text)
                     assert r.content and any(b.text for b in r.content if b.type=='text')
+                # Cold concurrent cache loading; distinct inputs/k expose response mixing.
+                cold = await asyncio.gather(
+                    call('find_similar_spectra', {'npz_path':str(path),'k':1}),
+                    call('find_similar_spectra', {'npz_path':str(gap),'k':2}),
+                    call('predict_redshift', {'npz_path':str(path)}),
+                    call('reconstruct_spectrum', {'npz_path':str(gap),'mask_ratio':0}))
+                assert cold[0]['k']==1 and cold[1]['k']==2
+                assert cold[0]['neighbors'][0]['similarity'] > .999
                 a=await call('predict_redshift',{'npz_path':str(path)})
+                assert cold[2]==a
                 expected=predict_spectrum(f,w,model=model)
                 assert a['z_pred']==pytest.approx(expected['z_pred'],abs=5.1e-5)
                 b=await call('predict_redshift',{'npz_path':str(gap)})
                 c=await call('predict_redshift',{'npz_path':str(nonfinite)})
                 assert b==c
+                assert cold[3]['z_pred_under_masking']==b['z_pred_map']
+                for _ in range(3):
+                    mixed = await asyncio.gather(
+                        call('identify_spectral_lines',{'npz_path':str(path),'z':.42}),
+                        call('find_similar_spectra',{'npz_path':str(path),'k':1}),
+                        call('predict_redshift',{'npz_path':str(gap)}),
+                        call('reconstruct_spectrum',{'npz_path':str(path),'mask_ratio':0}),
+                        call('lookup_reference',{'query':'Halpha','k':1}))
+                    assert mixed[0]['z_tested']==.42
+                    assert mixed[1]==cold[0] and mixed[2]==b
+                    assert mixed[3]['z_pred_under_masking']==a['z_pred_map']
+                    # A sequential search after workers have overlapped.
+                    assert await call('find_similar_spectra',{'npz_path':str(path),'k':1})==cold[0]
+                    assert await call('predict_redshift',{'npz_path':str(path)})==a
                 assert b['coverage']['n_valid_model_pixels']==56
                 assert (await call('reconstruct_spectrum',{'npz_path':str(path),'mask_ratio':0}))['z_pred_under_masking']==a['z_pred_map']
                 await call('identify_spectral_lines',{'npz_path':str(path),'z':.42})
@@ -68,6 +91,15 @@ def test_stdio_valid_invalid_and_recovery(tmp_path):
                                   ('lookup_reference',{'query':'DESI','k':1.5})]:
                     await call(name,args,False)
                 await call('lookup_reference',{'query':'ELG redshift range'})
-    asyncio.run(check())
+                assert await call('predict_redshift',{'npz_path':str(path)})==a
+                assert await call('find_similar_spectra',{'npz_path':str(path),'k':1})==cold[0]
+                invalid=await session.call_tool('predict_redshift',{'npz_path':str(bad)})
+                assert invalid.is_error
+                assert invalid.structured_content['error']['code']=='invalid_input'
+                assert invalid.structured_content['error']['type']=='SpectrumInputError'
+    try:
+        asyncio.run(asyncio.wait_for(check(), timeout=60))
+    finally:
+        (tmp_path/'stdio-transcript.json').write_text(json.dumps(transcript,indent=2,default=str))
     target=os.environ.get('SPECTRA_MCP_TRANSCRIPT')
     if target:Path(target).write_text(json.dumps(transcript,indent=2,allow_nan=False)+'\n')

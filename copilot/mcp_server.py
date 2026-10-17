@@ -15,6 +15,9 @@ on the first model call.
 from mcp.server.mcpserver import MCPServer
 from typing import Annotated
 from pydantic import Field
+from mcp.types import CallToolResult, TextContent
+from desi_fm.inputs import SpectrumInputError
+import json
 
 from copilot import rag, tools, __version__
 
@@ -36,6 +39,20 @@ mcp = MCPServer(
 )
 
 
+def _invoke(function, *args):
+    """Domain errors retain MCP's error flag and a machine-readable error code.
+
+    Schema/type errors are validated by MCP/Pydantic before entering this function.
+    Internal failures remain MCP execution errors, distinct from invalid input.
+    """
+    try:
+        return function(*args)
+    except (SpectrumInputError, FileNotFoundError) as exc:
+        error = {'error': {'code': 'invalid_input', 'type': type(exc).__name__}}
+        return CallToolResult(is_error=True, structured_content=error,
+                              content=[TextContent(type='text', text=json.dumps(error))])
+
+
 @mcp.tool()
 def predict_redshift(npz_path: str) -> dict:
     """Predict a galaxy/QSO redshift from a DESI spectrum in a .npz file.
@@ -46,7 +63,7 @@ def predict_redshift(npz_path: str) -> dict:
     identify_spectral_lines for an experimental line check. Deterministic; the first
     call loads the model checkpoint and can take extra seconds.
     """
-    return tools.predict_redshift_impl(npz_path)
+    return _invoke(tools.predict_redshift_impl, npz_path)
 
 
 @mcp.tool()
@@ -62,7 +79,7 @@ def identify_spectral_lines(npz_path: str, z: Annotated[float, Field(ge=0, allow
     Needs no model. Caveat: a weak verdict is lack of confirmation, not
     refutation — absorption-dominated spectra match poorly even at the true z.
     """
-    return tools.identify_spectral_lines_impl(npz_path, z)
+    return _invoke(tools.identify_spectral_lines_impl, npz_path, z)
 
 
 @mcp.tool()
@@ -75,7 +92,7 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: Annotated[float, Field(ge=0,
     full-spectrum z, that describes stability for this draw; it does not
     establish robustness or physical correctness.
     """
-    return tools.reconstruct_spectrum_impl(npz_path, mask_ratio)
+    return _invoke(tools.reconstruct_spectrum_impl, npz_path, mask_ratio)
 
 
 @mcp.tool()
@@ -91,7 +108,7 @@ def find_similar_spectra(npz_path: str, k: Annotated[int, Field(ge=1, le=100, st
     shares the supervised encoder; historical index compatibility is unverified. The first call
     may download the index (~30 MB) from the Hub.
     """
-    return tools.find_similar_spectra_impl(npz_path, k)
+    return _invoke(tools.find_similar_spectra_impl, npz_path, k)
 
 
 @mcp.tool()
@@ -106,7 +123,7 @@ def lookup_reference(query: str, k: Annotated[int, Field(ge=1, le=30, strict=Tru
     16 committed resources; queries with no term overlap return an
     empty list. Needs no model and runs offline.
     """
-    return rag.lookup_reference_impl(query, k)
+    return _invoke(rag.lookup_reference_impl, query, k)
 
 
 if __name__ == "__main__":

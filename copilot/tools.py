@@ -13,8 +13,9 @@ Hugging Face Hub (jirustaroure/desi-spectra-fm, ~104 MB, cached).
 from __future__ import annotations
 
 import os
-from functools import lru_cache
+from functools import lru_cache, wraps
 from pathlib import Path
+from threading import RLock
 
 import numpy as np
 import torch
@@ -29,6 +30,22 @@ from desi_fm.assets import download_asset
 # Default location of the FAISS index built by scripts/build_index.py.
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
+# Serving shares one mutable model (including temporary eval flags and RNG).
+# Serialize model/index requests and cache misses, including direct Python use.
+# Reentrancy is needed when a request initializes the cached model/index.
+_MODEL_INDEX_LOCK = RLock()
+
+
+def _serialized(function):
+    @wraps(function)
+    def guarded(*args, **kwargs):
+        with _MODEL_INDEX_LOCK:
+            return function(*args, **kwargs)
+    for name in ("cache_clear", "cache_info"):
+        if hasattr(function, name):
+            setattr(guarded, name, getattr(function, name))
+    return guarded
+
 # Rest-frame line catalog (Angstroms) — galaxies + quasars.
 LINES = {
     "Lyα 1216": 1215.7, "CIV 1549": 1549.1, "CIII] 1909": 1908.7,
@@ -39,6 +56,7 @@ LINES = {
 }
 
 
+@_serialized
 @lru_cache(maxsize=1)
 def _model():
     ckpt = os.environ.get("DESI_FM_CKPT") or _hub_checkpoint()
@@ -78,6 +96,7 @@ def _faiss():
     return faiss
 
 
+@_serialized
 @lru_cache(maxsize=1)
 def _index():
     faiss = _faiss()
@@ -119,6 +138,7 @@ def official_z(summary: dict) -> float:
     return summary.get("z_pred_map", summary["z_pred"])
 
 
+@_serialized
 def predict_redshift_impl(npz_path: str) -> dict:
     """Predict the redshift of the spectrum in `npz_path` with desi-fm v2.1.
 
@@ -131,6 +151,7 @@ def predict_redshift_impl(npz_path: str) -> dict:
     return _z_summary(r)
 
 
+@_serialized
 def reconstruct_spectrum_impl(npz_path: str, mask_ratio: float = 0.5) -> dict:
     """Mask a random fraction of token positions and re-predict.
 
@@ -151,6 +172,7 @@ def reconstruct_spectrum_impl(npz_path: str, mask_ratio: float = 0.5) -> dict:
     return out
 
 
+@_serialized
 def find_similar_spectra_impl(npz_path: str, k: int = 5) -> dict:
     """Retrieve the k nearest neighbors of a spectrum in embedding space.
 
@@ -169,6 +191,9 @@ def find_similar_spectra_impl(npz_path: str, k: int = 5) -> dict:
     if index.ntotal < 1 or len(meta_z) != index.ntotal or not np.isfinite(meta_z).all():
         raise RuntimeError("Unusable reference index or metadata")
     k = min(k, index.ntotal)
+    # OpenMP's setting belongs to the calling thread, not the cached index.
+    # MCP may move successive requests between workers even when serialized.
+    _faiss()
     sims, ids = index.search(emb, k)
     if (ids < 0).any() or (ids >= len(meta_z)).any() or not np.isfinite(sims).all():
         raise RuntimeError("Reference index returned invalid neighbors")
