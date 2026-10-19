@@ -437,3 +437,15 @@ their [CC BY 4.0 attribution, EDR citation and modification notices](ATTRIBUTION
 Batch 2 contracts, opaque agent inputs, executable limits and local wheel installation: [BATCH_2.md](docs/BATCH_2.md). Historical examples and transcripts retain their original labels and protocols; the runner strips label-bearing metadata and paths before any LLM request.
 
 Current consolidation: [batch 5A](docs/BATCH_5.md). v2.1 remains the default. Model-z protection and the explanatory policy are pending in 5B; current code still permits experimental agent replacements. Archived 0.2.0 wheels certify batch 2, not current source.
+
+### MCP error contract (5A correction)
+
+MCP schema/type errors are validated by MCP/Pydantic. Tool execution returns
+`is_error=true` with the same JSON in text and structured content:
+`error.code=invalid_input`, `error.type=SpectrumInputError` for invalid scientific
+inputs or arguments, including input files the reader cannot open; and
+`error.code=internal_error`, `error.type=ServerExecutionError` for missing or
+unreadable checkpoints/index/metadata, offline Hub cache misses, asset identity
+mismatches and other server failures. Error responses omit exception messages,
+paths and tracebacks. A failed load is not cached; a subsequent valid request can
+recover. [Current evidence and limits](docs/BATCH_5.md).

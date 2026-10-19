@@ -40,17 +40,22 @@ mcp = MCPServer(
 
 
 def _invoke(function, *args):
-    """Domain errors retain MCP's error flag and a machine-readable error code.
+    """Return safe typed errors without exposing exception messages or traces.
 
-    Schema/type errors are validated by MCP/Pydantic before entering this function.
-    Internal failures remain MCP execution errors, distinct from invalid input.
+    Only SpectrumInputError denotes bad scientific inputs/arguments (including
+    unreadable input files, translated by read_npz). MCP/Pydantic validates the
+    schema before this boundary. All other execution failures, including missing
+    or unreadable assets, offline Hub cache misses and asset identity mismatches,
+    are internal_error. Neither branch returns paths, secrets or raw exceptions.
     """
     try:
         return function(*args)
-    except (SpectrumInputError, FileNotFoundError) as exc:
-        error = {'error': {'code': 'invalid_input', 'type': type(exc).__name__}}
-        return CallToolResult(is_error=True, structured_content=error,
-                              content=[TextContent(type='text', text=json.dumps(error))])
+    except SpectrumInputError:
+        error = {'error': {'code': 'invalid_input', 'type': 'SpectrumInputError'}}
+    except Exception:
+        error = {'error': {'code': 'internal_error', 'type': 'ServerExecutionError'}}
+    return CallToolResult(is_error=True, structured_content=error,
+                          content=[TextContent(type='text', text=json.dumps(error))])
 
 
 @mcp.tool()
@@ -62,6 +67,8 @@ def predict_redshift(npz_path: str) -> dict:
     The configured and bin-center ranges are in model_identity. Use
     identify_spectral_lines for an experimental line check. Deterministic; the first
     call loads the model checkpoint and can take extra seconds.
+    Invalid spectrum/arguments return invalid_input; unavailable or invalid server
+    assets and other execution failures return internal_error, with is_error.
     """
     return _invoke(tools.predict_redshift_impl, npz_path)
 
@@ -91,6 +98,8 @@ def reconstruct_spectrum(npz_path: str, mask_ratio: Annotated[float, Field(ge=0,
     redshift re-predicted. If `z_pred_under_masking` stays close to the
     full-spectrum z, that describes stability for this draw; it does not
     establish robustness or physical correctness.
+    Invalid spectrum/arguments return invalid_input; unavailable or invalid server
+    assets and other execution failures return internal_error, with is_error.
     """
     return _invoke(tools.reconstruct_spectrum_impl, npz_path, mask_ratio)
 
@@ -107,6 +116,8 @@ def find_similar_spectra(npz_path: str, k: Annotated[int, Field(ge=1, le=100, st
     signal comes from the embedding space, not the classification head — it
     shares the supervised encoder; historical index compatibility is unverified. The first call
     may download the index (~30 MB) from the Hub.
+    Invalid spectrum/arguments return invalid_input; unavailable or invalid server
+    assets and other execution failures return internal_error, with is_error.
     """
     return _invoke(tools.find_similar_spectra_impl, npz_path, k)
 
