@@ -14,7 +14,39 @@ from pathlib import Path
 import sqlite3
 import sys
 
-from check_batch5b_leaks import TOKEN, git, texts
+# Frozen v1 visibility helpers, copied verbatim from the committed selector's
+# detector dependency. Keep independent of the mutable custody checker: changes
+# here would change the selection procedure and require a new protocol decision.
+import re
+import subprocess
+
+TOKEN = re.compile(r'[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*')
+
+
+def git(root, *args):
+    return subprocess.check_output(['git', '-C', str(root), *args], stderr=subprocess.DEVNULL)
+
+
+def texts(path):
+    """Names/metadata matter too; explicit NPZ inputs inspect Unicode metadata."""
+    yield str(path)
+    if path.is_symlink():
+        yield str(path.readlink())
+    if path.suffix == '.npz':
+        import numpy as np
+        with np.load(path, allow_pickle=False) as data:
+            for key in data.files:
+                yield key
+                array = data[key]
+                if array.dtype.kind in 'US':
+                    yield json.dumps(array.tolist(), ensure_ascii=False)
+                elif key not in ('flux', 'wavelength', 'ivar', 'mask'):
+                    yield json.dumps(array.tolist())
+    else:
+        # Versioned binary content is also scanned for embedded textual tokens.
+        yield path.read_bytes().decode('utf-8', errors='replace')
+
+
 
 SEED = 20261018
 FAMILIES = ('emission', 'absorption', 'noise', 'coverage_gap', 'reversed_grid',
