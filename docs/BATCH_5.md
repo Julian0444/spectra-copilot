@@ -245,8 +245,9 @@ FM conserva únicamente el CSV sin versionar previo; Copilot limpio. El consenso
 se mantiene fuera de estos repositorios. No se añadieron secretos, pesos, datasets,
 wheels, CSV históricos ni logs voluminosos. `git diff --check` aprobado.
 
-**5A técnicamente entregado:** A, E y B implementados y comprobados. Ninguna
-corrección obligatoria de esta fase queda abierta. H-04/H-07/H-09 conservan sus
+**Registro histórico del cierre del 2026-10-16:** «5A técnicamente entregado: A, E y B implementados y comprobados. Ninguna
+corrección obligatoria de esta fase queda abierta». Esta conclusión fue matizada
+por R5A-01/R5A-02 y O-1; véase la adenda de correcciones al final. H-04/H-07/H-09 conservan sus
 partes asignadas a 5B/5C o a acciones externas; H-12 queda acotado, sin promesa
 portable. No se declara cerrado el proyecto. Véase [evidencia de cierre](evidence/batch5a-close.json).
 
@@ -264,3 +265,47 @@ entrega. No se publicó ni se empezó 5B. Respaldar como mínimo lote-4b-01,
 lote-4b-preparation-20261010 y batch4a-v1 en un destino independiente autorizado,
 con directorio nuevo y verificación SHA-256/tamaños. Para la conservación completa,
 incluir también raw/índice locales, pesos e históricos de ambos repositorios.
+
+
+### Adenda 5A — R5A-01, R5A-02 y O-1 (sesión 5B-1, 2026-10-18)
+
+Corrección identificada del cierre anterior: la frase «ninguna corrección
+obligatoria de esta fase queda abierta» fue la conclusión del 16 de octubre,
+matizada después por verificación independiente. Se conserva como registro
+histórico; los pendientes confirmados se cierran con esta adenda.
+
+| Ticket | Cambio y evidencia | Commit en codex/lote-5a |
+|---|---|---|
+| R5A-01 | Entrada ausente sigue invalid_input por el lector. Checkpoint/índice/caché offline y otros fallos internos devuelven internal_error/ServerExecutionError con is_error, sin rutas ni mensajes privados. Validación MCP/Pydantic intacta. | Copilot 40b9240 |
+| R5A-02 | Eliminados conteos fijos en README.md, README.es.md y COMO_FUNCIONA.md; enlaces a esta evidencia. Barrido de superficies actuales de ambos repos; registros históricos conservados. | FM 594d16c |
+| O-1 | Brecha de cobertura cerrada, no fallo funcional corregido: exclusión mutua, respuestas por solicitud y carga única observadas con hilos distintos para predict/reconstruct/find_similar/model/index, con stubs. tools.py no cambió. | Copilot ad26b6f |
+
+R5A-01: las regresiones definitivas dan **9 failed, 3 passed sobre ef7d220** y
+pasan después, incluyendo stdio real con timeout y recuperación tras crear el
+activo sintético. Red bloqueada, cero intentos; sin pesos reales. El primer
+ensayo tuvo además un error de teardown de la fixture, corregido y repetido;
+ese error no se cuenta como detección. Errores de permisos/identidad/ejecución
+se ensayan mediante stubs de las excepciones correspondientes.
+
+O-1/R5A-01: **7 mutaciones detectadas** en copias nuevas: capturar cualquier
+excepción como entrada, capturar FileNotFoundError como entrada y quitar
+exclusión mutua por separado de las tres operaciones y dos cargas cacheadas.
+Baseline y control equivalente acquire/try/finally/release: 21 pruebas aprobadas.
+Las pruebas observan comportamiento, no exigen un decorador. Reproductor en
+Copilot: `scripts/check_batch5a_followup_mutations.py --output <directorio-nuevo>`.
+
+Suites completas: **FM 130 en Python 3.9.6 y 130 en 3.12.13; Copilot 115 en
+3.12.13**, sin omisiones. Comando: `python -m pytest tests -q -p no:cacheprovider`,
+PYTHONPATH a ambos checkouts, TMPDIR corto, cachés/logs privados. Imports
+comprobados desde fuentes, no wheels antiguos; no se instalaron dependencias
+ni se modificaron entornos históricos/globales. Advertencias preexistentes de
+PyTorch y, en 3.9, LibreSSL/pyparsing. `git diff --check` pasa en ambos repos.
+Los tests heredados usan el checkpoint local de demo; las regresiones nuevas
+solo stubs/sintéticos. No inferencia del test 4B ni llamadas al LLM.
+
+Preservación inicial contra inventario 5A: **1.174 archivos**, cero diferencias
+de SHA-256/tamaño ni archivos extra en los tres árboles inmutables. Sigue
+**no hay respaldo independiente verificado**. Rotación de claves: **sin verificar**.
+H-18: **pendiente de Julian**, no se atribuye una respuesta. Evidencia ligera:
+[batch5a-followup.json](evidence/batch5a-followup.json). Los HEAD corregidos
+incluyendo este registro quedarán en el congelado y en el consenso.

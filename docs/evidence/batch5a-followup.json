@@ -1,0 +1,193 @@
+{
+  "scope": "5A corrections in 5B-1; no policy, matcher, citations or CNN implementation",
+  "bases": {
+    "fm": {
+      "head": "49053c5d4ab57fb21cc6f011fc1dadf8b6980ef6",
+      "branch": "codex/lote-5a"
+    },
+    "copilot": {
+      "head": "ef7d2200a317a1e1fa222d45ec421fa1cdac7f7f",
+      "branch": "codex/lote-5a"
+    }
+  },
+  "R5A-01": {
+    "commit": "40b9240",
+    "before": "ef7d220: 9 failed, 3 passed; direct calls and real MCP stdio, timeout, no network/real weights",
+    "after": "12 passed; included in full suite",
+    "contract": "SpectrumInputError -> invalid_input; other Exception -> internal_error/ServerExecutionError; no raw messages",
+    "network_attempts": 0
+  },
+  "R5A-02": {
+    "commit": "594d16c",
+    "files": [
+      "README.md",
+      "README.es.md",
+      "COMO_FUNCIONA.md"
+    ],
+    "search": "Fixed test counts searched in current Markdown surfaces of both repositories; only the three current occurrences found. Historical batch/plan/HANDOFF evidence retained."
+  },
+  "O-1": {
+    "commit": "ad26b6f",
+    "status": "coverage gap closed; no functional defect demonstrated or runtime locking changed",
+    "operations": [
+      "predict",
+      "reconstruct",
+      "find_similar",
+      "model cache",
+      "index cache"
+    ],
+    "behavior": "distinct threads; no overlapping shared state, mixed responses or duplicate loads"
+  },
+  "mutations": [
+    {
+      "name": "baseline",
+      "returncode": 0,
+      "expected": 0,
+      "verified": true,
+      "failed_tests": [],
+      "summary": "21 passed in 4.42s",
+      "log_sha256": "f402cd65aa7a0a7b4c081d94180d13cce11ae396444008a18ea1a777617dbc1b"
+    },
+    {
+      "name": "all_exceptions_invalid_input",
+      "returncode": 1,
+      "expected": 1,
+      "verified": true,
+      "failed_tests": [
+        "FAILED tests/test_mcp_asset_errors.py::test_missing_checkpoint_is_server_error[predict_redshift]",
+        "FAILED tests/test_mcp_asset_errors.py::test_missing_checkpoint_is_server_error[reconstruct_spectrum]",
+        "FAILED tests/test_mcp_asset_errors.py::test_missing_index_offline_is_server_error",
+        "FAILED tests/test_mcp_asset_errors.py::test_no_checkpoint_empty_offline_cache_is_server_error",
+        "FAILED tests/test_mcp_asset_errors.py::test_internal_failures_are_safe_and_recover[PermissionError]",
+        "FAILED tests/test_mcp_asset_errors.py::test_internal_failures_are_safe_and_recover[ValueError]",
+        "FAILED tests/test_mcp_asset_errors.py::test_internal_failures_are_safe_and_recover[RuntimeError]",
+        "FAILED tests/test_mcp_asset_errors.py::test_internal_failures_are_safe_and_recover[KeyError]",
+        "FAILED tests/test_mcp_asset_errors.py::test_asset_failure_and_recovery_over_real_stdio"
+      ],
+      "summary": "9 failed, 12 passed in 4.40s",
+      "log_sha256": "ff1b47c09f11942a8c7225049d75d01f926ec8bab6c402c11a17d8cb706cf9f2"
+    },
+    {
+      "name": "asset_invalid_input",
+      "returncode": 1,
+      "expected": 1,
+      "verified": true,
+      "failed_tests": [
+        "FAILED tests/test_mcp_asset_errors.py::test_missing_checkpoint_is_server_error[predict_redshift]",
+        "FAILED tests/test_mcp_asset_errors.py::test_missing_checkpoint_is_server_error[reconstruct_spectrum]",
+        "FAILED tests/test_mcp_asset_errors.py::test_missing_index_offline_is_server_error",
+        "FAILED tests/test_mcp_asset_errors.py::test_no_checkpoint_empty_offline_cache_is_server_error",
+        "FAILED tests/test_mcp_asset_errors.py::test_asset_failure_and_recovery_over_real_stdio"
+      ],
+      "summary": "5 failed, 16 passed in 4.33s",
+      "log_sha256": "47d6bc067b43360b7ad9d30ebc8275fb552e18774002e8cb18893626e0a61a7a"
+    },
+    {
+      "name": "unlocked_predict_redshift_impl",
+      "returncode": 1,
+      "expected": 1,
+      "verified": true,
+      "failed_tests": [
+        "FAILED tests/test_tool_concurrency.py::test_model_requests_do_not_overlap_or_mix_results",
+        "FAILED tests/test_tool_concurrency.py::test_all_shared_operations_serialize_without_response_mixing[operations0]",
+        "FAILED tests/test_tool_concurrency.py::test_all_shared_operations_serialize_without_response_mixing[operations3]"
+      ],
+      "summary": "3 failed, 18 passed in 5.10s",
+      "log_sha256": "9dedb556383fc785b02c703c00d011eff0388bae613864677831142934992c94"
+    },
+    {
+      "name": "unlocked_reconstruct_spectrum_impl",
+      "returncode": 1,
+      "expected": 1,
+      "verified": true,
+      "failed_tests": [
+        "FAILED tests/test_tool_concurrency.py::test_all_shared_operations_serialize_without_response_mixing[operations1]",
+        "FAILED tests/test_tool_concurrency.py::test_all_shared_operations_serialize_without_response_mixing[operations3]"
+      ],
+      "summary": "2 failed, 19 passed in 5.96s",
+      "log_sha256": "6589fcad4ab3a931fc3e03b260e9f867e7d3ebb25751bd70b95553111e74b3ba"
+    },
+    {
+      "name": "unlocked_find_similar_spectra_impl",
+      "returncode": 1,
+      "expected": 1,
+      "verified": true,
+      "failed_tests": [
+        "FAILED tests/test_tool_concurrency.py::test_all_shared_operations_serialize_without_response_mixing[operations2]",
+        "FAILED tests/test_tool_concurrency.py::test_all_shared_operations_serialize_without_response_mixing[operations3]"
+      ],
+      "summary": "2 failed, 19 passed in 7.54s",
+      "log_sha256": "f315fea45a4d91b92c43db5263252783b266bc0909500883b65e7165a6f39de2"
+    },
+    {
+      "name": "unlocked__model",
+      "returncode": 1,
+      "expected": 1,
+      "verified": true,
+      "failed_tests": [
+        "FAILED tests/test_tool_concurrency.py::test_concurrent_cold_model_load_occurs_once",
+        "FAILED tests/test_tool_concurrency.py::test_cached_resources_load_once_across_threads[model]"
+      ],
+      "summary": "2 failed, 19 passed in 9.16s",
+      "log_sha256": "3f4f327426842ef764b89eb33a555277b7e9f948853572051150a2a351ff1f57"
+    },
+    {
+      "name": "unlocked__index",
+      "returncode": 1,
+      "expected": 1,
+      "verified": true,
+      "failed_tests": [
+        "FAILED tests/test_tool_concurrency.py::test_cached_resources_load_once_across_threads[index]"
+      ],
+      "summary": "1 failed, 20 passed in 5.44s",
+      "log_sha256": "3cc85f23632f165459fb3e1636a461833c664543ff1226d0c5e8ba969ba871ee"
+    },
+    {
+      "name": "equivalent_explicit_lock",
+      "returncode": 0,
+      "expected": 0,
+      "verified": true,
+      "failed_tests": [],
+      "summary": "21 passed in 4.52s",
+      "log_sha256": "f61bdc84f1597bc9948ea059080cc9d11e83aa80e3551b2114803df2de7f06dc"
+    }
+  ],
+  "full_suites": {
+    "FM Python 3.9.6": 130,
+    "FM Python 3.12.13": 130,
+    "Copilot Python 3.12.13": 115
+  },
+  "diff_check": "passed both",
+  "preservation_initial": {
+    "files": 1174,
+    "counts": {
+      "lote-4b-01": 658,
+      "preparation": 171,
+      "batch4a-v1": 18,
+      "FINAL PROJECT DEEP LEARNING": 162,
+      "spectra-copilot": 165
+    },
+    "bytes": {
+      "lote-4b-01": 6059818657,
+      "preparation": 87279004,
+      "batch4a-v1": 3014928724,
+      "FINAL PROJECT DEEP LEARNING": 2508937756,
+      "spectra-copilot": 77911544
+    },
+    "mismatches": 0,
+    "extra": 0,
+    "baseline_sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239"
+  },
+  "independent_backup": "no hay respaldo independiente verificado",
+  "key_rotation": "sin verificar",
+  "H-18": "pendiente de explicación personal de Julian",
+  "logs": {
+    "red-final.log": "c853adae1bdf2c976730717b9d646fea58c845b51c24ee4684aef569e25cf2d0",
+    "regressions-green.log": "24d96cf4fe7ee60b083f66cd996444c4e6e7d37427d18301a29273d819c893fd",
+    "followup-mutations.log": "00cb0e1233baa73bbd1d07f33451b60352263d47e4ca9999358c3a6ce2de58bb",
+    "fm39-full.log": "3f24210ce25baa5056006f3ed46cf2e93bee1be3a008ced4d1ae33cb720f99ab",
+    "fm312-full.log": "9921c2ad2ff69eddd5d003586e10084fc8c2b5d1934a623ee172d81bd7d32141",
+    "cp312-full.log": "766873b6ee50e038bb2a699a090a42e98e54de4687b105cba45be91ee0435949",
+    "identity-check.log": "4fc1d99210b4576ee00cefd35a08fd0f0d2be4dd1049600dccf30f7437b69622"
+  }
+}
