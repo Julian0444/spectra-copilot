@@ -298,3 +298,32 @@ se reportan, no se usan para elegir otro checkpoint ni para desplegar.
 independiente de precisión del predictor.** No publicar diferencias de eta15
 CNN/v2.1 como evidencia de superioridad. La evaluación de aceptación y el LLM
 real pertenecen a 5C con autorización; 5B-2 solo implementa y comprueba desarrollo.
+
+
+## Adenda 5B-1.1 (2026-10-19): alcance de custodia y recetas públicas
+
+Esta adenda conserva íntegros población, selección, manifiesto de desarrollo,
+rúbrica, criterios y compromiso originales. No autoriza ejecutar aceptación ni
+iniciar 5B-2. El SHA-256 de aceptación sigue siendo
+`b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05`.
+
+Las 48 recetas sintéticas de aceptación y sus respuestas esperadas son derivables
+del generador público. En 5C sus resultados se informarán por separado como
+**comprobaciones de mecanismo con recetas públicas, no como aceptación ciega**.
+Esta limitación no cambia denominadores ni umbrales; acota lo que permiten
+concluir. La lista de casos reales sigue bajo la custodia documentada.
+**5B-2 solo puede usar `synthetic('development')`.** El rol reservado se permite
+únicamente dentro de `scripts/select_batch5b.py` y
+`tests/test_batch5b_protocol.py`, para selección/reproducibilidad y sus pruebas.
+El comprobador marca referencias directas y equivalentes estáticas evidentes
+fuera de esas dos rutas exactas, también en blobs y mensajes históricos.
+Es una guarda de proceso, no una defensa contra código deliberadamente ofuscado.
+
+La tokenización y lectura v1 usadas para seleccionar quedaron incorporadas al
+selector, independientes del detector mutable. Su regeneración debe conservar
+los hashes de aceptación, desarrollo y compromiso; cualquier diferencia o nueva
+exposición exige registrar una incidencia y detenerse, nunca reseleccionar.
+El detector actualizado reconoce IDs completos delimitados por puntuación sin
+aceptar subcadenas alfanuméricas, redacta IDs/etiquetas en rutas y lee metadata
+NPZ de árbol, índice y blobs añadidos/modificados en el rango. Incluye mensajes
+de commit y falla con código 2 ante entradas o blobs ilegibles.

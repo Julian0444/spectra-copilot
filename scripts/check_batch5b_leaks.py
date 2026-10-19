@@ -1,25 +1,43 @@
-"""Custody check. Outputs counts and sanitized paths only; never private values.
+"""Custody check: counts and sanitized paths only, never private values.
 
-Scan versionable trees (tracked + untracked, respecting Git ignores), every
-commit diff since the frozen 5A base, working diff, and explicit LLM inputs.
-Ignored scientific assets are not development inputs: pass any file that will
-be exposed to the LLM explicitly, including NPZs, via --llm-input.
+Inspect versionable working trees, index blobs, every added/modified blob and
+commit message since the frozen 5A base, working diffs and explicit LLM inputs.
+NPZ metadata uses the same reader for files and Git blobs. Unreadable inputs
+fail closed. Pass ignored scientific assets explicitly if exposed to the LLM.
+This is a process guard, not a sandbox against deliberately disguised calls.
 """
 import argparse
+import ast
+from functools import lru_cache
 import hashlib
+import io
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
-import zipfile
+import warnings
 
-TOKEN = re.compile(r'[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*')
 NUMBER = re.compile(r'(?<![A-Za-z0-9.])[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?(?![A-Za-z0-9.])')
+GENERATOR_ALLOWED = {'scripts/select_batch5b.py', 'tests/test_batch5b_protocol.py'}
 
 
 def git(root, *args):
     return subprocess.check_output(['git', '-C', str(root), *args], stderr=subprocess.DEVNULL)
+
+
+@lru_cache(maxsize=8)
+def id_pattern(ids, boundaries=True):
+    alternatives = '|'.join(re.escape(value) for value in sorted(ids, key=lambda value: (-len(value), value)))
+    if not alternatives:
+        return re.compile(r'(?!)')
+    # Unicode letters/digits are not delimiters; punctuation (including _, -, /) is.
+    return re.compile(r'(?<![^\W_])(?:' + alternatives + r')(?![^\W_])' if boundaries
+                      else '(?:' + alternatives + ')')
+
+
+def matching_ids(text, ids):
+    return set(id_pattern(tuple(sorted(ids))).findall(text))
 
 
 def tree_files(root):
@@ -27,24 +45,49 @@ def tree_files(root):
     return [root / name.decode() for name in sorted(set(names.split(b'\0'))) if name]
 
 
-def texts(path):
-    """Names/metadata matter too; explicit NPZ inputs inspect Unicode metadata."""
-    yield str(path)
-    if path.is_symlink():
-        yield str(path.readlink())
-    if path.suffix == '.npz':
+def blob_texts(name, data):
+    """Identical metadata decoding for working files, staging and history."""
+    yield str(name)
+    if Path(name).suffix.lower() == '.npz':
         import numpy as np
-        with np.load(path, allow_pickle=False) as data:
-            for key in data.files:
+        with np.load(io.BytesIO(data), allow_pickle=False) as arrays:
+            for key in arrays.files:
                 yield key
-                array = data[key]
+                array = arrays[key]
                 if array.dtype.kind in 'US':
                     yield json.dumps(array.tolist(), ensure_ascii=False)
                 elif key not in ('flux', 'wavelength', 'ivar', 'mask'):
                     yield json.dumps(array.tolist())
     else:
-        # Versioned binary content is also scanned for embedded textual tokens.
-        yield path.read_bytes().decode('utf-8', errors='replace')
+        yield data.decode('utf-8', errors='replace')
+
+
+def texts(path):
+    if path.is_symlink():
+        yield str(path.readlink())
+    yield from blob_texts(path, path.read_bytes())
+
+
+def index_blobs(root):
+    for entry in git(root, 'ls-files', '--stage', '-z').split(b'\0'):
+        if not entry:
+            continue
+        header, name = entry.split(b'\t', 1)
+        mode, oid, stage = header.decode().split()
+        if stage != '0' or mode not in ('100644', '100755', '120000'):
+            raise ValueError('unsupported index entry')
+        yield name.decode(), oid
+
+
+def history_blobs(root, commit):
+    raw = git(root, 'diff-tree', '--root', '-m', '--no-commit-id', '--raw', '-r', '-z',
+              '--no-renames', '--diff-filter=AMT', commit, '--').split(b'\0')
+    for offset in range(0, len(raw)-1, 2):
+        header, name = raw[offset:offset+2]
+        fields = header.decode().split()
+        if len(fields) != 5 or fields[1] not in ('100644', '100755', '120000'):
+            raise ValueError('unsupported historical entry')
+        yield name.decode(), fields[3]
 
 
 def fingerprint(value):
@@ -70,15 +113,13 @@ def custody(cases):
 
 def inspect_text(text, private):
     ids, labels, answers = private
-    hits = ids.intersection(TOKEN.findall(text))
-    # A redshift alone never triggers a violation. Count ID-label pairs in the
-    # same local record/window; numeric spellings are compared by value.
+    hits = matching_ids(text, ids)
+    # Isolated redshifts never trigger a violation; count nearby ID-label pairs.
     pairs = set()
     for token in hits:
         if token not in labels:
             continue
-        pattern = re.compile(r'(?<![A-Za-z0-9])' + re.escape(token) + r'(?![A-Za-z0-9])')
-        for match in pattern.finditer(text):
+        for match in id_pattern((token,)).finditer(text):
             window = text[max(0, match.start()-256):match.end()+512]
             if any(float(number) == labels[token] for number in NUMBER.findall(window)):
                 pairs.add(token)
@@ -101,44 +142,109 @@ def inspect_text(text, private):
     return len(hits), len(pairs), answer_count
 
 
+def acceptance_references(text):
+    """Catch direct references, aliases and simple constant expressions, not obfuscation."""
+    direct = re.findall(r'\bsynthetic\s*\(\s*(?:role\s*=\s*)?([\'"])acceptance\1', text)
+    count = len(direct)
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            tree = ast.parse(text)
+    except (SyntaxError, ValueError, RecursionError):
+        return count
+    strings, aliases = {}, {'synthetic'}
+    def literal(node):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            return node.value
+        if isinstance(node, ast.Name):
+            return strings.get(node.id)
+        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+            left, right = literal(node.left), literal(node.right)
+            if left is not None and right is not None:
+                return left + right
+    def generator(node):
+        return ((isinstance(node, ast.Name) and node.id in aliases) or
+                (isinstance(node, ast.Attribute) and node.attr == 'synthetic') or
+                (isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and
+                 node.func.id == 'getattr' and len(node.args) > 1 and literal(node.args[1]) == 'synthetic'))
+    # A conservative static rule: constants/aliases anywhere in the file count.
+    nodes = list(ast.walk(tree))
+    for node in nodes:
+        if isinstance(node, ast.ImportFrom):
+            aliases.update(alias.asname or alias.name for alias in node.names if alias.name == 'synthetic')
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name):
+                    value = literal(node.value)
+                    if value is not None:
+                        strings[target.id] = value
+                    if generator(node.value):
+                        aliases.add(target.id)
+    for node in nodes:
+        if isinstance(node, ast.Call) and generator(node.func):
+            arguments = list(node.args[:1]) + [kw.value for kw in node.keywords if kw.arg == 'role']
+            if any(literal(value) == 'acceptance' for value in arguments):
+                count += 1
+    return count
+
+
 def safe_path(path, private):
     ids, labels, _ = private
-    redacted = TOKEN.sub(lambda match: '[redacted]' if match.group() in ids else match.group(), str(path))
-    # A violating filename may attach a private label to a word (e.g. z0.12).
-    # This only redacts reports: an isolated matching number is still not a leak.
-    values = set(labels.values())
+    # Redaction is deliberately broader than detection: never echo even an ID
+    # embedded in a longer token when another violation caused this path report.
+    redacted = id_pattern(tuple(sorted(ids)), False).sub('[redacted]', str(path))
+    values = {abs(value) for value in labels.values()}
     numbers = r'[-+]?(?:\d+\.\d*|\.\d+|\d+)(?:[eE][-+]?\d+)?'
-    return re.sub(numbers, lambda match: '[redacted-label]' if float(match.group()) in values
+    return re.sub(numbers, lambda match: '[redacted-label]' if abs(float(match.group())) in values
                   else match.group(), redacted)
 
 
 def scan(private, repositories, llm_inputs):
     violations, checked = [], 0
-    def check(path, content):
+    allowed_inputs = {(root/relative).resolve() for root, _ in repositories for relative in GENERATOR_ALLOWED}
+    def check(path, content, generator_allowed=False):
         nonlocal checked
         checked += 1
         counts = inspect_text(content, private)
-        if any(counts):
+        references = 0 if generator_allowed else acceptance_references(content)
+        if any(counts) or references:
             violations.append({'path': safe_path(path, private), 'id_tokens': counts[0],
-                               'id_label_pairs': counts[1], 'expected_answers': counts[2]})
+                               'id_label_pairs': counts[1], 'expected_answers': counts[2],
+                               'synthetic_acceptance_references': references})
     for root, base in repositories:
         for path in tree_files(root):
             if not path.is_file():
                 raise OSError('unreadable tree entry')
             for content in texts(path):
-                check(path, content)
-        # Include intermediate commits, so deleting a leak later cannot hide it.
-        for content in [git(root, 'diff', '--no-ext-diff', '--no-textconv', base, '--'),
-                        git(root, 'diff', '--cached', '--no-ext-diff', '--no-textconv', base, '--'),
-                        git(root, 'log', '--format=', '-p', '--no-ext-diff', '--no-textconv', base+'..HEAD', '--')]:
-            check(root / '.branch-diff', content.decode('utf-8', errors='replace'))
+                check(path, content, path.relative_to(root).as_posix() in GENERATOR_ALLOWED)
+        blobs = {}
+        def check_blob(surface, name, oid):
+            if oid not in blobs:
+                blobs[oid] = git(root, 'cat-file', 'blob', oid)
+            for content in blob_texts(name, blobs[oid]):
+                check(root/surface/name, content, name in GENERATOR_ALLOWED)
+        for name, oid in index_blobs(root):
+            check_blob('.index', name, oid)
+        seen = set()
+        for commit in git(root, 'rev-list', '--reverse', base+'..HEAD').decode().splitlines():
+            check(root/'.commit-message'/commit, git(root, 'show', '-s', '--format=%B', commit).decode())
+            for name, oid in history_blobs(root, commit):
+                if (name, oid) not in seen:
+                    check_blob('.history/'+commit, name, oid)
+                    seen.add((name, oid))
+        # Working diffs include removed text; keep per-file provenance for N-1.
+        for name in git(root, 'diff', '--name-only', '-z', base, '--').split(b'\0'):
+            if name:
+                name = name.decode()
+                content = git(root, 'diff', '--no-ext-diff', '--no-textconv', base, '--', name)
+                check(root/'.branch-diff'/name, content.decode('utf-8', errors='replace'), name in GENERATOR_ALLOWED)
     for path in llm_inputs:
         paths = sorted(path.rglob('*')) if path.is_dir() else [path]
         for file in paths:
             if file.is_dir():
                 continue
             for content in texts(file):
-                check(file, content)
+                check(file, content, file.resolve() in allowed_inputs)
     return {'checked_surfaces': checked, 'violating_surfaces': len(violations), 'violations': violations}
 
 
@@ -152,11 +258,10 @@ def main():
         cases = json.loads(args.private.read_text())['cases']
         private = custody(cases)
         roots = [(Path(root).resolve(), base) for root, base in args.repository]
-        # A private oracle inside an inspected tree/input is itself a violation.
         result = scan(private, roots, args.llm_input)
     except Exception:
         print(json.dumps({'errors': 1, 'violating_surfaces': 0}))
-        return 2  # Fail closed without printing exception data or private paths.
+        return 2
     print(json.dumps(result, ensure_ascii=False))
     return 1 if result['violating_surfaces'] else 0
 

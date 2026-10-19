@@ -167,3 +167,132 @@ def test_npz_metadata_and_filename_are_checked_without_disclosing_ids(tmp_path, 
     assert report['violating_surfaces']>0
     assert invented_cases[0]['case_id'] not in json.dumps(report)
     assert '0.123456789' not in json.dumps(report)
+
+
+@pytest.fixture
+def custody_cli(tmp_path, invented_cases):
+    """Run the real CLI; fixtures are invented and never use actual custody."""
+    invented_cases.append({'case_id': 'case-abcdef0123456789abcdef0123',
+                           'object_id': '876543219876543219', 'label': {'z': .234567891}})
+    root, base = make_repo(tmp_path)
+    private = tmp_path/'private.json'
+    private.write_text(json.dumps({'cases': invented_cases}))
+    visible = tmp_path/'visible.txt'
+    visible.write_text('safe')
+    command = [sys.executable, str(SCRIPTS/'check_batch5b_leaks.py'), '--private', str(private),
+               '--repository', str(root), base, '--llm-input', str(visible)]
+    def run(expected):
+        result = subprocess.run(command, capture_output=True, text=True, timeout=20)
+        assert result.returncode == expected
+        for case in invented_cases:
+            for value in [case['case_id'], case['object_id'], str(case['label']['z'])]:
+                assert value not in result.stdout and value not in result.stderr
+        assert not result.stderr
+        return json.loads(result.stdout)
+    return root, visible, run
+
+
+@pytest.mark.parametrize('surface', ['hyphen_filename', 'hyphen_content', 'mixed_filename',
+                                     'case_suffix', 'route_separator'], ids=str)
+def test_cli_punctuation_boundaries_and_complete_redaction(custody_cli, surface):
+    root, visible, run = custody_cli
+    if surface == 'hyphen_filename':
+        (root/'input-987654321987654321.txt').write_text('safe')
+    elif surface == 'hyphen_content':
+        visible.write_text('obj-987654321987654321')
+    elif surface == 'mixed_filename':
+        (root/'x_987654321987654321_obj-876543219876543219_z0.234567891.txt').write_text('safe')
+    elif surface == 'case_suffix':
+        visible.write_text('case-abcdef0123456789abcdef0123-debug')
+    else:
+        (root/'987654321987654321').mkdir()
+        (root/'987654321987654321'/'input.txt').write_text('safe')
+    assert run(1)['violating_surfaces'] > 0
+
+
+def test_cli_does_not_match_alphanumeric_substrings_longer_numbers_or_redshift(custody_cli):
+    _, visible, run = custody_cli
+    visible.write_text('a987654321987654321 987654321987654321b 9876543219876543210 '
+                      '0987654321987654321 xcase-abcdef0123456789abcdef0123 '
+                      'case-abcdef0123456789abcdef0123f 0.123456789')
+    assert run(0)['violating_surfaces'] == 0
+
+
+@pytest.mark.parametrize('surface', ['working', 'index', 'history'], ids=str)
+def test_cli_reads_npz_metadata_in_every_git_surface(custody_cli, surface):
+    import numpy as np
+    root, _, run = custody_cli
+    path = root/'sample.npz'
+    np.savez_compressed(path, flux=np.ones(4), object_id=np.array('987654321987654321'))
+    if surface == 'index':
+        leaks.git(root, 'add', 'sample.npz')
+        np.savez_compressed(path, flux=np.ones(4), object_id=np.array('safe'))
+    elif surface == 'history':
+        commit(root)
+        path.unlink()
+        commit(root)
+    assert run(1)['violating_surfaces'] > 0
+
+
+def test_cli_reads_empty_commit_message(custody_cli):
+    root, _, run = custody_cli
+    leaks.git(root, '-c', 'user.name=Synthetic Test', '-c', 'user.email=synthetic@example.invalid',
+              'commit', '--allow-empty', '-m', 'obj-987654321987654321')
+    assert run(1)['violating_surfaces'] > 0
+
+
+@pytest.mark.parametrize('surface', ['index', 'history'], ids=str)
+def test_cli_fails_closed_on_unreadable_npz_blob(custody_cli, surface):
+    root, _, run = custody_cli
+    path = root/'broken.npz'
+    path.write_bytes(b'not a valid numpy archive')
+    if surface == 'index':
+        leaks.git(root, 'add', 'broken.npz')
+        import numpy as np
+        np.savez(path, flux=np.ones(4))
+    else:
+        commit(root)
+        path.unlink()
+        commit(root)
+    assert run(2)['errors'] == 1
+
+
+@pytest.mark.parametrize('source', [
+    "selection.synthetic('acceptance')",
+    'selection.synthetic(role="acceptance")',
+    "from select_batch5b import synthetic as build\nbuild('acceptance')",
+    "role = 'acceptance'\nselection.synthetic(role)",
+    "selection.synthetic('accept' + 'ance')",
+    "getattr(selection, 'synthetic')('acceptance')",
+], ids=['direct', 'keyword', 'alias', 'role_variable', 'concatenation', 'getattr'])
+def test_cli_rejects_public_acceptance_generator_reference(custody_cli, source):
+    root, _, run = custody_cli
+    (root/'consumer.py').write_text(source)
+    assert run(1)['violating_surfaces'] > 0
+
+
+def test_cli_accepts_development_generator_and_only_exact_allowed_paths(custody_cli):
+    root, _, run = custody_cli
+    (root/'consumer.py').write_text("selection.synthetic('development')")
+    (root/'scripts').mkdir(); (root/'tests').mkdir()
+    for name in ['scripts/select_batch5b.py', 'tests/test_batch5b_protocol.py']:
+        (root/name).write_text("selection.synthetic('acceptance')")
+    assert run(0)['violating_surfaces'] == 0
+    (root/'other').mkdir()
+    (root/'other'/'select_batch5b.py').write_text("selection.synthetic('acceptance')")
+    assert run(1)['violating_surfaces'] > 0
+
+
+def test_selector_import_is_independent_of_mutable_detector():
+    code = '''import builtins, runpy, sys
+original = builtins.__import__
+def guarded(name, *args, **kwargs):
+    if name == "check_batch5b_leaks": raise ImportError("mutable detector forbidden")
+    return original(name, *args, **kwargs)
+builtins.__import__ = guarded
+module = runpy.run_path(sys.argv[1])
+assert module["TOKEN"].findall("obj-123_456") == ["obj-123", "456"]
+'''
+    result = subprocess.run([sys.executable, '-c', code, str(SCRIPTS/'select_batch5b.py')],
+                            capture_output=True, timeout=15)
+    assert result.returncode == 0
