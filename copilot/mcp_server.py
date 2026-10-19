@@ -18,6 +18,8 @@ from pydantic import Field
 from mcp.types import CallToolResult, TextContent
 from desi_fm.inputs import SpectrumInputError
 import json
+import re
+import sys
 
 from copilot import rag, tools, __version__
 
@@ -47,12 +49,17 @@ def _invoke(function, *args):
     schema before this boundary. All other execution failures, including missing
     or unreadable assets, offline Hub cache misses and asset identity mismatches,
     are internal_error. Neither branch returns paths, secrets or raw exceptions.
+    Internal failures emit only a sanitized exception type on server stderr.
     """
     try:
         return function(*args)
     except SpectrumInputError:
         error = {'error': {'code': 'invalid_input', 'type': 'SpectrumInputError'}}
-    except Exception:
+    except Exception as exc:
+        exception_type = type(exc).__name__
+        if not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,79}', exception_type):
+            exception_type = 'Exception'
+        print(json.dumps({'event': 'internal_error', 'exception_type': exception_type}), file=sys.stderr)
         error = {'error': {'code': 'internal_error', 'type': 'ServerExecutionError'}}
     return CallToolResult(is_error=True, structured_content=error,
                           content=[TextContent(type='text', text=json.dumps(error))])

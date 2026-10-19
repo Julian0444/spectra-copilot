@@ -449,3 +449,7 @@ unreadable checkpoints/index/metadata, offline Hub cache misses, asset identity
 mismatches and other server failures. Error responses omit exception messages,
 paths and tracebacks. A failed load is not cached; a subsequent valid request can
 recover. [Current evidence and limits](docs/BATCH_5.md).
+
+Server diagnostics for `internal_error` write only a sanitized exception class
+to stderr. Exception messages, personal paths and tracebacks are omitted; MCP
+stdout and the safe client error payload are unchanged.

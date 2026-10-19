@@ -133,3 +133,20 @@ mcp.run()
                     assert invalid.is_error
     asyncio.run(asyncio.wait_for(run(), timeout=25))
     assert not (tmp_path / 'network-attempts').exists()
+    diagnostics = [json.loads(line) for line in (tmp_path/'server-stderr.log').read_text().splitlines()
+                   if line.startswith('{"event": "internal_error"')]
+    assert diagnostics == [{'event': 'internal_error', 'exception_type': 'FileNotFoundError'}]
+
+
+
+def test_internal_diagnostic_is_exception_type_only_on_stderr(capsys):
+    def fail():
+        raise RuntimeError('/Users/private/sensitive-marker token=secret')
+    assert_error(mcp_server._invoke(fail), 'internal_error')
+    captured = capsys.readouterr()
+    assert captured.out == ''
+    assert json.loads(captured.err) == {'event': 'internal_error', 'exception_type': 'RuntimeError'}
+    assert '/Users/' not in captured.err and 'sensitive-marker' not in captured.err
+    assert 'token=secret' not in captured.err and 'Traceback' not in captured.err
+    assert mcp_server._invoke(lambda: {'ok': True}) == {'ok': True}
+    assert capsys.readouterr().err == ''
