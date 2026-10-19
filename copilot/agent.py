@@ -28,7 +28,9 @@ from pathlib import Path
 import anthropic
 from anthropic import beta_tool
 
-from copilot import rag, tools
+from copilot import rag, tools, explanation
+from copy import deepcopy
+import inspect
 from copilot.report import SYSTEM, system_prompt
 from desi_fm.predict import model_identity, _prepare_inputs
 from desi_fm.inputs import read_npz, bounded_real, positive_int, SpectrumInputError
@@ -129,23 +131,17 @@ def lookup_reference(query: str, k: Annotated[int, Field(ge=1, le=30, strict=Tru
 
 @beta_tool
 def submit_report(
-    z_final: Annotated[float, Field(ge=0, allow_inf_nan=False, strict=True)],
-    confidence: Literal["high", "medium", "low"],
-    lines_matched: Annotated[int, Field(ge=0, le=15, strict=True)],
-    summary: str,
+    observation_ids: list[str],
+    assessment: Literal["descriptive", "ambiguous", "insufficient_data"] = "descriptive",
 ) -> str:
-    """Submit the structured report once, after analysis.
+    """Select recorded observation IDs and a conservative assessment exactly once.
 
-    Args:
-        z_final: finite nonnegative redshift hypothesis (experimental).
-        confidence: categorical high, medium or low; not a probability.
-        lines_matched: integer from 0 through 15 catalog lines.
-        summary: nonempty justification citing the tools used.
+    The executor renders the report. No model_z, z_final, numerical measurements,
+    free prose, tool names or alternative redshifts can be supplied here.
     """
-    if not summary.strip():
-        raise SpectrumInputError("summary must be nonempty")
-    return json.dumps(dict(z_final=z_final, confidence=confidence,
-                           lines_matched=lines_matched, summary=summary), allow_nan=False)
+    if not observation_ids or len(observation_ids) != len(set(observation_ids)):
+        raise SpectrumInputError("Nonempty, distinct observation IDs required")
+    return json.dumps(dict(observation_ids=observation_ids, assessment=assessment))
 
 
 @contextmanager
@@ -165,55 +161,110 @@ def agent_input(source):
 
 
 class RunTools:
-    """Per-run budget and report. Multiple submits never replace the first."""
-    def __init__(self, path, structured):
-        self.calls = 0
-        self.result = None
-        self.path = path
+    """Executor-owned canonical prediction and immutable observation ledger."""
+    def __init__(self, path, structured=True):
+        self.calls, self.result, self.path = 0, None, path
+        self.prediction = None
+        self.observations, self.violations = [], []
+        self.history, self.usage = [], dict.fromkeys(USAGE_KEYS, 0)
         self.tools = [self.guard(t) for t in (predict_redshift, identify_spectral_lines,
-                     reconstruct_spectrum, find_similar_spectra, lookup_reference)]
-        if structured:
-            self.tools.append(self.guard(submit_report))
+                     reconstruct_spectrum, find_similar_spectra, lookup_reference, submit_report)]
+
+    def record(self, name, arguments, value, error=None):
+        observation = dict(id=f"obs-{len(self.observations)+1}", tool=name,
+                           arguments=deepcopy(arguments), result=deepcopy(value))
+        if error:
+            observation['error'] = error
+        self.observations.append(observation)
+        return observation
+
+    def bootstrap(self):
+        value = tools.predict_redshift_impl(self.path)
+        explanation.canonical_z(value)
+        self.prediction = deepcopy(value)
+        self.calls += 1
+        self.record('predict_redshift', {'npz_path': 'spectrum.npz'}, value)
+
+    def finish(self, status='explanation_incomplete'):
+        if self.result is not None and not self.violations and status == 'explanation_incomplete':
+            return deepcopy(self.result)
+        return explanation.result(self.prediction, self.observations,
+            [o['id'] for o in self.observations], status=status, violations=self.violations)
 
     def guard(self, base):
         @wraps(base.func)
         def execute(*args, **kwargs):
             if self.result is not None:
                 raise SpectrumInputError("Report already submitted; no further tools allowed")
-            if base.name == "submit_report":
-                value = base.func(*args, **kwargs)
-                self.result = json.loads(value)
-                return "recorded"
+            try:
+                bound = inspect.signature(base.func).bind(*args, **kwargs)
+            except TypeError:
+                self.violations.append('incompatible_tool_arguments')
+                raise SpectrumInputError('Incompatible tool arguments') from None
+            arguments = bound.arguments
+            if 'npz_path' in arguments and arguments['npz_path'] != self.path:
+                self.violations.append('unauthorized_input')
+                raise SpectrumInputError("Only the supplied opaque spectrum path is allowed")
+            if base.name == 'submit_report':
+                payload = json.loads(base.func(*args, **kwargs))
+                try:
+                    self.result = explanation.result(self.prediction, self.observations,
+                        payload['observation_ids'], payload['assessment'], violations=self.violations)
+                except (ValueError, KeyError):
+                    self.violations.append('invalid_report')
+                    raise SpectrumInputError('Invalid report evidence or missing prediction') from None
+                return 'recorded'
             if self.calls >= 6:
+                self.violations.append('analysis_budget_exhausted')
                 raise SpectrumInputError("Tool budget exhausted: at most 6 analysis calls")
             self.calls += 1
-            if "npz_path" in kwargs and kwargs["npz_path"] != self.path:
-                raise SpectrumInputError("Only the supplied opaque spectrum path is allowed")
-            return base.func(*args, **kwargs)
+            if base.name == 'predict_redshift' and self.prediction is not None:
+                return json.dumps(self.observations[0])
+            safe_arguments = dict(arguments)
+            if 'npz_path' in safe_arguments:
+                safe_arguments['npz_path'] = 'spectrum.npz'
+            try:
+                value = json.loads(base.func(*args, **kwargs))
+            except Exception as exc:
+                code = 'invalid_input' if isinstance(exc, SpectrumInputError) else 'technical_error'
+                self.record(base.name, safe_arguments, None, code)
+                self.violations.append(code)
+                raise SpectrumInputError(code) from None
+            if base.name == 'predict_redshift':
+                explanation.canonical_z(value)
+                self.prediction = deepcopy(value)
+            return json.dumps(self.record(base.name, safe_arguments, value))
         return beta_tool(execute)
 
 
-def execute_run(path, model, structured):
-    state = RunTools(path, structured)
+def execute_run(path, model, structured, state=None):
+    state = state or RunTools(path, structured)
+    state.bootstrap()
     client = anthropic.Anthropic()
     runner = client.beta.messages.tool_runner(
         model=model, max_tokens=8000 if structured else 16000,
         max_iterations=8,
-        system=system_prompt(model_identity(tools._model())) + (STRUCTURED_RULE if structured else ""),
+        system=system_prompt(state.prediction["model_identity"]) + STRUCTURED_RULE,
         tools=state.tools,
         messages=[{"role": "user", "content": f"Analyze the spectrum in {path} and " +
-                   ("submit the structured result via submit_report." if structured else "write the observation report.")}],
+                   "submit the result via submit_report. Initial executor observation: " + json.dumps(state.observations[0])}],
         **request_kwargs(model))
-    history, final = [], None
-    usage = dict.fromkeys(USAGE_KEYS, 0)
+    history, final = state.history, None
+    usage = state.usage
     for message in runner:
         final = message
         history.append({"role": "assistant", "content": message.to_dict()["content"]})
+        if any(b.type == 'text' and b.text.strip() for b in message.content):
+            state.violations.append('unvalidated_generated_text')
+        if any(b.type == 'tool_use' and b.name not in {t.name for t in state.tools} for b in message.content):
+            state.violations.append('unknown_tool')
         for key in USAGE_KEYS:
             usage[key] += getattr(message.usage, key, None) or 0
         response = runner.generate_tool_call_response()
         if response is not None:
             history.append(_jsonable(response))
+        if state.result is not None:
+            break
     return state, final, usage, history
 
 
@@ -254,58 +305,47 @@ class AgentRunError(RuntimeError):
         self.code, self.history, self.usage = code, history, usage
 
 
-def run(
-    npz_path: str, model: str = DEFAULT_MODEL, transcript: str | None = None
-) -> str:
-    with agent_input(npz_path) as (path, provenance):
-        state, final, usage, history = execute_run(path, model, False)
-    text = "" if final is None else "".join(b.text for b in final.content if b.type == "text")
-    reason = getattr(final, 'stop_reason', None)
-    tool_pending = final is not None and any(b.type == 'tool_use' for b in final.content)
-    turns = sum(m['role'] == 'assistant' for m in history)
-    code = ('no_messages' if final is None else
-            'iteration_limit' if turns >= 8 and (tool_pending or reason == 'tool_use') else
-            'incomplete_report' if tool_pending or reason in {'max_tokens', 'tool_use'} else
-            'empty_report' if not text.strip() else None)
+def run_structured(npz_path: str, model: str = DEFAULT_MODEL) -> dict:
+    """Always retain status and any valid official prediction, including failures."""
+    usage, history, provenance, state = dict.fromkeys(USAGE_KEYS, 0), [], None, None
+    try:
+        with agent_input(npz_path) as (path, provenance):
+            state = RunTools(path, True)
+            state, final, usage, history = execute_run(path, model, True, state=state)
+        report = state.finish()
+        report['completion_code'] = ('iteration_limit' if len([m for m in history if m['role']=='assistant']) >= 8
+                                     and state.result is None else 'invalid_or_missing_report' if report['status']=='explanation_incomplete' else None)
+    except SpectrumInputError:
+        report = state.finish(status='explanation_incomplete') if state and state.prediction is not None else explanation.result(status='invalid_input')
+    except Exception:
+        report = state.finish(status='technical_error') if state else explanation.result(status='technical_error')
+    if state is not None:
+        usage, history = state.usage, state.history
+    report.update(tokens_in=usage['input_tokens'], tokens_out=usage['output_tokens'],
+                  usage=usage, input_provenance=provenance, history=history,
+                  history_is_unvalidated=True)
+    return report
+
+
+def run(npz_path: str, model: str = DEFAULT_MODEL, transcript: str | None = None) -> str:
+    report = run_structured(npz_path, model)
     if transcript:
         target = Path(transcript)
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(json.dumps(history, indent=2, default=str))
-        target.with_suffix(".input.json").write_text(json.dumps(provenance, indent=2))
-        target.with_suffix('.status.json').write_text(json.dumps(
-            {'status': 'error' if code else 'ok', 'code': code, 'iterations': turns,
-             'stop_reason': reason, 'usage': usage}, indent=2))
-    cost = estimate_cost_usd(model, usage)
-    cost_txt = f" ~= ${cost:.4f}" if cost is not None else ""
-    print(f"[usage] model={model} in={usage['input_tokens']} out={usage['output_tokens']}{cost_txt}", file=sys.stderr)
-    if code:
-        raise AgentRunError(code, history, usage)
-    return text
+        target.write_text(json.dumps(report['history'], indent=2, default=str))
+        target.with_suffix('.input.json').write_text(json.dumps(report['input_provenance'], indent=2))
+        target.with_suffix('.status.json').write_text(json.dumps(dict(
+            status='ok' if report['status'] in {'complete','ambiguous','insufficient_data'} else 'error',
+            code=report.get('completion_code') or report['status'], model_z=report['model_z'],
+            result=report), indent=2))
+    if report['status'] not in {'complete', 'ambiguous', 'insufficient_data'}:
+        exc = AgentRunError(report.get('completion_code') or report['status'], report['history'], report['usage'])
+        exc.result = report
+        raise exc
+    return explanation.render(report)
 
 
-STRUCTURED_RULE = (
-    "\nAdditional rule for this run: do NOT write the markdown report. "
-    "Instead, ALWAYS finish by calling submit_report exactly once, after "
-    "verifying your final z with identify_spectral_lines. Keep tool use "
-    "tight: at most 6 tool calls before submit_report."
-)
-
-
-def run_structured(npz_path: str, model: str = "claude-haiku-4-5") -> dict | None:
-    """Run the agent on one spectrum and return the submit_report payload.
-
-    Returns None if the agent never called submit_report. On success the
-    payload gains tokens_in / tokens_out plus the full accumulated `usage`
-    dict, so callers can estimate cost with estimate_cost_usd().
-    """
-    with agent_input(npz_path) as (path, provenance):
-        state, final, usage, history = execute_run(path, model, True)
-    result = state.result
-    if result is not None:
-        result = dict(result)
-        result.update(tokens_in=usage["input_tokens"], tokens_out=usage["output_tokens"],
-                      usage=usage, input_provenance=provenance)
-    return result
+STRUCTURED_RULE = "\nCall submit_report exactly once using only observation IDs. No free prose or numeric conclusion."
 
 
 def main() -> int:
@@ -319,6 +359,7 @@ def main() -> int:
     try:
         print(run(args.npz_path, args.model, args.save_transcript))
     except AgentRunError as exc:
+        print(explanation.render(exc.result))
         print(json.dumps({'status': 'error', 'code': exc.code}), file=sys.stderr)
         return 2
     return 0

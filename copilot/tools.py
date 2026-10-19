@@ -135,7 +135,7 @@ def _z_summary(result: dict) -> dict:
 
 def official_z(summary: dict) -> float:
     """The redshift an agent should act on, given a predict_redshift output."""
-    return summary.get("z_pred_map", summary["z_pred"])
+    return summary["z_pred_map"] if "z_pred_map" in summary else summary["z_pred"]
 
 
 @_serialized

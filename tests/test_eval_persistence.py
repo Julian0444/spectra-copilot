@@ -26,7 +26,7 @@ def harness(tmp_path, monkeypatch):
     monkeypatch.setattr(mod.tools, 'predict_redshift_impl', lambda _: {'z_map': 0.5})
     monkeypatch.setattr(mod.tools, 'official_z', lambda r: r['z_map'])
     monkeypatch.setattr(mod.agent, 'run_structured', lambda *a, **k: {
-        'z_final': 0.5, 'confidence': 'high', 'usage': {},
+        'model_z': 0.5, 'status': 'complete', 'usage': {},
         'tokens_in': 10, 'tokens_out': 2})
     monkeypatch.setattr(mod, 'EVAL_DIR', tmp_path)
     out = tmp_path / 'run.csv'

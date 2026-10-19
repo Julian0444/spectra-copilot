@@ -22,6 +22,8 @@ def main() -> None:
         prediction = tools.predict_redshift_impl(opaque)
         z = tools.official_z(prediction)
         report = {"input_id": "spectrum", "source_sha256": provenance["source_sha256"],
+                  "model_z": z, "predictor": prediction['model_identity'],
+                  "input_contract": prediction['coverage']['contract'],
                   "predict_redshift": prediction,
                   "identify_spectral_lines": tools.identify_spectral_lines_impl(opaque, z)}
 

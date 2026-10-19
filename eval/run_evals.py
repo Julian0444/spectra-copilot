@@ -36,7 +36,7 @@ from desi_fm.inputs import CONTRACT_VERSION
 EVAL_DIR = Path(__file__).resolve().parent
 FIELDS = ["case", "z_true", "z_model", "z_final", "confidence",
           "dzn", "ok15", "ok05", "tokens", "status"]
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 
 def dz_norm(z: float, z_true: float) -> float:
@@ -146,6 +146,7 @@ def run_identity(items: list[str], labels: dict, cases: Path, baseline: bool,
             'mode': 'baseline' if baseline else 'agent',
             'llm_model': None if baseline else model,
             'protocol': {'model_input': 'full-spectrum', 'ok15': 'dzn < 0.15',
+                         'policy': 'explanatory-model-z-v1',
                          'ok05': 'dzn < 0.05', 'agent_attempts': 2,
                          'input_contract': CONTRACT_VERSION,
                          'agent_input': 'opaque-scientific-input-v2',
@@ -170,6 +171,8 @@ def validate_rows(rows: list[dict], labels: dict, items: list[str], baseline: bo
         if r['status'] in {'ok', 'baseline'} and r['z_model'] == '':
             raise ValueError('Completed result lacks model prediction')
         if r['status'] == 'ok':
+            if float(r['z_final']) != float(r['z_model']):
+                raise ValueError('Saved result violates official model prediction')
             dzn = dz_norm(float(r['z_final']), labels[case])
             if (not math.isclose(float(r['dzn']), dzn, abs_tol=1e-12)
                     or int(r['ok15']) != int(dzn < .15)
@@ -271,13 +274,13 @@ def main() -> int:
                         for attempt in (1, 2):
                             try:
                                 result = agent.run_structured(npz, model=a.model)
-                                if result is None:
+                                if result is None or result.get('status') not in {'complete', 'ambiguous', 'insufficient_data'}:
                                     continue
-                                z_final = float(result['z_final'])
-                                if not math.isfinite(z_final):
-                                    raise ValueError('Non-finite agent prediction')
+                                z_final = float(result['model_z'])
+                                if not math.isfinite(z_final) or z_final != z_model:
+                                    raise ValueError('Agent result violates official model prediction')
                                 dzn = dz_norm(z_final, labels[case])
-                                row.update(z_final=z_final, confidence=result['confidence'],
+                                row.update(z_final=z_model, confidence='not_applicable',
                                            dzn=dzn, ok15=int(dzn < .15), ok05=int(dzn < .05),
                                            tokens=int(result['tokens_in']) + int(result['tokens_out']),
                                            status='ok')

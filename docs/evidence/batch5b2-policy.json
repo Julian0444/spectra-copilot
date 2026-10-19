@@ -1,0 +1,10 @@
+{
+  "ticket": "T1",
+  "tests": 66,
+  "log_sha256": "78ddd870e52345ea36239e0a9ada786090bcfb14122bd0e85c1ae2b4fa8d746a",
+  "real_llm_evaluated": false,
+  "preserves_official_model_z": "executor owned; software invariant",
+  "free_prose": "not released; incomplete status",
+  "legacy_evaluator_schema": 3,
+  "historical_results_unchanged": true
+}
