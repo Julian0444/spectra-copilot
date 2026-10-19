@@ -161,8 +161,9 @@ def test_npz_metadata_and_filename_are_checked_without_disclosing_ids(tmp_path, 
     report=leaks.scan(private,[],[path])
     assert report['violating_surfaces']>0
     assert invented_cases[0]['object_id'] not in json.dumps(report)
-    path2=tmp_path/(invented_cases[0]['case_id']+'.txt')
+    path2=tmp_path/(invented_cases[0]['case_id']+'_z0.123456789.txt')
     path2.write_text('safe content')
     report=leaks.scan(private,[],[path2])
     assert report['violating_surfaces']>0
     assert invented_cases[0]['case_id'] not in json.dumps(report)
+    assert '0.123456789' not in json.dumps(report)

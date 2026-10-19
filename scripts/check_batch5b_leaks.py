@@ -102,8 +102,14 @@ def inspect_text(text, private):
 
 
 def safe_path(path, private):
-    ids = private[0]
-    return TOKEN.sub(lambda match: '[redacted]' if match.group() in ids else match.group(), str(path))
+    ids, labels, _ = private
+    redacted = TOKEN.sub(lambda match: '[redacted]' if match.group() in ids else match.group(), str(path))
+    # A violating filename may attach a private label to a word (e.g. z0.12).
+    # This only redacts reports: an isolated matching number is still not a leak.
+    values = set(labels.values())
+    numbers = r'[-+]?(?:\d+\.\d*|\.\d+|\d+)(?:[eE][-+]?\d+)?'
+    return re.sub(numbers, lambda match: '[redacted-label]' if float(match.group()) in values
+                  else match.group(), redacted)
 
 
 def scan(private, repositories, llm_inputs):
