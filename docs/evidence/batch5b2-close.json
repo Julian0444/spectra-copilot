@@ -1,0 +1,194 @@
+{
+  "session": "5B-2",
+  "date": "2026-10-19",
+  "scope": "Technical implementation and offline verification only; no 5C execution",
+  "private_session": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb",
+  "initial_state": {
+    "fm": {
+      "path": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING",
+      "branch": "codex/lote-5b",
+      "head": "beedd1004a56295ddf33983ee9d081f1823f422c",
+      "status": "?? runs/desi_50k_big/predictions_heldout.csv",
+      "corrected_5a": "c99ec856f968f2965a4b6ebd73c399fe2ecb107c",
+      "branch_5a": "c99ec856f968f2965a4b6ebd73c399fe2ecb107c",
+      "freeze": "2b94b3c9544e8d3b6675648785bed359350a74c1",
+      "freeze_parent": "c99ec856f968f2965a4b6ebd73c399fe2ecb107c",
+      "freeze_range_files": [
+        "docs/BATCH_5.md",
+        "docs/BATCH_5B_PROTOCOL.md",
+        "docs/evidence/batch5b-commitment.json",
+        "docs/evidence/batch5b-freeze.json",
+        "docs/protocol/batch5b-development.json",
+        "scripts/check_batch5b_leaks.py",
+        "scripts/select_batch5b.py",
+        "tests/test_batch5b_protocol.py"
+      ],
+      "after_independent_review": [
+        "beedd1004a56295ddf33983ee9d081f1823f422c docs: close 5B-1.1 custody corrections for independent review",
+        "e0dff5910cff27cac01aa653313c9a87fa20b12e fix: inspect custody IDs, Git blobs and reserved generator references",
+        "bb95c2ab23fd59bc7d893feca40910cd31ad01f3 fix: isolate frozen 5B selection visibility helpers"
+      ],
+      "reviewed_head_is_ancestor": true
+    },
+    "acceptance": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-1-20261018T225723/custody-final/acceptance.json",
+      "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+      "bytes": 82805,
+      "matches_expected": true,
+      "contents_displayed": false
+    },
+    "copilot": {
+      "path": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "branch": "codex/lote-5b",
+      "head": "f13daceab3b12e9d9e5a355fe1a3a838c7f34de4",
+      "status": "",
+      "corrected_5a": "9c5cf0e232736a7a0ce386a487d218517a59de9c",
+      "branch_5a": "9c5cf0e232736a7a0ce386a487d218517a59de9c",
+      "freeze": "ed9bedc1efbc937cb179200cdb3f91fdbc2b6b4b",
+      "freeze_parent": "9c5cf0e232736a7a0ce386a487d218517a59de9c",
+      "freeze_range_files": [
+        "docs/BATCH_5.md",
+        "docs/BATCH_5B_PROTOCOL.md",
+        "docs/evidence/batch5b-commitment.json",
+        "docs/evidence/batch5b-freeze.json",
+        "docs/protocol/batch5b-development.json",
+        "eval/README.md",
+        "scripts/check_batch5b_leaks.py",
+        "scripts/select_batch5b.py",
+        "tests/test_batch5b_protocol.py"
+      ],
+      "after_independent_review": [
+        "f13daceab3b12e9d9e5a355fe1a3a838c7f34de4 docs: close 5B-1.1 custody corrections for independent review",
+        "ac737dd2e5dc6e73e77a6c65cb53e46a31c7be8a fix: report only internal exception types on MCP stderr",
+        "9cbdf6b8941ae96579727afd67eb374fc9a75fee fix: inspect custody IDs, Git blobs and reserved generator references",
+        "2709252c4a23536df75d2be90775d4fb47b75e79 fix: isolate frozen 5B selection visibility helpers"
+      ],
+      "reviewed_head_is_ancestor": true
+    }
+  },
+  "implementation_commits": {
+    "fm": [
+      "92c680125af95b81876fa521d290d0960214e408 fix: close 5B-2 custody prerequisites without changing selection",
+      "0c15aea1fe1696d6cc27755ef4c14c30a33dc3e2 test: preserve frozen matcher development baseline and controls",
+      "9aa92830b95adf48c43a1d6a5182428b3f3d9aa6 Record protected explanatory policy and simulated checks",
+      "ef2d5fa8ac14811f82935caa64358c59365e6270 Record descriptive matcher measurements and limitations",
+      "16ea225ae2dab002800e38fb2954b5df3b99f2db Record citation custody and independent review rubric",
+      "76415ffb8f796937eaaec68a5acae448d3ea75d7 Add isolated historical CNN-17 development harness with closed test guard",
+      "d2fe6c9a966dc340e1631a1644424fb511948972 Record successful bounded CNN-17 operational check",
+      "f6b774a005929cb014039020cf8424ed6dddfab2 Record zero-paid budget policy and bounded SDK simulation",
+      "2cff06db5f86e06c0de0a767d2ccec024fa2ee20 Record sealed acceptance preparation full suites and mutation checks"
+    ],
+    "copilot": [
+      "37d7bcad1e8a8520cf4a6932d0143acf2c215c2d fix: close 5B-2 custody prerequisites without changing selection",
+      "8560d2adfd67558b2f42f77fd7d34c19ecfe2355 test: preserve frozen matcher development baseline and controls",
+      "a5b50a9e0505b67a6341a6be64cbf00d4414bd25 Protect executor-owned redshift and explanatory reports",
+      "01bed86ed6f81a87b254eae818a7dc1c0396bb7d Replace spectral verdict with supported descriptive measurements and candidates",
+      "fcda2e2e31be5b09d76132dacc3bdc093a61a0a9 Record negative descriptive matcher gate and numeric-domain safeguard",
+      "fdfaff319bb417fae92600ca0accd754fc8c73da Bind citations to retrieved corpus fragments and separate semantic review",
+      "0845bdf64fd113233215f8439221ee724e8c1aea Record CNN-17 development parity repeatability and operational limits",
+      "e2b0c395288ecab1f99fdcea16c17bc8f40dc692 Enforce pre-request LLM budgets with zero paid default and no retries",
+      "ae44d262343d4f487c08b5061e2406cc991c925b Prepare sealed acceptance runner scoring and candidate identity without paid calls"
+    ]
+  },
+  "candidate_source_heads": {
+    "copilot": "ae44d262343d4f487c08b5061e2406cc991c925b",
+    "desi_fm": "2cff06db5f86e06c0de0a767d2ccec024fa2ee20"
+  },
+  "final_heads_record": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/FINAL_STATE.json",
+  "head_note": "Final documentation commits cannot contain their own hash; authoritative post-commit HEADs are recorded externally in FINAL_STATE.json and consensus section 13.6.",
+  "candidate": {
+    "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/candidate-identity.json",
+    "sha256": "db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4",
+    "bytes": 9610
+  },
+  "candidate_behavior_sha256": "9e76fe83d40a3761d67a6519698cfa28291657287d2b45963c6e3e8cbb7d59dd",
+  "full_suites": {
+    "fm_python39": 175,
+    "fm_python312": 175,
+    "copilot_python312": 234
+  },
+  "mutations_detected": 3,
+  "full_test_evidence": "batch5b2-runner.json",
+  "preservation": {
+    "files": 1174,
+    "counts": {
+      "lote-4b-01": 658,
+      "preparation": 171,
+      "batch4a-v1": 18,
+      "FINAL PROJECT DEEP LEARNING": 162,
+      "spectra-copilot": 165
+    },
+    "bytes": {
+      "lote-4b-01": 6059818657,
+      "preparation": 87279004,
+      "batch4a-v1": 3014928724,
+      "FINAL PROJECT DEEP LEARNING": 2508937756,
+      "spectra-copilot": 77911544
+    },
+    "mismatches": 0,
+    "extra": 0,
+    "baseline_sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239"
+  },
+  "preservation_artifacts": {
+    "preservation-before.json": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/preservation-before.json",
+      "sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239",
+      "bytes": 284111
+    },
+    "preservation-final.json": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/preservation-final.json",
+      "sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239",
+      "bytes": 284111
+    },
+    "preservation-final-summary.json": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/preservation-final-summary.json",
+      "sha256": "fc5eae92b053606a34ed257c1d42a94d7d2dfc335645daf79f031186580f7c7e",
+      "bytes": 482
+    }
+  },
+  "acceptance_hash_only": {
+    "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-1-20261018T225723/custody-final/acceptance.json",
+    "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+    "bytes": 82805
+  },
+  "unchanged_protocol": {
+    "BATCH_5B_PROTOCOL.md": "7d418d12d11d2406a30f94dc64a8f91d6462a1c364ddaac48e2d14bf37b98dc3",
+    "protocol/batch5b-development.json": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+    "evidence/batch5b-commitment.json": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99"
+  },
+  "custody_before_implementation_commit": {
+    "result": {
+      "checked_surfaces": 4945,
+      "violating_surfaces": 0,
+      "violations": []
+    },
+    "artifact": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/T5-runner-staged-check.log",
+      "sha256": "84e0b731e196156e6687c7dbecdf5550c6e7fe62a4898267ac2dfda08eeeab69",
+      "bytes": 70
+    }
+  },
+  "custody_final_record": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/FINAL_STATE.json",
+  "serving_predictor": "v2.1 checkpoint_last; spectra-input-v3; no CNN deployment",
+  "matcher_gate": "failed at baseline and descriptive version; physical confirmation disabled",
+  "cnn_scope": "CNN-17 step 6000, historical code 4387dd36, development plus already-selected validation parity; no test inference or scientific comparison",
+  "historical_agent_result": "139/150 model versus 119/150 agent; unchanged and not new-policy acceptance",
+  "paid_calls": 0,
+  "downloads": 0,
+  "new_4b_test_inference": 0,
+  "training": 0,
+  "push_merge_publish_deploy": false,
+  "backup": "no hay respaldo independiente verificado",
+  "keys": "sin verificar",
+  "H18": "explicación personal de Julian pendiente",
+  "pending_5c": [
+    "package and clean installation",
+    "final installed identity and justification of every behavioral difference",
+    "authorization of paid proposal and fixed prices/reservation policy",
+    "custodian-only real input and scoring views",
+    "real 128-case acceptance with no automatic retries",
+    "independent semantic/scientific review and adjudication",
+    "portable reproduction",
+    "separately authorized release/publication"
+  ]
+}

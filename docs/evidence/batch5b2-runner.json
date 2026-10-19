@@ -122,7 +122,11 @@
       "bytes": 384
     }
   },
-  "candidate_identity": "Collector and verifier implemented; real candidate capture follows the code commit.",
+  "candidate_identity": {
+    "file": "batch5b2-candidate.json",
+    "sha256": "db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4",
+    "behavior_sha256": "9e76fe83d40a3761d67a6519698cfa28291657287d2b45963c6e3e8cbb7d59dd"
+  },
   "acceptance_status": "not executed; independent scientific review remains pending",
   "contract": "Label-free strict input plan, one isolated worker per case, progress before paid POST, all requested rows persisted, hard timeout, seal verified before labels read, zero paid budget default."
 }

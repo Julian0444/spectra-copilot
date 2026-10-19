@@ -707,3 +707,110 @@ persistencia), 5B-1 y custodia nuevas permanecen en las suites completas.
 Evidencia ligera: `docs/evidence/batch5b2-runner.json`. Captura candidata,
 preservación/custodia de cierre y handoff final siguen a este commit; esta
 entrada no declara cerrado todavía 5B-2.
+
+
+### 5B-2 — cierre técnico y handoff (2026-10-19)
+
+Esta entrada sustituye los estados intermedios «pendiente» anteriores. T1–T5
+están implementados y comprobados en su alcance técnico. **5C no iniciada**;
+paquetes, identidad final instalada, evaluación real y publicación siguen pendientes.
+El resultado negativo histórico **139/150 modelo frente a 119/150 agente** sigue
+vigente; no se reinterpreta como si hubiese usado esta política.
+
+| Ticket | Criterio técnico y resultado |
+|---|---|
+| Custodia previa | Revisión 5B-1.1 registrada antes de T1; residuales en commits propios FM 92c6801 / Copilot 37d7bca. 38 regresiones, incluidos for, comprensión, parametrize, tupla y fronteras numéricas; regeneración idéntica por tres hashes. |
+| T2.1 | Base congelada ed9bedc medida antes de T1, 96 casos de desarrollo y 1.560 controles. Puerta falla; evidencia conservada. |
+| T1 | model_z del ejecutor, alternativas/observaciones/explicación separadas; estados explícitos, prosa libre no validada fuera de la conclusión; CLI/evaluador protegidos. |
+| T2 | mask/ivar, orden, huecos, cobertura, SNR/modalidad y candidatos con procedencia. Puerta final falla por TPR; solo descripción, sin confirmación ni sustitución de model_z. |
+| T3 | IDs reales y fragmentos exactos con hash; existencia, respaldo y ciencia separados. Rúbrica de revisión independiente preparada, revisión real pendiente. |
+| T4 | CNN-17 estricta y reproducible: 90 válidos, seis inválidos esperados, 24/24 paridad de validación. Histórico aislado y test 4B bloqueado; sin comparación científica nueva. |
+| T5 | Presupuesto cero por defecto, reserva antes del POST, simulación que bloquea el exceso, ejecutor con etiquetas separadas y salidas selladas, identidad candidata fijada. |
+
+**Verificación:** suites completas FM 175 en Python 3.9.6 y 175 en 3.12.13;
+Copilot 234 en 3.12.13. Las tres mutaciones requeridas fueron detectadas en copias
+temporales, cada una con baseline verde. `batch5b2-runner.json` conserva comandos,
+hashes y límites. Las simulaciones no validan un LLM real. La conservación de
+model_z es garantía del software, no mejora de precisión.
+
+**Custodia y preservación:** barrido previo al commit del ejecutor, 4.945
+superficies y cero violaciones. El barrido posterior a los commits documentales,
+con todo el historial 5B y el consenso actualizado, queda en
+`/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/final-custody.log` y `FINAL_STATE.json` del mismo directorio.
+Los conteos son superficies, no casos de aceptación. Se verificaron al inicio
+y al final 1.174 archivos por SHA-256 y tamaño, cero diferencias y cero extras
+en los tres árboles inmutables. El CSV histórico sigue sin versionar e intacto.
+Las evidencias ligeras enlazan los inventarios privados; no se versionan pesos,
+datos, secretos ni logs voluminosos.
+
+**Identidad candidata:** archivo `docs/evidence/batch5b2-candidate.json`, copia
+exacta de `/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/candidate-identity.json`.
+SHA-256 del archivo: `db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4`.
+SHA-256 de comportamiento: `9e76fe83d40a3761d67a6519698cfa28291657287d2b45963c6e3e8cbb7d59dd`.
+Incluye código, prompt, corpus, herramientas, política, predictor, índice,
+evaluador, protocolo y entorno. El índice histórico conserva su limitación de
+compatibilidad no verificada; no se presenta como evidencia independiente.
+La identidad final instalada y cada diferencia deberán justificarse en 5C.
+
+Ramas exactas: `codex/lote-5b` en FM y Copilot. Bases verificadas por Claude:
+FM `beedd1004a56295ddf33983ee9d081f1823f422c`,
+Copilot `f13daceab3b12e9d9e5a355fe1a3a838c7f34de4`.
+HEAD de código/evidencia al capturar identidad:
+FM `2cff06db5f86e06c0de0a767d2ccec024fa2ee20`,
+Copilot `ae44d262343d4f487c08b5061e2406cc991c925b`.
+Los commits posteriores son exclusivamente documentación. Los **HEAD finales**,
+incluidos esos commits, se registran fuera de los repositorios en
+`/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/FINAL_STATE.json` y consenso §13.6, evitando auto-referenciar el hash del
+propio commit. `batch5b2-close.json` contiene el historial de implementación.
+
+Manifiestos sin cambios:
+
+- Desarrollo en ambos `docs/protocol/batch5b-development.json`:
+  `60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4`.
+- Aceptación privada: `/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-1-20261018T225723/custody-final/acceptance.json`, 82.805 bytes;
+  `b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05`.
+  Solo hash/comprobador; no se mostraron ni ejecutaron sus casos.
+- Compromiso en ambos `docs/evidence/batch5b-commitment.json`:
+  `2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99`.
+- Protocolo con su adenda en ambos `docs/BATCH_5B_PROTOCOL.md`:
+  `7d418d12d11d2406a30f94dc64a8f91d6462a1c364ddaac48e2d14bf37b98dc3`.
+
+| Hallazgo | Estado al cierre técnico de 5B-2 |
+|---|---|
+| H-01 | Conclusión 5A acotada a los checkpoints seleccionados; sin ampliarla. |
+| H-02 | Superficies locales corregidas; publicación pendiente y no autorizada. |
+| H-03 | Concurrencia MCP, R5A-01 y serialización O-1 conservadas en las suites completas. |
+| H-04 | Nuevos wheels e instalación limpia pendientes de 5C. |
+| H-05 | Localidad por TARGETID documentada; independencia física sin establecer. |
+| H-06 | Regresiones del experimento conservadas; sin entrenamiento ni cambios científicos. |
+| H-07 | 1.174 archivos preservados por SHA-256/tamaño; reproducción portable 5C pendiente; no hay respaldo independiente verificado. |
+| H-08 | Cronología histórica acotada y congelado previo a implementación verificado. |
+| H-09 | Reserva del agente intacta; exposición declarada; no es un test independiente de precisión del predictor. |
+| H-10 | Sensibilidad B-101 documentada; sin nueva selección. |
+| H-11 | Cifras históricas/CNN no comparables; T4 no demuestra superioridad. |
+| H-12 | Reproducción histórica acotada; portabilidad pendiente de 5C. |
+| H-13 | R5A-02 cerrado; no se reintroducen conteos fijos en superficies actuales. |
+| H-14 | Persistencia y errores de 5A conservados; ejecutor nuevo sella salidas antes de etiquetas y mantiene errores/pendientes. |
+| H-15 | Contrato actual v3 intacto; CNN usa explícitamente el histórico v2, sin adoptar ese camino como v3. |
+| H-16 | Política, estados y límites ejecutables probados con simulaciones; comportamiento real del LLM pendiente de 5C. |
+| H-17 | Revisión independiente 5B-1.1 registrada; este trabajo aporta pruebas de implementación, no revisión semántica independiente de 5C. |
+| H-18 | Explicación personal de Julian pendiente; ninguna respuesta atribuida. |
+
+
+**Pendientes exactos de 5C:** empaquetar e instalar en limpio; registrar identidad
+final instalada y diferencias justificadas; obtener autorización de Julian para
+la propuesta de 128 casos, modelo/tarifas y política de reserva; materializar por
+custodio vistas separadas de inputs/etiquetas; ejecutar una vez con límites;
+puntuar después de sellar y revisar semántica/ciencia con dos revisores más
+adjudicación de discrepancias; comprobar criterios congelados; reproducción
+portable y release solo con autorización separada. Las guías
+`BATCH_5C_EXECUTION.md` y `BATCH_5C_REVIEW.md` describen esos pasos. No se reduce N,
+cambia el modelo ni ajusta el protocolo automáticamente ante una inviabilidad.
+
+**Modelo servido: v2.1.** CNN-17 no desplegada ni conectada a FAISS. No descargas,
+reentrenamiento, inferencia nueva sobre test 4B, aceptación real, llamadas pagas,
+push, merge, publicación o despliegue. No hay reserva confirmatoria intacta para
+comparar CNN/v2.1 en este snapshot; los sintéticos públicos se informarán aparte.
+**Respaldo: no hay respaldo independiente verificado. Rotación de claves: sin
+verificar. H-18: explicación personal de Julian pendiente.** La sesión se detiene
+en el cierre técnico de 5B-2; no se declara cerrado el proyecto completo.
