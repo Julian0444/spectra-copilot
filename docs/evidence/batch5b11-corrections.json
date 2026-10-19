@@ -1,0 +1,183 @@
+{
+  "session": "5B-1.1",
+  "date": "2026-10-19",
+  "branches": {
+    "fm": "codex/lote-5b",
+    "copilot": "codex/lote-5b"
+  },
+  "initial_heads": {
+    "fm": "f651e7d6141bb6a151bc707ce37ee9a89420e9ce",
+    "copilot": "2915c3a5a6fdc9eea863afaa6b6d5c99be90c0c8"
+  },
+  "correction_commits": {
+    "fm": {
+      "T1": "bb95c2ab23fd59bc7d893feca40910cd31ad01f3",
+      "R5B1-01_R5B1-02_N-1": "e0dff5910cff27cac01aa653313c9a87fa20b12e"
+    },
+    "copilot": {
+      "T1": "2709252c4a23536df75d2be90775d4fb47b75e79",
+      "R5B1-01_R5B1-02_N-1": "9cbdf6b8941ae96579727afd67eb374fc9a75fee",
+      "N-2": "ac737dd2e5dc6e73e77a6c65cb53e46a31c7be8a"
+    }
+  },
+  "status": {
+    "R5B1-01": "closed",
+    "R5B1-02": "closed",
+    "N-1": "guard and explicit public-recipe limitation added",
+    "N-2": "exception type only on server stderr"
+  },
+  "pre_fix_cli_regressions": {
+    "failed": 17,
+    "passed": 9
+  },
+  "post_fix_custody_regressions": 26,
+  "server_regressions": 13,
+  "full_suites": {
+    "FM3.9": 156,
+    "FM3.12": 156,
+    "Copilot3.12": 142
+  },
+  "regeneration": {
+    "acceptance": {
+      "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+      "expected_sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+      "identical": true
+    },
+    "development": {
+      "sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+      "expected_sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+      "identical": true
+    },
+    "commitment": {
+      "sha256": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99",
+      "expected_sha256": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99",
+      "identical": true
+    },
+    "private_directory_0700": true,
+    "private_file_0600": true,
+    "temporary_copy_deleted": true
+  },
+  "base_visibility_counts": {
+    "tail_population": 2759,
+    "base_surfaces": 299,
+    "v1_visible_tail": 1,
+    "corrected_visible_tail": 1,
+    "additional_visible_tail": 0,
+    "removed_visible_tail": 0,
+    "additional_in_development": 0,
+    "additional_in_acceptance": 0,
+    "corrected_visible_in_acceptance": 0
+  },
+  "mutation_results": {
+    "baseline": {
+      "exit": 0,
+      "passed": 26,
+      "failed": 0,
+      "expected_outcome": true
+    },
+    "token_v1": {
+      "exit": 1,
+      "passed": 22,
+      "failed": 4,
+      "expected_outcome": true
+    },
+    "without_index": {
+      "exit": 1,
+      "passed": 23,
+      "failed": 3,
+      "expected_outcome": true
+    },
+    "without_history": {
+      "exit": 1,
+      "passed": 23,
+      "failed": 3,
+      "expected_outcome": true
+    },
+    "without_messages": {
+      "exit": 1,
+      "passed": 25,
+      "failed": 1,
+      "expected_outcome": true
+    },
+    "without_generator_rule": {
+      "exit": 1,
+      "passed": 19,
+      "failed": 7,
+      "expected_outcome": true
+    }
+  },
+  "checker_initial": {
+    "checked_surfaces": 3025,
+    "violating_surfaces": 0
+  },
+  "checker_staged": {
+    "checked_surfaces": 3070,
+    "violating_surfaces": 0
+  },
+  "preservation": {
+    "files": 1174,
+    "counts": {
+      "lote-4b-01": 658,
+      "preparation": 171,
+      "batch4a-v1": 18,
+      "FINAL PROJECT DEEP LEARNING": 162,
+      "spectra-copilot": 165
+    },
+    "bytes": {
+      "lote-4b-01": 6059818657,
+      "preparation": 87279004,
+      "batch4a-v1": 3014928724,
+      "FINAL PROJECT DEEP LEARNING": 2508937756,
+      "spectra-copilot": 77911544
+    },
+    "mismatches": 0,
+    "extra": 0,
+    "baseline_sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239"
+  },
+  "unchanged_artifacts": {
+    "fm": {
+      "protocol_original_prefix_unchanged": true,
+      "docs/protocol/batch5b-development.json": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+      "docs/evidence/batch5b-commitment.json": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99"
+    },
+    "copilot": {
+      "protocol_original_prefix_unchanged": true,
+      "docs/protocol/batch5b-development.json": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+      "docs/evidence/batch5b-commitment.json": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99"
+    }
+  },
+  "log_sha256": {
+    "custody-red.log": "a281f7305aae12d58646d423333a2852c853d974dcf89615d5afe6b46e1555a6",
+    "custody-green.log": "c1a891cfcddeaba569f66712065849b3deb3a24a8a53a289e06c40d380faa740",
+    "regeneration.log": "398cb34ce58e7444f73eafc6d533f9a7850bb44d9a327bac0088c8dd2b039a40",
+    "visibility-report.log": "6d393f0525ff3350d3d04d7b31c7d3e52075129e6a57d5ca26cee7fd64a22a71",
+    "diagnostic-red.log": "77fd4fbb7ca2e13151ba2222f1a2385986bc10075d6ba87c2eff74f734384c38",
+    "diagnostic-green.log": "349f45ccbca96d9fa739474b34175a7ac546bab056ec0c700c9a1cacd5a07d38",
+    "mutations.log": "a78f2bcba2ed9e32fb4414e79b3123c264e0a370209a7f32aaa69041e1a32a39",
+    "full-fm39.log": "163f9f001a8f0d528da57df3c3618747b2ff9ef4a448ad703dec959410213581",
+    "full-fm312.log": "ecccb2f471d9e5bb8d3ea273d5564329b68fdc09bf7a62f8faa8387aee9224fd",
+    "full-cp312.log": "aa6143b49282c48addad15afad2e457dbdba36721d83ad63ea1a042bdf1ed94c",
+    "imports39.log": "c430991e8942d04a9c7219c112dfc94ba8c6728cd36df0d718ad3ed9068d1106",
+    "imports312.log": "1b98f3d7e7f2c877cd4c5e72011169f017733d9dce4c8ecd8264b130cc49dc2b",
+    "corrected-checker-initial.log": "c2e1614e6360f862b816629c3c2ccf5269868143b44c14c92f14b304716aa583",
+    "corrected-checker-staged.log": "31fe58d9b3cfe43d843fb6cfaf97f06ada4c68afe6ddd1a8abb496281762021e"
+  },
+  "limits": {
+    "selection_unchanged": true,
+    "acceptance_cases_executed": 0,
+    "private_contents_displayed": false,
+    "public_synthetic_recipes": 48,
+    "blind_synthetic_acceptance_claim": false,
+    "5B-2_started": false,
+    "paid_calls": 0,
+    "downloads": 0,
+    "test_4b_inference": false,
+    "push": false,
+    "merge": false,
+    "publication": false,
+    "deployment": false
+  },
+  "independent_backup": "no hay respaldo independiente verificado",
+  "key_rotation": "sin verificar",
+  "H-18": "pendiente"
+}

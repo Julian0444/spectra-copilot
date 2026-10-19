@@ -440,3 +440,81 @@ sin abrir aceptación. Tras esa revisión,
 5B-2 implementará exclusivamente sobre desarrollo protección de model_z,
 alternativas, matcher B7/B9, citas y harness CNN-17 según BATCH_5B_PROTOCOL.md.
 Aceptación real/LLM autorizado, paquetes, instalación y cierre quedan en 5C.
+
+
+## Sesión 5B-1.1 — correcciones de custodia (2026-10-19)
+
+**Correcciones locales completadas; requieren verificación independiente antes
+de 5B-2.** Continúan las ramas exactas `codex/lote-5b` de ambos repositorios,
+desde FM `f651e7d6141bb6a151bc707ce37ee9a89420e9ce` y Copilot `2915c3a5a6fdc9eea863afaa6b6d5c99be90c0c8`.
+Estado inicial conforme: Copilot limpio; FM conserva solo el CSV histórico sin
+versionar. Las revisiones de Codex (§13.3 del consenso) y Claude reportada por
+Julian se contrastaron con código y reproducciones CLI usando datos inventados.
+No hubo exposición real detectada; no se cambió la selección para eludir controles.
+
+| Ticket | Corrección y verificación | FM | Copilot |
+|---|---|---|---|
+| T1 | Helpers de visibilidad v1 incorporados al selector; sin dependencia del detector mutable. Importación aislada probada y regeneración idéntica. | `bb95c2ab23fd59bc7d893feca40910cd31ad01f3` | `2709252c4a23536df75d2be90775d4fb47b75e79` |
+| R5B1-01 / T2 | Fronteras de puntuación, IDs completos y redacción de todos los IDs/etiquetas en rutas. CLI cubre guiones, guiones bajos, separadores, dos IDs y sufijo del case_id; controles alfanuméricos, número largo y redshift aislado. | `e0dff5910cff27cac01aa653313c9a87fa20b12e` | `9cbdf6b8941ae96579727afd67eb374fc9a75fee` |
+| R5B1-02 / T3 | Lector común para archivos/blobs y metadata NPZ; índice, blobs añadidos/modificados de todo el rango y mensajes de commit. Fallo cerrado ante lectura imposible. Regresiones staging limpio, commit/borrado, commit vacío y archivos corruptos. | mismo commit de custodia | mismo commit de custodia |
+| N-1 / T4 | Regla estática para referencias al generador con rol reservado, incluidos alias, argumento nombrado, variable, concatenación y getattr. Solo las dos rutas expresamente permitidas quedan exceptuadas. Adenda identificada sobre recetas públicas. | mismo commit de custodia | mismo commit de custodia |
+| N-2 / T5 | `internal_error` escribe únicamente tipo de excepción saneado en stderr; no mensaje, ruta ni traceback. Payload MCP intacto. Pruebas directas y stdio real. | no aplica al servidor | `ac737dd2e5dc6e73e77a6c65cb53e46a31c7be8a` |
+
+### Reproducibilidad, exposición y límites de interpretación
+
+La regeneración con el comando registrado, cambiando solo destinos, produjo
+archivos con hashes idénticos. Directorio temporal nuevo 0700, archivo privado
+0600, copia borrada al comparar. No se mostraron IDs, etiquetas ni respuestas:
+
+- Aceptación: `b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05` (82.805 bytes, 128 casos).
+- Desarrollo: `60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4`.
+- Compromiso: `2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99`.
+
+Informe T1 sobre las mismas 299 superficies base y 2.759 IDs de cola:
+**visibles v1 = 1; detector corregido = 1; adicionales = 0; retirados = 0;
+adicionales ∩ desarrollo = 0; adicionales ∩ aceptación = 0; visibles corregidos
+∩ aceptación = 0**. Solo se emitieron recuentos. Se mantuvieron población,
+selección, etiquetas/oráculos, manifiesto, rúbrica, criterios y compromiso.
+El protocolo anterior permanece byte a byte como prefijo, seguido de su adenda.
+
+Los **48 sintéticos de aceptación son derivables del código público**. En 5C
+se informarán como comprobaciones de mecanismo con recetas públicas, separados
+de los casos reales; no como aceptación ciega. 5B-2 solo puede usar
+`synthetic('development')`. La regla estática no promete impedir ofuscación
+intencional. No se ejecutaron casos de aceptación ni se inspeccionaron sus
+contenidos mediante salida al LLM. Esta reserva tampoco es un test independiente
+de precisión del predictor.
+
+### Pruebas, preservación y continuidad
+
+Regresiones por CLI antes de corregir: **17 fallan, 9 pasan**; después, las
+**26 pasan**. Diagnóstico N-2: regresión roja antes y 13 pruebas MCP aprobadas
+después, con stdio real. Mutaciones en copias privadas: **5/5 detectadas**
+(v1, sin índice, sin blobs históricos, sin mensajes y sin regla N-1); baseline
+26 aprobadas. Script reproducible: `scripts/check_batch5b11_mutations.py`.
+Suites completas: **FM 156 en Python 3.9.6, FM 156 en 3.12.13 y Copilot
+142 en 3.12.13**, sin omisiones. Advertencias preexistentes; imports `__file__`
+comprobados desde los checkouts; TMPDIR corto, cachés privadas y modo offline.
+No se modificaron entornos. `git diff --check` aprobado.
+
+Comprobador corregido sobre todos los argumentos registrados y logs nuevos:
+**3.025 superficies, 0 violaciones**; repetición con correcciones en staging:
+**3.070 superficies, 0 violaciones**. Los conteos son superficies inspeccionadas,
+no casos evaluados. Se preservan logs privados con hashes en
+[batch5b11-corrections.json](evidence/batch5b11-corrections.json).
+Inventarios inicial/final contra 5A: **1.174 archivos idénticos por SHA-256 y
+tamaño**, sin extras en los tres árboles inmutables. CSV histórico intacto y
+fuera de Git; no entran pesos, datos, secretos ni logs voluminosos.
+
+Estado separado: **R5B1-01 cerrado; R5B1-02 cerrado; N-1 corregido con límite
+público explícito; N-2 implementado; reproducibilidad del compromiso verificada**.
+**Respaldo: no hay respaldo independiente verificado. Rotación de claves:
+sin verificar. H-18: explicación personal de Julian pendiente.**
+Sin llamadas pagas, descargas, inferencia sobre test 4B, cambios científicos,
+push, merge, publicación ni despliegue. No se implementaron política, matcher,
+citas ni harness CNN; **5B-2 no iniciada**.
+
+**Siguiente paso exacto:** verificación independiente de 5B-1.1, incluyendo
+regeneración por hashes, fronteras/redacción, blobs/mensajes, regla N-1,
+diagnóstico stderr y preservación. Solo después corresponde iniciar 5B-2 sobre
+desarrollo bajo el protocolo y su adenda. No abrir ni evaluar aceptación.
