@@ -67,6 +67,15 @@ def main():
     expected_source = subprocess.check_output(['git', '-C', str(args.code_root), 'show', actual+':copilot/tools.py'])
     if Path(tools.__file__).read_bytes() != expected_source:
         raise ValueError('Uncommitted matcher source')
+    source_hashes = {}
+    for relative in ('copilot/tools.py', 'copilot/spectral.py'):
+        path = args.code_root/relative
+        if not path.exists():
+            continue
+        committed = subprocess.check_output(['git', '-C', str(args.code_root), 'show', actual+':'+relative])
+        if path.read_bytes() != committed:
+            raise ValueError('Uncommitted measurement source')
+        source_hashes[relative] = hashlib.sha256(committed).hexdigest()
     args.output.mkdir(mode=0o700, parents=True, exist_ok=False)
     inputs = materialize(cases, args.output/'inputs', args.raw_root, args.index)
     rows = []
@@ -121,7 +130,7 @@ def main():
         rows.append(row)
         (args.output/'rows.json').write_text(json.dumps(rows, indent=2, allow_nan=False))
     report = {'identity': {'commit': actual, 'tools_sha256': hashlib.sha256(expected_source).hexdigest(),
-                           'tools_module': tools.__file__, 'catalog': tools.LINES,
+                           'tools_module': tools.__file__, 'source_sha256': source_hashes, 'catalog': tools.LINES,
                            'development_sha256': hashlib.sha256(args.development.read_bytes()).hexdigest(),
                            'python': sys.version},
               'global': summarize(rows), 'strata': {}, 'control_groups': {},
@@ -132,7 +141,8 @@ def main():
                              'Injected recall concerns line matches at reference z; no peak-level completeness claim.',
                              'Historical 20/139 and 17.5% used one control and are not reproduced here; not a general FPR estimate.',
                              'Noise has no true z; 20 unconditional probes use the frozen recipe seed.',
-                             'No threshold search; baseline uses historical 0.4.']}
+                             'No threshold search; score threshold remains historical 0.4.',
+                             'For descriptive code, positive is a diagnostic score crossing, not a released confirmation verdict.']}
     for dimension in ('kind', 'family', 'snr', 'zwarn', 'cnn_exposure', 'coverage_bin'):
         report['strata'][dimension] = {str(value): summarize([r for r in rows if r[dimension] == value])
                                        for value in sorted({r[dimension] for r in rows}, key=str)}

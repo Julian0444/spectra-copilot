@@ -71,7 +71,7 @@ def test_call_tool_equals_impl_on_real_heldout_spectrum():
         ))
     )
     assert got == tools.identify_spectral_lines_impl(ex, 0.2036)
-    assert got["verdict"] == "consistent"
+    assert "verdict" not in got and got["physical_confirmation"] is False
     assert got["n_peaks_detected"] > 0 and got["strongest_peaks_angstrom"]
 
 

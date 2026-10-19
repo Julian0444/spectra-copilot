@@ -34,7 +34,7 @@ def test_wrapped_tool_call_matches_impl():
     ex = str(EXAMPLES / "heldout_z020.npz")
     out = agent.identify_spectral_lines.call({"npz_path": ex, "z": 0.2036})
     r = json.loads(out)
-    assert r["verdict"] == "consistent"
+    assert "verdict" not in r and r["physical_confirmation"] is False
     assert r == tools.identify_spectral_lines_impl(ex, 0.2036)
 
 
@@ -68,17 +68,14 @@ def test_request_kwargs_skips_thinking_on_haiku():
     }
 
 
-def test_trap_spectrum_is_genuinely_ambiguous():
-    # One emission line at 8000 A: Halpha, [OIII] 5007 and [OII] 3727 must
-    # tie at exactly 1 matched line each, all weak — the agent has to report
-    # the ambiguity instead of picking a winner. Lines tool only, no model.
+def test_legacy_trap_has_no_measured_noise_scale():
+    # This historical example omits IVAR. The shared contract defaults to one;
+    # its sub-unit line cannot pass SNR>=5. Do not infer a noise scale to rescue
+    # its historical result. Explicit high-SNR single-line controls live in
+    # test_spectral_measurements and exercise all four alternatives.
     ex = str(EXAMPLES / "trap_single_line.npz")
-    verdicts = []
     for rest in (6562.8, 5006.8, 3727.1):
-        z = round(8000.0 / rest - 1.0, 4)
-        r = tools.identify_spectral_lines_impl(ex, z)
-        assert r["n_peaks_detected"] == 1
-        assert abs(r["strongest_peaks_angstrom"][0] - 8000.0) < 2.0
-        assert r["n_matched"] == 1
-        verdicts.append(r["verdict"])
-    assert verdicts == ["weak_or_inconsistent"] * 3
+        r = tools.identify_spectral_lines_impl(ex, 8000.0 / rest - 1.0)
+        assert r["n_peaks_detected"] == r["n_matched"] == 0
+        assert r["assessment"] == "insufficient_line_evidence"
+        assert r["physical_confirmation"] is False

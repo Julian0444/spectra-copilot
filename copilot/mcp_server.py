@@ -28,10 +28,8 @@ mcp = MCPServer(
     version=__version__,
     instructions=(
         "Tools around the desi-fm spectral multitask transformer (DESI galaxy/QSO "
-        "spectra). Typical loop: predict_redshift first; if z_confidence is "
-        "low (< 0.3) or the user asks for verification, test the redshift "
-        "with identify_spectral_lines and derive alternative hypotheses from "
-        "its strongest_peaks_angstrom; find_similar_spectra adds a "
+        "spectra). Typical loop: predict_redshift first; describe the redshift "
+        "with identify_spectral_lines and inspect its code-computed candidates; find_similar_spectra adds a "
         "descriptive signal from the same supervised encoder, not independent confirmation — neighbors whose catalog redshifts cluster "
         "around a candidate z support it; lookup_reference retrieves DESI "
         "reference notes (target-type z ranges, line degeneracies) to "
@@ -82,16 +80,13 @@ def predict_redshift(npz_path: str) -> dict:
 
 @mcp.tool()
 def identify_spectral_lines(npz_path: str, z: Annotated[float, Field(ge=0, allow_inf_nan=False, strict=True)]) -> dict:
-    """Compare a redshift hypothesis heuristically with detected emission peaks.
+    """Describe supported emission and Ca H/K absorption at a hypothesis z.
 
-    This does not physically confirm any z. For a supplied hypothesis, known
-    rest-frame lines shifted by (1+z) are matched to detected emission peaks,
-    giving `match_fraction` and a verdict ('consistent' at >= 0.4). It also
-    reports `n_peaks_detected` and `strongest_peaks_angstrom` (top 5 by
-    prominence), so when a z fails you can derive alternative hypotheses by
-    assuming the strongest peak is Hα, [OII] or Lyα and re-test each one.
-    Needs no model. Caveat: a weak verdict is lack of confirmation, not
-    refutation — absorption-dominated spectra match poorly even at the true z.
+    Reports match_fraction, n_peaks_detected, strongest_peaks_angstrom, signed
+    pixel SNR, coverage windows and provenance. This does not physically confirm any z; no verdict.
+    Code computes candidates from measured wavelengths and compares all with the
+    same rules. A single line is ambiguous; absence is not refutation. Other
+    absorption lines are unsupported. Needs no model.
     """
     return _invoke(tools.identify_spectral_lines_impl, npz_path, z)
 

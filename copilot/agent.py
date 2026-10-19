@@ -68,16 +68,15 @@ def predict_redshift(npz_path: str) -> str:
 
 @beta_tool
 def identify_spectral_lines(npz_path: str, z: Annotated[float, Field(ge=0, allow_inf_nan=False, strict=True)]) -> str:
-    """Check which known emission lines match real peaks if the spectrum is at redshift z.
+    """Describe emission and Ca H/K absorption with SNR, coverage and provenance.
 
-    Detects emission peaks; absorption-dominated spectra can look 'weak' even
-    at the right z. Also reports the strongest detected peak wavelengths
-    (Angstrom, strongest first) so alternative z hypotheses can be derived
-    from an unexplained peak.
+    No physical confirmation verdict. Candidates are computed in code from the
+    measured wavelengths and compared uniformly. Ambiguous single-line evidence
+    never establishes a unique redshift and cannot replace model_z.
 
     Args:
         npz_path: path to the spectrum .npz file.
-        z: redshift hypothesis to test.
+        z: nonnegative redshift hypothesis to describe.
     """
     return json.dumps(tools.identify_spectral_lines_impl(npz_path, z))
 

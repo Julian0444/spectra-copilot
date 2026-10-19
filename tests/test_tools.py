@@ -26,20 +26,20 @@ def _synth(z, seed=1, n=6000):
 def case(tmp_path):
     w, f = _synth(0.42)
     p = tmp_path / "s.npz"
-    np.savez(p, flux=f, wavelength=w)
+    np.savez(p, flux=f, wavelength=w, ivar=np.full_like(f, 400))
     return str(p)
 
 
 def test_lines_match_at_true_z(case):
     r = tools.identify_spectral_lines_impl(case, 0.42)
     assert r["match_fraction"] >= 0.5
-    assert r["verdict"] == "consistent"
+    assert "verdict" not in r and r["physical_confirmation"] is False
 
 
 def test_lines_fail_at_wrong_z(case):
     good = tools.identify_spectral_lines_impl(case, 0.42)["match_fraction"]
     bad = tools.identify_spectral_lines_impl(case, 0.85)["match_fraction"]
-    assert bad < good  # this gap is what the agent exploits to validate
+    assert bad < good  # fixture-only descriptive contrast; no physical confirmation
 
 
 def test_predict_redshift_range(case):
@@ -65,12 +65,12 @@ def test_reconstruct_reports_masking(case):
 
 
 def test_lines_discriminate_on_real_spectrum():
-    # Real DESI held-out galaxy (z_true = 0.2036): the emission lines confirm
-    # the true z sharply and reject a wrong one. No model involved.
+    # Real DESI held-out galaxy (z_true = 0.2036): this fixture has a larger descriptive match fraction at the
+    # catalog z than at one wrong z; it does not validate a general decision rule. No model involved.
     ex = str(EXAMPLES / "heldout_z020.npz")
     good = tools.identify_spectral_lines_impl(ex, 0.2036)
     bad = tools.identify_spectral_lines_impl(ex, 0.85)
-    assert good["verdict"] == "consistent"
+    assert "verdict" not in good and good["physical_confirmation"] is False
     assert bad["match_fraction"] < good["match_fraction"]
 
 
@@ -103,4 +103,4 @@ def test_load_handles_2d_and_nans(tmp_path):
         tools.identify_spectral_lines_impl(str(p), 0.42)
     np.savez(p,flux=f2[:1],wavelength=w)
     r=tools.identify_spectral_lines_impl(str(p), .42)
-    assert r["verdict"] == "consistent"
+    assert "verdict" not in r and r["physical_confirmation"] is False

@@ -19,8 +19,6 @@ from threading import RLock
 
 import numpy as np
 import torch
-from scipy.ndimage import gaussian_filter1d
-from scipy.signal import find_peaks
 
 from desi_fm.predict import embed_spectrum, load_model_from_checkpoint, predict_spectrum
 from desi_fm.inputs import read_npz, bounded_real, positive_int, SpectrumInputError
@@ -218,69 +216,15 @@ def find_similar_spectra_impl(npz_path: str, k: int = 5) -> dict:
 def identify_spectral_lines_impl(
     npz_path: str, z: float, tol_angstrom: float = 12.0
 ) -> dict:
-    """Check whether known spectral lines appear where redshift `z` predicts.
+    """Describe supported emission/absorption measurements and redshift alternatives.
 
-    Detects *emission* peaks (prominence over a smoothed continuum) and
-    matches them against the rest-frame catalog shifted by (1+z). The 12 A
-    default tolerance is an uncalibrated historical heuristic. The strongest detected peaks are
-    reported (by prominence, strongest first) so an agent can derive
-    alternative z hypotheses from an unexplained peak. Caveat:
-    absorption-dominated spectra (e.g. passive galaxies with only Ca H&K) can
-    yield a weak verdict even at the correct z — a weak verdict is *lack of
-    confirmation*, not refutation. A z that matches clearly fewer lines than
-    an alternative z is a descriptive difference; its discrimination against
-    wrong-redshift controls has not been established.
+    The catalog and 0.4 diagnostic threshold are historical and uncalibrated.
+    There is no physical confirmation verdict. See the returned SNR definition,
+    support windows, modality limitations, provenance and uniform comparisons.
     """
+    from copilot.spectral import measure
     z = bounded_real(z, "z", 0, float("inf"))
     tol_angstrom = bounded_real(tol_angstrom, "tol_angstrom", .000001, float("inf"))
     flux, wave, ivar, mask = _load(npz_path)
     coverage = preprocess_spectrum(flux, ivar, wave, mask, SpectrumPreprocessConfig())["coverage"]
-    order = np.argsort(wave)
-    flux, wave, ivar, mask = flux[order], wave[order], ivar[order], mask[order]
-    good = np.isfinite(wave) & (wave > 0) & np.isfinite(flux) & np.isfinite(ivar) & (ivar > 0) & ~mask
-    # Run the unchanged peak heuristic on each contiguous usable region.
-    # Shared validity is a contract correction, not calibration of the matcher.
-    edges = np.diff(np.r_[False, good, False].astype(int))
-    regions = list(zip(np.flatnonzero(edges == 1), np.flatnonzero(edges == -1)))
-    all_peaks, all_prom = [], []
-    for lo, hi in regions:
-        segment = flux[lo:hi].astype(float)
-        smooth = gaussian_filter1d(segment, sigma=3.0)
-        prominence = 0.8 * float(np.std(segment - smooth))
-        found, props = find_peaks(smooth, prominence=prominence, distance=10)
-        all_peaks.extend((found + lo).tolist())
-        all_prom.extend(props["prominences"].tolist())
-    peaks = np.asarray(all_peaks, dtype=int)
-    props = {"prominences": np.asarray(all_prom)}
-    peak_wl = wave[peaks]
-    strongest = [
-        round(float(peak_wl[i]), 1)
-        for i in np.argsort(props["prominences"])[::-1][:5]
-    ]
-    expected, matched = [], []
-    for name, lam in LINES.items():
-        obs = lam * (1.0 + z)
-        if not (wave[good].min() <= obs <= wave[good].max()):
-            continue
-        entry = {"line": name, "lambda_expected": round(obs, 1)}
-        if peak_wl.size:
-            d = float(np.abs(peak_wl - obs).min())
-            if d <= tol_angstrom:
-                entry["matched_peak_at"] = round(
-                    float(peak_wl[np.abs(peak_wl - obs).argmin()]), 1
-                )
-                entry["delta"] = round(d, 1)
-                matched.append(entry)
-        expected.append(entry)
-    frac = len(matched) / max(len(expected), 1)
-    return {
-        "coverage": coverage,
-        "z_tested": z,
-        "n_peaks_detected": int(peaks.size),
-        "strongest_peaks_angstrom": strongest,
-        "n_expected_in_coverage": len(expected),
-        "n_matched": len(matched),
-        "match_fraction": round(frac, 2),
-        "matched_lines": matched,
-        "verdict": "consistent" if frac >= 0.4 else "weak_or_inconsistent",
-    }
+    return dict(measure(flux, wave, ivar, mask, z, LINES, tol_angstrom), coverage=coverage)
