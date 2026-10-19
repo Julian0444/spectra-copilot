@@ -1,0 +1,94 @@
+{
+  "available_tail_after_exclusions": {
+    "train": 2113,
+    "validation": 333
+  },
+  "bytes": 82805,
+  "counts": {
+    "cnn_exposure": {
+      "none_synthetic": 48,
+      "train": 40,
+      "validation": 40
+    },
+    "real": 80,
+    "synthetic": 48,
+    "synthetic_families": {
+      "absorption": 6,
+      "coverage_gap": 6,
+      "emission": 6,
+      "invalid_support": 6,
+      "noise": 6,
+      "permuted_grid": 6,
+      "reversed_grid": 6,
+      "single_line": 6
+    },
+    "total": 128
+  },
+  "development_sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+  "population": {
+    "demo_object_ids_excluded": 4,
+    "eligible": 84759,
+    "historical_cases_excluded": 150,
+    "historical_validation_excluded": 2000,
+    "splits": {
+      "test": 10000,
+      "train": 64759,
+      "validation": 10000
+    },
+    "tail": {
+      "test": 312,
+      "train": 2114,
+      "validation": 333
+    }
+  },
+  "preexposed_tail_ids_excluded": 1,
+  "repository_bases": [
+    "9c5cf0e232736a7a0ce386a487d218517a59de9c",
+    "c99ec856f968f2965a4b6ebd73c399fe2ecb107c"
+  ],
+  "schema": "batch5b-commitment-v1",
+  "seed": 20261018,
+  "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+  "source_identities": {
+    "historical": {
+      "bytes": 770995,
+      "sha256": "fb2372bcffc5e1098922abaa5f1ea047d116eaada942a7901bab9224a0ebeb04"
+    },
+    "index": {
+      "bytes": 13443072,
+      "sha256": "36d1433bbf2457b1eeab8b1a27cb4c37228800b79a48403e247980c29eed57b0"
+    },
+    "labels": {
+      "bytes": 5078,
+      "sha256": "acb6c85a878e1173c258ef6ea209e389b1dcebe3ed8b5ab9e0c68acb988d6f47"
+    }
+  },
+  "split_identities": {
+    "test": {
+      "bytes": 230384,
+      "sha256": "e2fb00c6dd98cbe61e7198f15eb381dece77dbffacc98417c2530d0f7ce03002"
+    },
+    "train": {
+      "bytes": 1491503,
+      "sha256": "83a6ce1711a4a46e1ebfe6c6225bf7a163448f87b2081afaeb2122642953b5b3"
+    },
+    "validation": {
+      "bytes": 230367,
+      "sha256": "46eb29c58e8f8ae7645cac155295602a7d9743c4760c449798df22b4eb022bf5"
+    }
+  },
+  "visible_source_identities": [
+    {
+      "bytes": 130356,
+      "sha256": "8a95b25c06e05db2c42dd44f72e05cb9339507c0ec7e1be48fae636684c3c4f1"
+    },
+    {
+      "bytes": 54697,
+      "sha256": "579f36b1139ca8a2e8327c359d165a544cdacc063eea40a6aadafd72f8b8494d"
+    },
+    {
+      "bytes": 136059,
+      "sha256": "33cce80d4c45996c757d36bae3ffea13948733d9e6d06caead0f788556cb1ff7"
+    }
+  ]
+}

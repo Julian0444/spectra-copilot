@@ -1,0 +1,155 @@
+{
+  "session": "5B-1 only",
+  "branches": {
+    "fm": {
+      "corrected_5a_head": "c99ec856f968f2965a4b6ebd73c399fe2ecb107c",
+      "branch": "codex/lote-5b"
+    },
+    "copilot": {
+      "corrected_5a_head": "9c5cf0e232736a7a0ce386a487d218517a59de9c",
+      "branch": "codex/lote-5b"
+    }
+  },
+  "acceptance": {
+    "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+    "bytes": 82805,
+    "counts": {
+      "cnn_exposure": {
+        "none_synthetic": 48,
+        "train": 40,
+        "validation": 40
+      },
+      "real": 80,
+      "synthetic": 48,
+      "synthetic_families": {
+        "absorption": 6,
+        "coverage_gap": 6,
+        "emission": 6,
+        "invalid_support": 6,
+        "noise": 6,
+        "permuted_grid": 6,
+        "reversed_grid": 6,
+        "single_line": 6
+      },
+      "total": 128
+    },
+    "development_sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4"
+  },
+  "population": {
+    "demo_object_ids_excluded": 4,
+    "eligible": 84759,
+    "historical_cases_excluded": 150,
+    "historical_validation_excluded": 2000,
+    "splits": {
+      "test": 10000,
+      "train": 64759,
+      "validation": 10000
+    },
+    "tail": {
+      "test": 312,
+      "train": 2114,
+      "validation": 333
+    }
+  },
+  "selection": {
+    "seed": 20261018,
+    "metadata_only": true,
+    "independent_predictor_accuracy_test": false,
+    "preexposed_tail_ids_excluded": 1,
+    "available_tail_after_exclusions": {
+      "train": 2113,
+      "validation": 333
+    },
+    "deterministic_regeneration_sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+    "oracle_note": "warning caveat conditional on permitted quality evidence; no requirement to infer private ZWARN; no case selection change or acceptance evaluation"
+  },
+  "guard": {
+    "frozen_code": "4387dd36c6ad640f00c6d9fc3bf6448ef3644d50",
+    "files": 25,
+    "frozen_matches": 25,
+    "current_differences": 8,
+    "historical_derivative_rejected": true,
+    "bypassed": false
+  },
+  "unchanged_runtime_sha256": {
+    "copilot/agent.py": "9f208d6563fe4ffb82d5a6e5c144aa6b92b9526f2cd6db0944b8d018e3767759",
+    "copilot/report.py": "bdd62064d60eeafa0ab59a286182a406befbab3acc20ca5a99889bdfa576179e",
+    "copilot/tools.py": "8d1b49d56a3080bec3221e7028f31b5081c5504f4f84e18624fc58091c5aa5d6",
+    "copilot/rag.py": "70ab64e6488b5e5e9d87d4da7a0e2a9528f3983a256b75fd322575bdbd1ce3ca",
+    "copilot/refs/absorption-dominated-spectra.md": "035cf7db01f23136825dd37450356d9028fb6c0dd2f94caf420ee4bf4b3a3c3f",
+    "copilot/refs/balmer-series.md": "817c26692180b05b7507dc45d7b27d944c3d9e1fa8647416f996461e79132438",
+    "copilot/refs/catastrophic-outliers.md": "ca61f4ebc4fe12eeae4f7bbf61f8f46c24912357616db3fd619bda4b6fa142b6",
+    "copilot/refs/desi-edr.md": "c4a1f63ecb3aba47254f485f58e4cca2543f08ca263f39ba111f77e1a828daf0",
+    "copilot/refs/desi-overview.md": "2307e81d16a8d491303ff2defef87b2a31bc1b6a51d4e47f6b4986c00df17d88",
+    "copilot/refs/desi-spectrograph-coverage.md": "047afeab37465f22f88ddb03c2432622276cc1d12393e3cee573079219068826",
+    "copilot/refs/desi-sv3.md": "0846c39365c541a56e3caa4914d9b122a38745275eb37727271cc7e93db7ab3e",
+    "copilot/refs/desi-targets-bgs.md": "3df5229dc923654aaf00685fe39a7c5f82d856ccf7d1fc01d3e19c42c4525386",
+    "copilot/refs/desi-targets-elg.md": "af3b0607090a1eafd08160f7216946c46f12e3714ec32d1c09bc461069423b44",
+    "copilot/refs/desi-targets-lrg.md": "fc55e8a784a0e8a577e2e5394a3fc870c736bfad9570de2413be72ad23e2449e",
+    "copilot/refs/desi-targets-qso.md": "c69593598460184ab1397d9ed990d5a53e2c0f784a7f88deabe5f149f302bead",
+    "copilot/refs/line-degeneracy-single-line.md": "24916bf433c7d2924bceb99f798b14374ec2c5f4c26fb4ef2220d3d25b5310c1",
+    "copilot/refs/lines.json": "87656abb3b29869dfd974a1075acec30ddc43ecbf782f4e9a240322073b34636",
+    "copilot/refs/oii-doublet.md": "21acda74f0fe1f0ef505c6f5239b187052908f43f3e8024ab567a96b0484f293",
+    "copilot/refs/redrock-pipeline.md": "2781d93fdde9e3b42d667d4028d344d987238e1659e3a4c039dd29397c5f9059",
+    "copilot/refs/sky-residuals.md": "4a2e1ba2881aa4cfa2197aa08a2c685d726bab18364bf73a23187e4f63447212"
+  },
+  "checks": {
+    "full_suites_before_protocol": {
+      "FM3.9": 130,
+      "FM3.12": 130,
+      "Copilot3.12": 115
+    },
+    "protocol_tests": {
+      "FM3.9": 6,
+      "FM3.12": 6,
+      "Copilot3.12": 6
+    },
+    "synthetic_leak_fixtures": "detected planted tree/commit/input/NPZ/name leaks without printing contents; isolated z and ID substrings accepted",
+    "paid_calls": 0,
+    "acceptance_cases_executed": 0,
+    "test_4b_inference": 0,
+    "diff_check": "passed",
+    "full_suites_with_protocol": {
+      "FM3.9": 136,
+      "FM3.12": 136,
+      "Copilot3.12": 121
+    },
+    "leak_scan_before_staging": {
+      "violations": 0,
+      "surfaces": 2188
+    }
+  },
+  "preservation": {
+    "files": 1174,
+    "counts": {
+      "lote-4b-01": 658,
+      "preparation": 171,
+      "batch4a-v1": 18,
+      "FINAL PROJECT DEEP LEARNING": 162,
+      "spectra-copilot": 165
+    },
+    "bytes": {
+      "lote-4b-01": 6059818657,
+      "preparation": 87279004,
+      "batch4a-v1": 3014928724,
+      "FINAL PROJECT DEEP LEARNING": 2508937756,
+      "spectra-copilot": 77911544
+    },
+    "mismatches": 0,
+    "extra": 0,
+    "baseline_sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239"
+  },
+  "independent_backup": "no hay respaldo independiente verificado",
+  "key_rotation": "sin verificar",
+  "H-18": "pendiente de Julian",
+  "logs_sha256": {
+    "protocol-final-oracle.log": "2d68630425e952dd78b78a7245e035f9979682a46480d40ec2703b5aecd57397",
+    "protocol-fm39.log": "fc9b659e81a0c824b1f9947d7f44aefffa6c9e0971f651796c9a8fd0effa3988",
+    "protocol-fm312.log": "b73d935be7a6cc24134823b43cc7e863cc1111d5c5c9b0e22fcf809a0dda241f",
+    "identity-check.log": "4fc1d99210b4576ee00cefd35a08fd0f0d2be4dd1049600dccf30f7437b69622",
+    "final-fm39.log": "38af0a8dd54b620fac9dfa425aeb640473a87a50a1f288cf9a149aa8a87fb72b",
+    "final-fm312.log": "cbef9fac8a7882ba240ca9cb12464bbd677aeb1d95c96625da0e68bb720f340a",
+    "final-cp312.log": "240a2317c6708c5c9c5724fee5af6430bf70c829def98b8f61f8a76e63c00a77",
+    "leaks-final-before-stage.log": "5f80ce15f992b53f84fed11b33babc9f91abd87cd74c0b5cc4b0fa1ad344bcb6"
+  }
+}

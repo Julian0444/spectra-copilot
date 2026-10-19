@@ -85,7 +85,7 @@ certifica todavía reproducción portable ni autoriza otra inferencia de test.
 Los wheels 0.2.0 archivados certifican exclusivamente el lote 2 y no contienen
 el código vigente. Nuevas versiones y aceptación instalada quedan para 5C.
 
-### Matriz H-01–H-18
+### Matriz H-01–H-18 (registro 5A; actualización 5B-1 al final)
 
 | Hallazgo | Acción | Fase | Estado | Evidencia |
 |---|---|---|---|---|
@@ -309,3 +309,90 @@ de SHA-256/tamaño ni archivos extra en los tres árboles inmutables. Sigue
 H-18: **pendiente de Julian**, no se atribuye una respuesta. Evidencia ligera:
 [batch5a-followup.json](evidence/batch5a-followup.json). Los HEAD corregidos
 incluyendo este registro quedarán en el congelado y en el consenso.
+
+
+## 5B-1 — protocolo congelado, sin iniciar 5B-2
+
+Ramas exactas: **codex/lote-5b** en ambos originales, nuevas desde las ramas
+5A corregidas, sin reiniciar ninguna referencia. Bases:
+
+| Repo | HEAD corregido de codex/lote-5a |
+|---|---|
+| FM | c99ec856f968f2965a4b6ebd73c399fe2ecb107c |
+| Copilot | 9c5cf0e232736a7a0ce386a487d218517a59de9c |
+
+El primer commit propio de cada rama congela exclusivamente
+[BATCH_5B_PROTOCOL.md](BATCH_5B_PROTOCOL.md), manifiesto de desarrollo,
+compromiso, scripts de selección/comprobación de filtraciones, pruebas y esta
+documentación. Los hashes de esos commits se registran en la adenda de cierre
+posterior y en el consenso (un commit no puede contener su propio hash).
+No se han editado política, matcher, citas, corpus ni harness CNN en esta rama.
+Las correcciones MCP de 5A ya están en sus commits anteriores.
+
+Aceptación privada: **128 casos** (80 reales + 48 sintéticos),
+**82805 bytes**, SHA-256
+`b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05`.
+Desarrollo: 96 casos (48 reales + 48 sintéticos), disjuntos. Selector determinista
+con seed 20261018 y regeneración idéntica por SHA-256. La lista de aceptación se
+escribió directamente fuera de Git; no se mostró su contenido ni se ejecutaron
+sus casos. Un refinamiento previo al commit hizo explícita la condición de calidad
+visible del oráculo ZWARN; no cambió la selección ni usó resultados. Solo el hash
+anteriormente indicado en este párrafo identifica la lista final congelada.
+
+Se verificaron 84.759 elegibles y su unión disjunta de splits, 2.114/333/312 en la
+cola y 150 históricos/4 objetos demo excluidos. Se excluyó además 1 ID de cola
+previamente visible. Reserva disponible: 2.113 train CNN y 333 validación CNN.
+Todos los reales elegidos quedan fuera de train/validación histórica de v2.1;
+su exposición CNN está declarada por objeto. La reserva **no** es un test
+independiente de precisión de ningún predictor. No se usó test 4B ni los 150
+históricos para ajustar. La aceptación científica/LLM sigue pendiente para 5C.
+
+La guarda del derivado histórico se mantiene: 4387dd3 coincide 25/25 con
+frozen.json, el HEAD actual difiere en 8; ExperimentData rechaza batch4a-v1.
+La futura comprobación CNN usará el camino histórico aislado y verificado,
+solo con los 48 reales de desarrollo, declarando selección previa en validación.
+
+Pruebas de protocolo: 6 en FM 3.9, 6 en FM 3.12 y 6 en Copilot 3.12. Incluyen
+selección determinista/disjunta, preservación de destinos privados, tokens exactos,
+ID–etiqueta, respuesta esperada, NPZ y nombre de archivo, fugas en árbol/diff/inputs,
+no divulgación y fallo cerrado. Suites completas de las correcciones 5A arriba.
+La aceptación no fue una entrada de estas pruebas: solo fixtures inventadas.
+Integración completa posterior: **136 FM en 3.9, 136 FM en 3.12 y 121 Copilot
+en 3.12**, sin omisiones. La ampliación final del chequeo de staging se validó
+repitiendo las seis pruebas de custodia en los tres entornos.
+Comprobación de filtraciones previa al staging: cero violaciones en 2.188
+superficies; se exige otra comprobación del contenido staged antes del commit.
+Inventario final: 1.174 archivos idénticos por SHA-256/tamaño al inventario 5A,
+sin extras en los tres árboles inmutables. CSV previo intacto y sin versionar.
+Evidencia ligera: [batch5b-freeze.json](evidence/batch5b-freeze.json) y
+[compromiso](evidence/batch5b-commitment.json).
+
+### Matriz actualizada H-01–H-18 al congelar 5B-1
+
+| Hallazgo | Estado actual y siguiente límite |
+|---|---|
+| H-01 | Corrección documental 5A hecha; conclusión condicionada a checkpoints seleccionados. |
+| H-02 | Superficies locales corregidas en 5A; publicación pendiente y no autorizada. |
+| H-03 | Concurrencia 5A preservada; R5A-01 corregido y O-1 cerrado por comportamiento/mutaciones. |
+| H-04 | Wheels vigentes e instalación limpia pendientes de 5C. |
+| H-05 | Localidad por TARGETID documentada; independencia física sin establecer. |
+| H-06 | Regresiones 5A y O-1 verificadas; no reentrenamiento ni cambio del experimento. |
+| H-07 | Preservación final por hash verificada; portable 5C pendiente; no hay respaldo independiente verificado. |
+| H-08 | Cronología histórica acotada; protocolo 5B commiteado antes de implementar 5B-2. |
+| H-09 | Protocolo y reserva del agente congelados, exposición declarada; no test independiente de precisión. |
+| H-10 | Sensibilidad B-101 documentada en 5A; no nueva selección. |
+| H-11 | No comparabilidad de cifras históricas/CNN visible; sin afirmación de superioridad v2.1/CNN. |
+| H-12 | Reproducción histórica acotada; portabilidad pendiente 5C. |
+| H-13 | R5A-02 cerrado; conteos fijos retirados en las tres superficies actuales. |
+| H-14 | Persistencia/fallos del evaluador de 5A conservados. |
+| H-15 | Contrato v3 y guardas intactos; histórico batch4a-v1 no adoptado como v3. |
+| H-16 | Agotamiento explícito de 5A conservado; nueva política pendiente 5B-2. |
+| H-17 | Alcance de verificaciones documentado; este cierre requiere revisión independiente. |
+| H-18 | Explicación personal de Julian pendiente; ninguna respuesta atribuida. |
+
+**Punto de control:** verificar independientemente ambos commits de congelado,
+las regresiones/mutaciones, la custodia y la rúbrica sin abrir aceptación. Solo
+después iniciar 5B-2 desde estas ramas: protección model_z y separación de
+alternativas, matcher B7/B9 bajo este protocolo, citas y harness CNN en desarrollo.
+No ejecutar aceptación ni llamadas pagas sin la autorización de 5C. No publicar.
+Respaldo: **no hay respaldo independiente verificado**. Rotación: **sin verificar**.

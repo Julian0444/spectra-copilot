@@ -1,0 +1,2005 @@
+{
+  "cases": [
+    {
+      "case_id": "case-081d00ff393bad82922e141a",
+      "cnn_exposure": "train",
+      "eligible_position": 83751,
+      "expected_answer": {
+        "case_id": "case-081d00ff393bad82922e141a",
+        "catalog_reference_z": 0.5420173406600952,
+        "catalog_warning_caveat_if_quality_disclosed": true,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.5420173406600952,
+        "zwarn": 0
+      },
+      "object_id": "39627782396839608",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-45c4ca15fea90100cd5d8679",
+      "cnn_exposure": "train",
+      "eligible_position": 83057,
+      "expected_answer": {
+        "case_id": "case-45c4ca15fea90100cd5d8679",
+        "catalog_reference_z": 0.3643682301044464,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.3643682301044464,
+        "zwarn": 1
+      },
+      "object_id": "39627782388453516",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-d3afa5d27323378c0e80398f",
+      "cnn_exposure": "train",
+      "eligible_position": 82855,
+      "expected_answer": {
+        "case_id": "case-d3afa5d27323378c0e80398f",
+        "catalog_reference_z": 1.454370379447937,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.454370379447937,
+        "zwarn": 1
+      },
+      "object_id": "39627782388450081",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-a9faac398f90b06ccc94cf3a",
+      "cnn_exposure": "train",
+      "eligible_position": 84639,
+      "expected_answer": {
+        "case_id": "case-a9faac398f90b06ccc94cf3a",
+        "catalog_reference_z": 0.8423242568969727,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.8423242568969727,
+        "zwarn": 1
+      },
+      "object_id": "39627788415664602",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-87d29d000daa3594cb95b8e4",
+      "cnn_exposure": "train",
+      "eligible_position": 84565,
+      "expected_answer": {
+        "case_id": "case-87d29d000daa3594cb95b8e4",
+        "catalog_reference_z": 0.19711828231811523,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.19711828231811523,
+        "zwarn": 1
+      },
+      "object_id": "39627788411474563",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-0fe3ea9bd3e08f9c3d86abb5",
+      "cnn_exposure": "train",
+      "eligible_position": 83577,
+      "expected_answer": {
+        "case_id": "case-0fe3ea9bd3e08f9c3d86abb5",
+        "catalog_reference_z": 0.8451462984085083,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.8451462984085083,
+        "zwarn": 1
+      },
+      "object_id": "39627782392648917",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-5ac1b97b90ceaae8c482e283",
+      "cnn_exposure": "train",
+      "eligible_position": 82071,
+      "expected_answer": {
+        "case_id": "case-5ac1b97b90ceaae8c482e283",
+        "catalog_reference_z": 0.3697349429130554,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.3697349429130554,
+        "zwarn": 1
+      },
+      "object_id": "39627782375872040",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-22bd7804d4bfdc22b9e04fcb",
+      "cnn_exposure": "train",
+      "eligible_position": 82949,
+      "expected_answer": {
+        "case_id": "case-22bd7804d4bfdc22b9e04fcb",
+        "catalog_reference_z": 0.4909595251083374,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.4909595251083374,
+        "zwarn": 1
+      },
+      "object_id": "39627782388451812",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-5a6b1b0ce4b9c2c0df5da075",
+      "cnn_exposure": "train",
+      "eligible_position": 84117,
+      "expected_answer": {
+        "case_id": "case-5a6b1b0ce4b9c2c0df5da075",
+        "catalog_reference_z": 0.5630545020103455,
+        "catalog_warning_caveat_if_quality_disclosed": true,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.5630545020103455,
+        "zwarn": 0
+      },
+      "object_id": "39627788407278980",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-b91e7a342f4d143e38280660",
+      "cnn_exposure": "train",
+      "eligible_position": 83203,
+      "expected_answer": {
+        "case_id": "case-b91e7a342f4d143e38280660",
+        "catalog_reference_z": 0.6147809028625488,
+        "catalog_warning_caveat_if_quality_disclosed": true,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.6147809028625488,
+        "zwarn": 0
+      },
+      "object_id": "39627782388455769",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-3496322c97d923a2fe03db79",
+      "cnn_exposure": "train",
+      "eligible_position": 82867,
+      "expected_answer": {
+        "case_id": "case-3496322c97d923a2fe03db79",
+        "catalog_reference_z": 0.15071962773799896,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.15071962773799896,
+        "zwarn": 1
+      },
+      "object_id": "39627782388450337",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-27b412af9789cfd45abf7a2a",
+      "cnn_exposure": "train",
+      "eligible_position": 84307,
+      "expected_answer": {
+        "case_id": "case-27b412af9789cfd45abf7a2a",
+        "catalog_reference_z": 0.180274099111557,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.180274099111557,
+        "zwarn": 1
+      },
+      "object_id": "39627788411471128",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-485c9f66a5aa31cecddcf67c",
+      "cnn_exposure": "train",
+      "eligible_position": 83025,
+      "expected_answer": {
+        "case_id": "case-485c9f66a5aa31cecddcf67c",
+        "catalog_reference_z": 0.2882693409919739,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.2882693409919739,
+        "zwarn": 1
+      },
+      "object_id": "39627782388453050",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-fbe9a6645fe2f2a6f5dc372c",
+      "cnn_exposure": "train",
+      "eligible_position": 84461,
+      "expected_answer": {
+        "case_id": "case-fbe9a6645fe2f2a6f5dc372c",
+        "catalog_reference_z": 0.29018762707710266,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.29018762707710266,
+        "zwarn": 1
+      },
+      "object_id": "39627788411473013",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-63a99ca0830c228789569494",
+      "cnn_exposure": "train",
+      "eligible_position": 83011,
+      "expected_answer": {
+        "case_id": "case-63a99ca0830c228789569494",
+        "catalog_reference_z": 1.0644900798797607,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.0644900798797607,
+        "zwarn": 1
+      },
+      "object_id": "39627782388452798",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-e6e8b3074c759cc280dac4d9",
+      "cnn_exposure": "train",
+      "eligible_position": 83281,
+      "expected_answer": {
+        "case_id": "case-e6e8b3074c759cc280dac4d9",
+        "catalog_reference_z": 0.14392411708831787,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.14392411708831787,
+        "zwarn": 1
+      },
+      "object_id": "39627782392644352",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-97bf32643c12a292eaa31010",
+      "cnn_exposure": "train",
+      "eligible_position": 82255,
+      "expected_answer": {
+        "case_id": "case-97bf32643c12a292eaa31010",
+        "catalog_reference_z": 1.083613634109497,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.083613634109497,
+        "zwarn": 1
+      },
+      "object_id": "39627782380064023",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-b5a1d06a98fe5b58f7131f31",
+      "cnn_exposure": "train",
+      "eligible_position": 82150,
+      "expected_answer": {
+        "case_id": "case-b5a1d06a98fe5b58f7131f31",
+        "catalog_reference_z": 0.3626171350479126,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.3626171350479126,
+        "zwarn": 1
+      },
+      "object_id": "39627782380062130",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-621be0f9d1fcbfa2655da126",
+      "cnn_exposure": "train",
+      "eligible_position": 82573,
+      "expected_answer": {
+        "case_id": "case-621be0f9d1fcbfa2655da126",
+        "catalog_reference_z": 0.0004636153462342918,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.0004636153462342918,
+        "zwarn": 1
+      },
+      "object_id": "39627782384257449",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-c48f0704607000cac650b001",
+      "cnn_exposure": "train",
+      "eligible_position": 83785,
+      "expected_answer": {
+        "case_id": "case-c48f0704607000cac650b001",
+        "catalog_reference_z": 0.9366120100021362,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.9366120100021362,
+        "zwarn": 1
+      },
+      "object_id": "39627782396840250",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-4e32954afe811278db1e0d4c",
+      "cnn_exposure": "train",
+      "eligible_position": 82350,
+      "expected_answer": {
+        "case_id": "case-4e32954afe811278db1e0d4c",
+        "catalog_reference_z": 0.4544517993927002,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.4544517993927002,
+        "zwarn": 1
+      },
+      "object_id": "39627782380065896",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-46f53b4be52e7307b9cd3820",
+      "cnn_exposure": "train",
+      "eligible_position": 84640,
+      "expected_answer": {
+        "case_id": "case-46f53b4be52e7307b9cd3820",
+        "catalog_reference_z": 1.0253221988677979,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.0253221988677979,
+        "zwarn": 1
+      },
+      "object_id": "39627788415664610",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-b6e7b3591a14184cc45f2d16",
+      "cnn_exposure": "train",
+      "eligible_position": 84087,
+      "expected_answer": {
+        "case_id": "case-b6e7b3591a14184cc45f2d16",
+        "catalog_reference_z": 0.6911262273788452,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.6911262273788452,
+        "zwarn": 1
+      },
+      "object_id": "39627782401035575",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-2ce23e61c0857f407a8ff9ce",
+      "cnn_exposure": "train",
+      "eligible_position": 83571,
+      "expected_answer": {
+        "case_id": "case-2ce23e61c0857f407a8ff9ce",
+        "catalog_reference_z": 0.3724166452884674,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.3724166452884674,
+        "zwarn": 1
+      },
+      "object_id": "39627782392648838",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-54deef32239fcd94b94145ad",
+      "cnn_exposure": "validation",
+      "eligible_position": 84006,
+      "expected_answer": {
+        "case_id": "case-54deef32239fcd94b94145ad",
+        "catalog_reference_z": 0.8733506798744202,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.8733506798744202,
+        "zwarn": 1
+      },
+      "object_id": "39627782401033372",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-52b0871ac24a461fb677529a",
+      "cnn_exposure": "validation",
+      "eligible_position": 84240,
+      "expected_answer": {
+        "case_id": "case-52b0871ac24a461fb677529a",
+        "catalog_reference_z": 0.28253066539764404,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.28253066539764404,
+        "zwarn": 1
+      },
+      "object_id": "39627788411470267",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-998a878a6992fd8702015cb6",
+      "cnn_exposure": "validation",
+      "eligible_position": 82771,
+      "expected_answer": {
+        "case_id": "case-998a878a6992fd8702015cb6",
+        "catalog_reference_z": 1.0211101770401,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.0211101770401,
+        "zwarn": 1
+      },
+      "object_id": "39627782384260938",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-ef1da7234ac980733e4028e6",
+      "cnn_exposure": "validation",
+      "eligible_position": 84649,
+      "expected_answer": {
+        "case_id": "case-ef1da7234ac980733e4028e6",
+        "catalog_reference_z": 0.17921018600463867,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.17921018600463867,
+        "zwarn": 1
+      },
+      "object_id": "39627788415664780",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-6df1d63fed303ef8bae68d57",
+      "cnn_exposure": "validation",
+      "eligible_position": 82898,
+      "expected_answer": {
+        "case_id": "case-6df1d63fed303ef8bae68d57",
+        "catalog_reference_z": 1.0645354986190796,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.0645354986190796,
+        "zwarn": 1
+      },
+      "object_id": "39627782388450762",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-7fa82fa53bfc87e6f27bb3f5",
+      "cnn_exposure": "validation",
+      "eligible_position": 82892,
+      "expected_answer": {
+        "case_id": "case-7fa82fa53bfc87e6f27bb3f5",
+        "catalog_reference_z": 0.3463777005672455,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.3463777005672455,
+        "zwarn": 1
+      },
+      "object_id": "39627782388450722",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-118b22817223c0b5ad915ea7",
+      "cnn_exposure": "validation",
+      "eligible_position": 83002,
+      "expected_answer": {
+        "case_id": "case-118b22817223c0b5ad915ea7",
+        "catalog_reference_z": 0.581800103187561,
+        "catalog_warning_caveat_if_quality_disclosed": true,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.581800103187561,
+        "zwarn": 0
+      },
+      "object_id": "39627782388452681",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-5e4458e691aa2f4da19736f0",
+      "cnn_exposure": "validation",
+      "eligible_position": 83240,
+      "expected_answer": {
+        "case_id": "case-5e4458e691aa2f4da19736f0",
+        "catalog_reference_z": 1.171130895614624,
+        "catalog_warning_caveat_if_quality_disclosed": true,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.171130895614624,
+        "zwarn": 0
+      },
+      "object_id": "39627782392643660",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-545253c616fe4b2478068e4b",
+      "cnn_exposure": "validation",
+      "eligible_position": 84721,
+      "expected_answer": {
+        "case_id": "case-545253c616fe4b2478068e4b",
+        "catalog_reference_z": 0.7889564037322998,
+        "catalog_warning_caveat_if_quality_disclosed": true,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.7889564037322998,
+        "zwarn": 0
+      },
+      "object_id": "39627788415665607",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-74325b02cf0ce853db06ba2e",
+      "cnn_exposure": "validation",
+      "eligible_position": 82659,
+      "expected_answer": {
+        "case_id": "case-74325b02cf0ce853db06ba2e",
+        "catalog_reference_z": 0.8319419026374817,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.8319419026374817,
+        "zwarn": 1
+      },
+      "object_id": "39627782384258941",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-52b7675b0e799e53bd7226f5",
+      "cnn_exposure": "validation",
+      "eligible_position": 84628,
+      "expected_answer": {
+        "case_id": "case-52b7675b0e799e53bd7226f5",
+        "catalog_reference_z": 1.0804657936096191,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.0804657936096191,
+        "zwarn": 1
+      },
+      "object_id": "39627788415664484",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-6cca31b17af316d9768b19e4",
+      "cnn_exposure": "validation",
+      "eligible_position": 82183,
+      "expected_answer": {
+        "case_id": "case-6cca31b17af316d9768b19e4",
+        "catalog_reference_z": 0.5375213027000427,
+        "catalog_warning_caveat_if_quality_disclosed": true,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.5375213027000427,
+        "zwarn": 0
+      },
+      "object_id": "39627782380062776",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-57329f30e34c07a93e1e25ec",
+      "cnn_exposure": "validation",
+      "eligible_position": 84031,
+      "expected_answer": {
+        "case_id": "case-57329f30e34c07a93e1e25ec",
+        "catalog_reference_z": 0.2061677873134613,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.2061677873134613,
+        "zwarn": 1
+      },
+      "object_id": "39627782401034207",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-8295000649e79a779d2c7637",
+      "cnn_exposure": "validation",
+      "eligible_position": 84420,
+      "expected_answer": {
+        "case_id": "case-8295000649e79a779d2c7637",
+        "catalog_reference_z": 0.27977854013442993,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.27977854013442993,
+        "zwarn": 1
+      },
+      "object_id": "39627788411472527",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-03c858ac23b8c8a865b7c4eb",
+      "cnn_exposure": "validation",
+      "eligible_position": 83642,
+      "expected_answer": {
+        "case_id": "case-03c858ac23b8c8a865b7c4eb",
+        "catalog_reference_z": 1.3883806467056274,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.3883806467056274,
+        "zwarn": 1
+      },
+      "object_id": "39627782396838117",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-788ff5993f57d7d041a99c21",
+      "cnn_exposure": "validation",
+      "eligible_position": 82095,
+      "expected_answer": {
+        "case_id": "case-788ff5993f57d7d041a99c21",
+        "catalog_reference_z": 0.15013228356838226,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.15013228356838226,
+        "zwarn": 1
+      },
+      "object_id": "39627782380061071",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-5cf7de9320c3a4998b373dc2",
+      "cnn_exposure": "validation",
+      "eligible_position": 83666,
+      "expected_answer": {
+        "case_id": "case-5cf7de9320c3a4998b373dc2",
+        "catalog_reference_z": 1.4084529876708984,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 1.4084529876708984,
+        "zwarn": 1
+      },
+      "object_id": "39627782396838388",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-21090172d2da4e54a2a2edfa",
+      "cnn_exposure": "validation",
+      "eligible_position": 82560,
+      "expected_answer": {
+        "case_id": "case-21090172d2da4e54a2a2edfa",
+        "catalog_reference_z": 2.5006515979766846,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 2.5006515979766846,
+        "zwarn": 1
+      },
+      "object_id": "39627782384257259",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-3a6f2391031b0afbb3f95aa4",
+      "cnn_exposure": "validation",
+      "eligible_position": 82645,
+      "expected_answer": {
+        "case_id": "case-3a6f2391031b0afbb3f95aa4",
+        "catalog_reference_z": 0.241109237074852,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.241109237074852,
+        "zwarn": 1
+      },
+      "object_id": "39627782384258584",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-59c1d4ac95e0653522b8f18b",
+      "cnn_exposure": "validation",
+      "eligible_position": 83733,
+      "expected_answer": {
+        "case_id": "case-59c1d4ac95e0653522b8f18b",
+        "catalog_reference_z": 0.0001259447744814679,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.0001259447744814679,
+        "zwarn": 1
+      },
+      "object_id": "39627782396839323",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-73b02c9a542bbe25310f8d84",
+      "cnn_exposure": "validation",
+      "eligible_position": 83929,
+      "expected_answer": {
+        "case_id": "case-73b02c9a542bbe25310f8d84",
+        "catalog_reference_z": 0.4590981900691986,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.4590981900691986,
+        "zwarn": 1
+      },
+      "object_id": "39627782396843055",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-bb6d54a24c60139c57634250",
+      "cnn_exposure": "validation",
+      "eligible_position": 84051,
+      "expected_answer": {
+        "case_id": "case-bb6d54a24c60139c57634250",
+        "catalog_reference_z": 0.34558168053627014,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.34558168053627014,
+        "zwarn": 1
+      },
+      "object_id": "39627782401034657",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-ae0ac7839a3d47597a8980e6",
+      "cnn_exposure": "validation",
+      "eligible_position": 82271,
+      "expected_answer": {
+        "case_id": "case-ae0ac7839a3d47597a8980e6",
+        "catalog_reference_z": 0.5563439130783081,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.5563439130783081,
+        "zwarn": 1
+      },
+      "object_id": "39627782380064395",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-9e074bc6fa2bc300d4213e3a",
+      "cnn_exposure": "validation",
+      "eligible_position": 82495,
+      "expected_answer": {
+        "case_id": "case-9e074bc6fa2bc300d4213e3a",
+        "catalog_reference_z": 0.16976001858711243,
+        "catalog_warning_caveat_if_quality_disclosed": false,
+        "independent_predictor_accuracy_claim_allowed": false,
+        "model_z_rule": "equal_to_predict_tool_if_available"
+      },
+      "kind": "real",
+      "label": {
+        "z": 0.16976001858711243,
+        "zwarn": 1
+      },
+      "object_id": "39627782384256211",
+      "v21_exposure": "neither_train_nor_historical_validation"
+    },
+    {
+      "case_id": "case-7d400f0cdc077969f2c34298",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-7d400f0cdc077969f2c34298",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "emission",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.25328467
+      },
+      "recipe": {
+        "peak_angstrom": 8024.192573,
+        "seed": 2101350156,
+        "snr": 0,
+        "z": 1.25328467
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-53f131e73155ed5e1832238e",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-53f131e73155ed5e1832238e",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "emission",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.31980435
+      },
+      "recipe": {
+        "peak_angstrom": 5121.3512,
+        "seed": 1408315879,
+        "snr": 2,
+        "z": 0.31980435
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-cc477d813a2ebbf413e7cccc",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-cc477d813a2ebbf413e7cccc",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "emission",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.36818585
+      },
+      "recipe": {
+        "peak_angstrom": 5064.369506,
+        "seed": 3427237249,
+        "snr": 5,
+        "z": 0.36818585
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-b78560e215365cff68ea4af4",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-b78560e215365cff68ea4af4",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "emission",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.16600507
+      },
+      "recipe": {
+        "peak_angstrom": 6193.405082,
+        "seed": 3078971618,
+        "snr": 10,
+        "z": 0.16600507
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-ed0900473232d5c1cc6fcad6",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-ed0900473232d5c1cc6fcad6",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "emission",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.32452345
+      },
+      "recipe": {
+        "peak_angstrom": 7515.174773,
+        "seed": 3976790087,
+        "snr": 20,
+        "z": 0.32452345
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-d93d280afdb6c6abaa4e5601",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-d93d280afdb6c6abaa4e5601",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "emission",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.43749827
+      },
+      "recipe": {
+        "peak_angstrom": 7061.87656,
+        "seed": 3644663818,
+        "snr": 50,
+        "z": 1.43749827
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-3107e45a3ff073729b45e667",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-3107e45a3ff073729b45e667",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "absorption",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.39966784
+      },
+      "recipe": {
+        "peak_angstrom": 6862.220154,
+        "seed": 822600794,
+        "snr": 0,
+        "z": 0.39966784
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-890ccdb12d91a6e1deb1782d",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-890ccdb12d91a6e1deb1782d",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "absorption",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.29920521
+      },
+      "recipe": {
+        "peak_angstrom": 7757.644594,
+        "seed": 2299317681,
+        "snr": 2,
+        "z": 0.29920521
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-c16e86c29eb4667694d903d9",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-c16e86c29eb4667694d903d9",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "absorption",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.91791626
+      },
+      "recipe": {
+        "peak_angstrom": 6776.883714,
+        "seed": 3245246146,
+        "snr": 5,
+        "z": 0.91791626
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-1fd427af4137c50652b07ee7",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-1fd427af4137c50652b07ee7",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "absorption",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.40666012
+      },
+      "recipe": {
+        "peak_angstrom": 5898.219077,
+        "seed": 533997487,
+        "snr": 10,
+        "z": 0.40666012
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-039a86075151949760bbda8d",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-039a86075151949760bbda8d",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "absorption",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.4947115
+      },
+      "recipe": {
+        "peak_angstrom": 6084.745829,
+        "seed": 60458503,
+        "snr": 20,
+        "z": 0.4947115
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-e534829448be9c01ec0abde9",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-e534829448be9c01ec0abde9",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "absorption",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.44782186
+      },
+      "recipe": {
+        "peak_angstrom": 7934.932285,
+        "seed": 3845423764,
+        "snr": 50,
+        "z": 0.44782186
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-239c43ca0ed268307f45dac0",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-239c43ca0ed268307f45dac0",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "noise",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 6490.342793,
+        "seed": 597443530,
+        "snr": 0,
+        "z": 0.13105728
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-1397590076116cf235f469b8",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-1397590076116cf235f469b8",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "noise",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 5516.586366,
+        "seed": 328685824,
+        "snr": 2,
+        "z": 0.69568475
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-5814621f08081af062df9035",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-5814621f08081af062df9035",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "noise",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 6113.160938,
+        "seed": 1477730847,
+        "snr": 5,
+        "z": 0.09392315
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-da229c8fc4cfad9b5331174c",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-da229c8fc4cfad9b5331174c",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "noise",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 5904.890586,
+        "seed": 3659701391,
+        "snr": 10,
+        "z": 1.12631148
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-7ab4de98ce00797777322f1f",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-7ab4de98ce00797777322f1f",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "noise",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 6383.072294,
+        "seed": 2058673816,
+        "snr": 20,
+        "z": 1.17657264
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-4e1a6c17a86f0f59c48db128",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-4e1a6c17a86f0f59c48db128",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "noise",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 7410.475965,
+        "seed": 1310354455,
+        "snr": 50,
+        "z": 0.9711225
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-49e253ecff57be9defeede0d",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-49e253ecff57be9defeede0d",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "coverage_gap",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.44640568
+      },
+      "recipe": {
+        "peak_angstrom": 7986.611162,
+        "seed": 1239569388,
+        "snr": 0,
+        "z": 1.44640568
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-89fe02ba40e25b0257b509d7",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-89fe02ba40e25b0257b509d7",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "coverage_gap",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.40483548
+      },
+      "recipe": {
+        "peak_angstrom": 5964.861003,
+        "seed": 2315125434,
+        "snr": 2,
+        "z": 0.40483548
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-9c69bbd0ffa78279621a618c",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-9c69bbd0ffa78279621a618c",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "coverage_gap",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.44810964
+      },
+      "recipe": {
+        "peak_angstrom": 6102.931145,
+        "seed": 2624175056,
+        "snr": 5,
+        "z": 1.44810964
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-2eadd78fd4f2c6ef649ae8cb",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-2eadd78fd4f2c6ef649ae8cb",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "coverage_gap",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.21456128
+      },
+      "recipe": {
+        "peak_angstrom": 6136.161679,
+        "seed": 783144847,
+        "snr": 10,
+        "z": 1.21456128
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-98bb5473ecea54896cc3615c",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-98bb5473ecea54896cc3615c",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "coverage_gap",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.34563083
+      },
+      "recipe": {
+        "peak_angstrom": 6244.511308,
+        "seed": 2562413683,
+        "snr": 20,
+        "z": 1.34563083
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-2507b58250869d00346be990",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-2507b58250869d00346be990",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "coverage_gap",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.49037565
+      },
+      "recipe": {
+        "peak_angstrom": 5496.22348,
+        "seed": 621262210,
+        "snr": 50,
+        "z": 0.49037565
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-577e62d650c28c511ecb482a",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-577e62d650c28c511ecb482a",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "reversed_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.491656
+      },
+      "recipe": {
+        "peak_angstrom": 5208.983741,
+        "seed": 1467900630,
+        "snr": 0,
+        "z": 0.491656
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-d4b358a164f0fed2bc518717",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-d4b358a164f0fed2bc518717",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "reversed_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.60202322
+      },
+      "recipe": {
+        "peak_angstrom": 7301.104647,
+        "seed": 3568523425,
+        "snr": 2,
+        "z": 0.60202322
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-278178ce41ff2bdc4df66080",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-278178ce41ff2bdc4df66080",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "reversed_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.4109198
+      },
+      "recipe": {
+        "peak_angstrom": 5835.438257,
+        "seed": 662796494,
+        "snr": 5,
+        "z": 0.4109198
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-048465ac2cb9503d365b17f9",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-048465ac2cb9503d365b17f9",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "reversed_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.29458372
+      },
+      "recipe": {
+        "peak_angstrom": 5521.913428,
+        "seed": 75785644,
+        "snr": 10,
+        "z": 0.29458372
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-ce199e44e49e55d8d10873a8",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-ce199e44e49e55d8d10873a8",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "reversed_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.30025741
+      },
+      "recipe": {
+        "peak_angstrom": 7576.219727,
+        "seed": 3457785412,
+        "snr": 20,
+        "z": 1.30025741
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-88c6180f439f6c07288e25a6",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-88c6180f439f6c07288e25a6",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "reversed_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.41981187
+      },
+      "recipe": {
+        "peak_angstrom": 5338.624573,
+        "seed": 2294683663,
+        "snr": 50,
+        "z": 0.41981187
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-a77a5885c22cbce6a528825f",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-a77a5885c22cbce6a528825f",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "permuted_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.1118932
+      },
+      "recipe": {
+        "peak_angstrom": 6993.507866,
+        "seed": 2809813125,
+        "snr": 0,
+        "z": 1.1118932
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-21ea146ffaa14fd5597ab99a",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-21ea146ffaa14fd5597ab99a",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "permuted_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.42063349
+      },
+      "recipe": {
+        "peak_angstrom": 5988.398209,
+        "seed": 568988783,
+        "snr": 2,
+        "z": 1.42063349
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-65444f79dd5e76d35b11cd8d",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-65444f79dd5e76d35b11cd8d",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "permuted_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.26061172
+      },
+      "recipe": {
+        "peak_angstrom": 6009.517364,
+        "seed": 1698975609,
+        "snr": 5,
+        "z": 1.26061172
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-431b516f8437f8e6aa6bcfce",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-431b516f8437f8e6aa6bcfce",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "permuted_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.7730707
+      },
+      "recipe": {
+        "peak_angstrom": 7063.40576,
+        "seed": 1125863791,
+        "snr": 10,
+        "z": 0.7730707
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-b286fd51fd4e2c980fd482c0",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-b286fd51fd4e2c980fd482c0",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "permuted_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 1.43526373
+      },
+      "recipe": {
+        "peak_angstrom": 5010.243782,
+        "seed": 2995191121,
+        "snr": 20,
+        "z": 1.43526373
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-8d2f1f5b2c5da57ed78e1da4",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-8d2f1f5b2c5da57ed78e1da4",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": false,
+        "must_reject_input": false
+      },
+      "family": "permuted_grid",
+      "kind": "synthetic",
+      "label": {
+        "z": 0.2926255
+      },
+      "recipe": {
+        "peak_angstrom": 7662.8417,
+        "seed": 2368675675,
+        "snr": 50,
+        "z": 0.2926255
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-93de59a4eb4ccc7fef152f55",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-93de59a4eb4ccc7fef152f55",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": true
+      },
+      "family": "invalid_support",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 7975.31782,
+        "seed": 2480822692,
+        "snr": 0,
+        "z": 1.33679685
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-73c84cf4cbaaf6d5a4378d1b",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-73c84cf4cbaaf6d5a4378d1b",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": true
+      },
+      "family": "invalid_support",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 6981.006989,
+        "seed": 1942506740,
+        "snr": 2,
+        "z": 1.16380844
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-da8e624c7dd8ebd91c8a5ea9",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-da8e624c7dd8ebd91c8a5ea9",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": true
+      },
+      "family": "invalid_support",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 5179.053607,
+        "seed": 3666764364,
+        "snr": 5,
+        "z": 0.73822769
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-457c90d29bc21a981c12860b",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-457c90d29bc21a981c12860b",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": true
+      },
+      "family": "invalid_support",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 5172.836002,
+        "seed": 1165791442,
+        "snr": 10,
+        "z": 0.90180276
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-a9b21e6932a7fd602cc83a17",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-a9b21e6932a7fd602cc83a17",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": true
+      },
+      "family": "invalid_support",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 5394.762749,
+        "seed": 2847022697,
+        "snr": 20,
+        "z": 0.32702615
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-7b5d234e95d925753ffd0fd1",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "case_id": "case-7b5d234e95d925753ffd0fd1",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": true
+      },
+      "family": "invalid_support",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 5649.847566,
+        "seed": 2069701454,
+        "snr": 50,
+        "z": 0.8694825
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-dfdc6a84f0b476b27ba42667",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "admissible_z": [
+          4.299095034136712,
+          0.7284510297550375,
+          0.2866720925541264
+        ],
+        "case_id": "case-dfdc6a84f0b476b27ba42667",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "single_line",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 6442.109833,
+        "seed": 3755764356,
+        "snr": 0,
+        "z": 1.36635512
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-c1e48820a101cff38a37db14",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "admissible_z": [
+          4.458345225795838,
+          0.7803950232083927,
+          0.32533959634896537,
+          0.011109631712074242
+        ],
+        "case_id": "case-c1e48820a101cff38a37db14",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "single_line",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 6635.710291,
+        "seed": 3252979744,
+        "snr": 2,
+        "z": 0.93050746
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-404dbd154b6d863a6db4012b",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "admissible_z": [
+          4.146824764333306,
+          0.6787837369536638,
+          0.24969938204042497
+        ],
+        "case_id": "case-404dbd154b6d863a6db4012b",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "single_line",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 6256.994866,
+        "seed": 1078836501,
+        "snr": 5,
+        "z": 0.46249594
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-05dff3b2de3bfe58ad497c7f",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "admissible_z": [
+          4.841464761865592,
+          0.9053603903839449,
+          0.4183647661180794,
+          0.08207909901261656
+        ],
+        "case_id": "case-05dff3b2de3bfe58ad497c7f",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "single_line",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 7101.468711,
+        "seed": 98562994,
+        "snr": 10,
+        "z": 1.2653441
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-8409845b6989f1f6033f7daf",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "admissible_z": [
+          2.9838263165254584,
+          0.2994386125942421
+        ],
+        "case_id": "case-8409845b6989f1f6033f7daf",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "single_line",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 4843.137653,
+        "seed": 2215216219,
+        "snr": 20,
+        "z": 0.62716558
+      },
+      "v21_exposure": "none_synthetic"
+    },
+    {
+      "case_id": "case-8149d46a02318b2e1681ed4d",
+      "cnn_exposure": "none_synthetic",
+      "expected_answer": {
+        "admissible_z": [
+          3.194232207781525,
+          0.368068496954737,
+          0.01840059419189899
+        ],
+        "case_id": "case-8149d46a02318b2e1681ed4d",
+        "model_z_rule": "equal_to_predict_tool_if_available",
+        "must_abstain_unique_z": true,
+        "must_reject_input": false
+      },
+      "family": "single_line",
+      "kind": "synthetic",
+      "label": {
+        "z": null
+      },
+      "recipe": {
+        "peak_angstrom": 5098.928095,
+        "seed": 2169099370,
+        "snr": 50,
+        "z": 0.06199587
+      },
+      "v21_exposure": "none_synthetic"
+    }
+  ],
+  "schema": "batch5b-development-v1",
+  "seed": 20261018
+}

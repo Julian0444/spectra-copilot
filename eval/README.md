@@ -1,4 +1,8 @@
-# End-to-end evals (plan 11)
+# End-to-end evals (plan 11, historical protocol)
+
+The 150-case protocol and results below are historical. The separate explanatory
+agent development/acceptance protocol is frozen in [Batch 5B](../docs/BATCH_5B_PROTOCOL.md).
+Its private acceptance must not be used for development; no new LLM run is authorized.
 
 Measures the **whole system** — agent + tools + desi-fm v2.1 — against DESI
 pipeline redshifts, and answers one question: *does the verification loop
