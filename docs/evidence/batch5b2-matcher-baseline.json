@@ -1,0 +1,1293 @@
+{
+  "identity": {
+    "commit": "ed9bedc1efbc937cb179200cdb3f91fdbc2b6b4b",
+    "tools_sha256": "8d1b49d56a3080bec3221e7028f31b5081c5504f4f84e18624fc58091c5aa5d6",
+    "tools_module": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/copilot-freeze/copilot/tools.py",
+    "catalog": {
+      "Ly\u03b1 1216": 1215.7,
+      "CIV 1549": 1549.1,
+      "CIII] 1909": 1908.7,
+      "MgII 2799": 2798.8,
+      "[OII] 3727": 3727.1,
+      "Ca K 3934": 3933.7,
+      "Ca H 3969": 3968.5,
+      "H\u03b4 4102": 4101.7,
+      "H\u03b3 4340": 4340.5,
+      "H\u03b2 4861": 4861.3,
+      "[OIII] 4959": 4958.9,
+      "[OIII] 5007": 5006.8,
+      "H\u03b1 6563": 6562.8,
+      "[NII] 6583": 6583.5,
+      "[SII] 6716": 6716.4
+    },
+    "development_sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+    "python": "3.12.13 (main, Mar  3 2026, 12:39:30) [Clang 17.0.0 (clang-1700.6.3.2)]"
+  },
+  "global": {
+    "requested": 96,
+    "reference_objects": 78,
+    "controls": 1560,
+    "missing_controls": 0,
+    "auroc_paired": 0.7483974358974359,
+    "tpr": 0.5384615384615384,
+    "fpr_per_candidate": 0.11987179487179488,
+    "fpr_any_per_object": 0.6666666666666666,
+    "status_counts": {
+      "measured": 90,
+      "invalid_input": 6
+    },
+    "line_counts": {
+      "injected_visible": 102,
+      "injected_matched": 90,
+      "false_line_matches": 19,
+      "line_positions_tested": 282
+    },
+    "noise_probes": 120,
+    "noise_positive_probes": 9,
+    "objects_with_false_line_matches": 15,
+    "object_bootstrap_95": {
+      "auroc_paired": [
+        0.683974358974359,
+        0.8080288461538462
+      ],
+      "tpr": [
+        0.4230769230769231,
+        0.6410256410256411
+      ],
+      "fpr_per_candidate": [
+        0.09230769230769231,
+        0.15
+      ],
+      "fpr_any_per_object": [
+        0.5641025641025641,
+        0.7692307692307693
+      ]
+    }
+  },
+  "strata": {
+    "kind": {
+      "real": {
+        "requested": 48,
+        "reference_objects": 48,
+        "controls": 960,
+        "missing_controls": 0,
+        "auroc_paired": 0.6703125,
+        "tpr": 0.5,
+        "fpr_per_candidate": 0.18229166666666666,
+        "fpr_any_per_object": 0.8958333333333334,
+        "status_counts": {
+          "measured": 48,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.5869661458333333,
+            0.7515625
+          ],
+          "tpr": [
+            0.3541666666666667,
+            0.6458333333333334
+          ],
+          "fpr_per_candidate": [
+            0.14583333333333334,
+            0.22083333333333333
+          ],
+          "fpr_any_per_object": [
+            0.8125,
+            0.9791666666666666
+          ]
+        }
+      },
+      "synthetic": {
+        "requested": 48,
+        "reference_objects": 30,
+        "controls": 600,
+        "missing_controls": 0,
+        "auroc_paired": 0.8733333333333333,
+        "tpr": 0.6,
+        "fpr_per_candidate": 0.02,
+        "fpr_any_per_object": 0.3,
+        "status_counts": {
+          "measured": 42,
+          "invalid_input": 6
+        },
+        "line_counts": {
+          "injected_visible": 102,
+          "injected_matched": 90,
+          "false_line_matches": 19,
+          "line_positions_tested": 282
+        },
+        "noise_probes": 120,
+        "noise_positive_probes": 9,
+        "objects_with_false_line_matches": 15,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.7949791666666666,
+            0.9425
+          ],
+          "tpr": [
+            0.43333333333333335,
+            0.7666666666666667
+          ],
+          "fpr_per_candidate": [
+            0.008333333333333333,
+            0.03333333333333333
+          ],
+          "fpr_any_per_object": [
+            0.13333333333333333,
+            0.4666666666666667
+          ]
+        }
+      }
+    },
+    "family": {
+      "absorption": {
+        "requested": 6,
+        "reference_objects": 6,
+        "controls": 120,
+        "missing_controls": 0,
+        "auroc_paired": 0.6208333333333333,
+        "tpr": 0.0,
+        "fpr_per_candidate": 0.025,
+        "fpr_any_per_object": 0.3333333333333333,
+        "status_counts": {
+          "measured": 6,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 10,
+          "injected_matched": 0,
+          "false_line_matches": 7,
+          "line_positions_tested": 67
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 4,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.3833333333333333,
+            0.8167708333333329
+          ],
+          "tpr": [
+            0.0,
+            0.0
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.058333333333333334
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.6666666666666666
+          ]
+        }
+      },
+      "coverage_gap": {
+        "requested": 6,
+        "reference_objects": 6,
+        "controls": 120,
+        "missing_controls": 0,
+        "auroc_paired": 0.9375,
+        "tpr": 0.5,
+        "fpr_per_candidate": 0.0,
+        "fpr_any_per_object": 0.0,
+        "status_counts": {
+          "measured": 6,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 17,
+          "injected_matched": 16,
+          "false_line_matches": 3,
+          "line_positions_tested": 48
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 3,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.8291666666666666,
+            1.0
+          ],
+          "tpr": [
+            0.16666666666666666,
+            0.8333333333333334
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.0
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "emission": {
+        "requested": 6,
+        "reference_objects": 6,
+        "controls": 120,
+        "missing_controls": 0,
+        "auroc_paired": 0.9,
+        "tpr": 0.8333333333333334,
+        "fpr_per_candidate": 0.03333333333333333,
+        "fpr_any_per_object": 0.6666666666666666,
+        "status_counts": {
+          "measured": 6,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 27,
+          "injected_matched": 27,
+          "false_line_matches": 3,
+          "line_positions_tested": 60
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 3,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.7166666666666667,
+            1.0
+          ],
+          "tpr": [
+            0.5,
+            1.0
+          ],
+          "fpr_per_candidate": [
+            0.016666666666666666,
+            0.05
+          ],
+          "fpr_any_per_object": [
+            0.3333333333333333,
+            1.0
+          ]
+        }
+      },
+      "invalid_support": {
+        "status_counts": {
+          "measured": 0,
+          "invalid_input": 6
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "requested": 6,
+        "reference_objects": 0,
+        "controls": 0,
+        "auroc_paired": null,
+        "tpr": null,
+        "fpr_per_candidate": null,
+        "fpr_any_per_object": null
+      },
+      "noise": {
+        "status_counts": {
+          "measured": 6,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 120,
+        "noise_positive_probes": 9,
+        "objects_with_false_line_matches": 0,
+        "requested": 6,
+        "reference_objects": 0,
+        "controls": 0,
+        "auroc_paired": null,
+        "tpr": null,
+        "fpr_per_candidate": null,
+        "fpr_any_per_object": null
+      },
+      "permuted_grid": {
+        "requested": 6,
+        "reference_objects": 6,
+        "controls": 120,
+        "missing_controls": 0,
+        "auroc_paired": 0.9333333333333332,
+        "tpr": 0.8333333333333334,
+        "fpr_per_candidate": 0.03333333333333333,
+        "fpr_any_per_object": 0.3333333333333333,
+        "status_counts": {
+          "measured": 6,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 22,
+          "injected_matched": 22,
+          "false_line_matches": 2,
+          "line_positions_tested": 46
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 2,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.8166666666666668,
+            1.0
+          ],
+          "tpr": [
+            0.5,
+            1.0
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.06666666666666667
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.6666666666666666
+          ]
+        }
+      },
+      "real": {
+        "requested": 48,
+        "reference_objects": 48,
+        "controls": 960,
+        "missing_controls": 0,
+        "auroc_paired": 0.6703125,
+        "tpr": 0.5,
+        "fpr_per_candidate": 0.18229166666666666,
+        "fpr_any_per_object": 0.8958333333333334,
+        "status_counts": {
+          "measured": 48,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.5869661458333333,
+            0.7515625
+          ],
+          "tpr": [
+            0.3541666666666667,
+            0.6458333333333334
+          ],
+          "fpr_per_candidate": [
+            0.14583333333333334,
+            0.22083333333333333
+          ],
+          "fpr_any_per_object": [
+            0.8125,
+            0.9791666666666666
+          ]
+        }
+      },
+      "reversed_grid": {
+        "requested": 6,
+        "reference_objects": 6,
+        "controls": 120,
+        "missing_controls": 0,
+        "auroc_paired": 0.975,
+        "tpr": 0.8333333333333334,
+        "fpr_per_candidate": 0.008333333333333333,
+        "fpr_any_per_object": 0.16666666666666666,
+        "status_counts": {
+          "measured": 6,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 26,
+          "injected_matched": 25,
+          "false_line_matches": 4,
+          "line_positions_tested": 61
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 3,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.9249999999999999,
+            1.0
+          ],
+          "tpr": [
+            0.5,
+            1.0
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.025
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.5
+          ]
+        }
+      },
+      "single_line": {
+        "status_counts": {
+          "measured": 6,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "requested": 6,
+        "reference_objects": 0,
+        "controls": 0,
+        "auroc_paired": null,
+        "tpr": null,
+        "fpr_per_candidate": null,
+        "fpr_any_per_object": null
+      }
+    },
+    "snr": {
+      "0": {
+        "requested": 8,
+        "reference_objects": 5,
+        "controls": 100,
+        "missing_controls": 0,
+        "auroc_paired": 0.5549999999999999,
+        "tpr": 0.0,
+        "fpr_per_candidate": 0.04,
+        "fpr_any_per_object": 0.6,
+        "status_counts": {
+          "measured": 7,
+          "invalid_input": 1
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 5,
+          "line_positions_tested": 42
+        },
+        "noise_probes": 20,
+        "noise_positive_probes": 1,
+        "objects_with_false_line_matches": 4,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.35,
+            0.74
+          ],
+          "tpr": [
+            0.0,
+            0.0
+          ],
+          "fpr_per_candidate": [
+            0.01,
+            0.07
+          ],
+          "fpr_any_per_object": [
+            0.2,
+            1.0
+          ]
+        }
+      },
+      "10": {
+        "requested": 8,
+        "reference_objects": 5,
+        "controls": 100,
+        "missing_controls": 0,
+        "auroc_paired": 0.9650000000000001,
+        "tpr": 0.8,
+        "fpr_per_candidate": 0.03,
+        "fpr_any_per_object": 0.4,
+        "status_counts": {
+          "measured": 7,
+          "invalid_input": 1
+        },
+        "line_counts": {
+          "injected_visible": 21,
+          "injected_matched": 19,
+          "false_line_matches": 5,
+          "line_positions_tested": 51
+        },
+        "noise_probes": 20,
+        "noise_positive_probes": 1,
+        "objects_with_false_line_matches": 4,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.9200000000000002,
+            1.0
+          ],
+          "tpr": [
+            0.4,
+            1.0
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.07
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.8
+          ]
+        }
+      },
+      "2": {
+        "requested": 8,
+        "reference_objects": 5,
+        "controls": 100,
+        "missing_controls": 0,
+        "auroc_paired": 0.9349999999999999,
+        "tpr": 0.6,
+        "fpr_per_candidate": 0.02,
+        "fpr_any_per_object": 0.4,
+        "status_counts": {
+          "measured": 7,
+          "invalid_input": 1
+        },
+        "line_counts": {
+          "injected_visible": 21,
+          "injected_matched": 17,
+          "false_line_matches": 5,
+          "line_positions_tested": 51
+        },
+        "noise_probes": 20,
+        "noise_positive_probes": 3,
+        "objects_with_false_line_matches": 4,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.8550000000000001,
+            0.99
+          ],
+          "tpr": [
+            0.2,
+            1.0
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.04
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.8
+          ]
+        }
+      },
+      "20": {
+        "requested": 8,
+        "reference_objects": 5,
+        "controls": 100,
+        "missing_controls": 0,
+        "auroc_paired": 0.9349999999999999,
+        "tpr": 0.8,
+        "fpr_per_candidate": 0.02,
+        "fpr_any_per_object": 0.2,
+        "status_counts": {
+          "measured": 7,
+          "invalid_input": 1
+        },
+        "line_counts": {
+          "injected_visible": 19,
+          "injected_matched": 17,
+          "false_line_matches": 1,
+          "line_positions_tested": 40
+        },
+        "noise_probes": 20,
+        "noise_positive_probes": 3,
+        "objects_with_false_line_matches": 1,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.805,
+            1.0
+          ],
+          "tpr": [
+            0.4,
+            1.0
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.06
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.6
+          ]
+        }
+      },
+      "5": {
+        "requested": 8,
+        "reference_objects": 5,
+        "controls": 100,
+        "missing_controls": 0,
+        "auroc_paired": 0.97,
+        "tpr": 0.8,
+        "fpr_per_candidate": 0.01,
+        "fpr_any_per_object": 0.2,
+        "status_counts": {
+          "measured": 7,
+          "invalid_input": 1
+        },
+        "line_counts": {
+          "injected_visible": 21,
+          "injected_matched": 19,
+          "false_line_matches": 3,
+          "line_positions_tested": 46
+        },
+        "noise_probes": 20,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 2,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.9099999999999999,
+            1.0
+          ],
+          "tpr": [
+            0.4,
+            1.0
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.03
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.6
+          ]
+        }
+      },
+      "50": {
+        "requested": 8,
+        "reference_objects": 5,
+        "controls": 100,
+        "missing_controls": 0,
+        "auroc_paired": 0.8800000000000001,
+        "tpr": 0.6,
+        "fpr_per_candidate": 0.0,
+        "fpr_any_per_object": 0.0,
+        "status_counts": {
+          "measured": 7,
+          "invalid_input": 1
+        },
+        "line_counts": {
+          "injected_visible": 20,
+          "injected_matched": 18,
+          "false_line_matches": 0,
+          "line_positions_tested": 52
+        },
+        "noise_probes": 20,
+        "noise_positive_probes": 1,
+        "objects_with_false_line_matches": 0,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.6399999999999999,
+            1.0
+          ],
+          "tpr": [
+            0.2,
+            1.0
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.0
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "None": {
+        "requested": 48,
+        "reference_objects": 48,
+        "controls": 960,
+        "missing_controls": 0,
+        "auroc_paired": 0.6703125,
+        "tpr": 0.5,
+        "fpr_per_candidate": 0.18229166666666666,
+        "fpr_any_per_object": 0.8958333333333334,
+        "status_counts": {
+          "measured": 48,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.5869661458333333,
+            0.7515625
+          ],
+          "tpr": [
+            0.3541666666666667,
+            0.6458333333333334
+          ],
+          "fpr_per_candidate": [
+            0.14583333333333334,
+            0.22083333333333333
+          ],
+          "fpr_any_per_object": [
+            0.8125,
+            0.9791666666666666
+          ]
+        }
+      }
+    },
+    "zwarn": {
+      "0": {
+        "requested": 7,
+        "reference_objects": 7,
+        "controls": 140,
+        "missing_controls": 0,
+        "auroc_paired": 0.5428571428571428,
+        "tpr": 0.14285714285714285,
+        "fpr_per_candidate": 0.12142857142857143,
+        "fpr_any_per_object": 0.7142857142857143,
+        "status_counts": {
+          "measured": 7,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.3641964285714286,
+            0.7285714285714285
+          ],
+          "tpr": [
+            0.0,
+            0.42857142857142855
+          ],
+          "fpr_per_candidate": [
+            0.04285714285714286,
+            0.21428571428571427
+          ],
+          "fpr_any_per_object": [
+            0.2857142857142857,
+            1.0
+          ]
+        }
+      },
+      "1": {
+        "requested": 41,
+        "reference_objects": 41,
+        "controls": 820,
+        "missing_controls": 0,
+        "auroc_paired": 0.6920731707317073,
+        "tpr": 0.5609756097560976,
+        "fpr_per_candidate": 0.1926829268292683,
+        "fpr_any_per_object": 0.926829268292683,
+        "status_counts": {
+          "measured": 41,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.6000000000000001,
+            0.7774390243902439
+          ],
+          "tpr": [
+            0.4146341463414634,
+            0.7073170731707317
+          ],
+          "fpr_per_candidate": [
+            0.15121951219512195,
+            0.23414634146341465
+          ],
+          "fpr_any_per_object": [
+            0.8292682926829268,
+            1.0
+          ]
+        }
+      },
+      "None": {
+        "requested": 48,
+        "reference_objects": 30,
+        "controls": 600,
+        "missing_controls": 0,
+        "auroc_paired": 0.8733333333333333,
+        "tpr": 0.6,
+        "fpr_per_candidate": 0.02,
+        "fpr_any_per_object": 0.3,
+        "status_counts": {
+          "measured": 42,
+          "invalid_input": 6
+        },
+        "line_counts": {
+          "injected_visible": 102,
+          "injected_matched": 90,
+          "false_line_matches": 19,
+          "line_positions_tested": 282
+        },
+        "noise_probes": 120,
+        "noise_positive_probes": 9,
+        "objects_with_false_line_matches": 15,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.7949791666666666,
+            0.9425
+          ],
+          "tpr": [
+            0.43333333333333335,
+            0.7666666666666667
+          ],
+          "fpr_per_candidate": [
+            0.008333333333333333,
+            0.03333333333333333
+          ],
+          "fpr_any_per_object": [
+            0.13333333333333333,
+            0.4666666666666667
+          ]
+        }
+      }
+    },
+    "cnn_exposure": {
+      "none_synthetic": {
+        "requested": 48,
+        "reference_objects": 30,
+        "controls": 600,
+        "missing_controls": 0,
+        "auroc_paired": 0.8733333333333333,
+        "tpr": 0.6,
+        "fpr_per_candidate": 0.02,
+        "fpr_any_per_object": 0.3,
+        "status_counts": {
+          "measured": 42,
+          "invalid_input": 6
+        },
+        "line_counts": {
+          "injected_visible": 102,
+          "injected_matched": 90,
+          "false_line_matches": 19,
+          "line_positions_tested": 282
+        },
+        "noise_probes": 120,
+        "noise_positive_probes": 9,
+        "objects_with_false_line_matches": 15,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.7949791666666666,
+            0.9425
+          ],
+          "tpr": [
+            0.43333333333333335,
+            0.7666666666666667
+          ],
+          "fpr_per_candidate": [
+            0.008333333333333333,
+            0.03333333333333333
+          ],
+          "fpr_any_per_object": [
+            0.13333333333333333,
+            0.4666666666666667
+          ]
+        }
+      },
+      "train": {
+        "requested": 24,
+        "reference_objects": 24,
+        "controls": 480,
+        "missing_controls": 0,
+        "auroc_paired": 0.6479166666666667,
+        "tpr": 0.4583333333333333,
+        "fpr_per_candidate": 0.14791666666666667,
+        "fpr_any_per_object": 0.8333333333333334,
+        "status_counts": {
+          "measured": 24,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.5218489583333333,
+            0.7729166666666667
+          ],
+          "tpr": [
+            0.25,
+            0.6666666666666666
+          ],
+          "fpr_per_candidate": [
+            0.10625,
+            0.18958333333333333
+          ],
+          "fpr_any_per_object": [
+            0.6666666666666666,
+            0.9583333333333334
+          ]
+        }
+      },
+      "validation": {
+        "requested": 24,
+        "reference_objects": 24,
+        "controls": 480,
+        "missing_controls": 0,
+        "auroc_paired": 0.6927083333333334,
+        "tpr": 0.5416666666666666,
+        "fpr_per_candidate": 0.21666666666666667,
+        "fpr_any_per_object": 0.9583333333333334,
+        "status_counts": {
+          "measured": 24,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.582265625,
+            0.7979427083333331
+          ],
+          "tpr": [
+            0.3333333333333333,
+            0.75
+          ],
+          "fpr_per_candidate": [
+            0.15833333333333333,
+            0.275
+          ],
+          "fpr_any_per_object": [
+            0.875,
+            1.0
+          ]
+        }
+      }
+    },
+    "coverage_bin": {
+      ".5-.9": {
+        "requested": 6,
+        "reference_objects": 6,
+        "controls": 120,
+        "missing_controls": 0,
+        "auroc_paired": 0.9375,
+        "tpr": 0.5,
+        "fpr_per_candidate": 0.0,
+        "fpr_any_per_object": 0.0,
+        "status_counts": {
+          "measured": 6,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 17,
+          "injected_matched": 16,
+          "false_line_matches": 3,
+          "line_positions_tested": 48
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 3,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.8291666666666666,
+            1.0
+          ],
+          "tpr": [
+            0.16666666666666666,
+            0.8333333333333334
+          ],
+          "fpr_per_candidate": [
+            0.0,
+            0.0
+          ],
+          "fpr_any_per_object": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      ".9-.99": {
+        "requested": 1,
+        "reference_objects": 1,
+        "controls": 20,
+        "missing_controls": 0,
+        "auroc_paired": 0.85,
+        "tpr": 1.0,
+        "fpr_per_candidate": 0.2,
+        "fpr_any_per_object": 1.0,
+        "status_counts": {
+          "measured": 1,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.85,
+            0.85
+          ],
+          "tpr": [
+            1.0,
+            1.0
+          ],
+          "fpr_per_candidate": [
+            0.2,
+            0.2
+          ],
+          "fpr_any_per_object": [
+            1.0,
+            1.0
+          ]
+        }
+      },
+      ">=.99": {
+        "requested": 83,
+        "reference_objects": 71,
+        "controls": 1420,
+        "missing_controls": 0,
+        "auroc_paired": 0.7309859154929578,
+        "tpr": 0.5352112676056338,
+        "fpr_per_candidate": 0.1288732394366197,
+        "fpr_any_per_object": 0.7183098591549296,
+        "status_counts": {
+          "measured": 83,
+          "invalid_input": 0
+        },
+        "line_counts": {
+          "injected_visible": 85,
+          "injected_matched": 74,
+          "false_line_matches": 16,
+          "line_positions_tested": 234
+        },
+        "noise_probes": 120,
+        "noise_positive_probes": 9,
+        "objects_with_false_line_matches": 12,
+        "object_bootstrap_95": {
+          "auroc_paired": [
+            0.6619718309859155,
+            0.7971830985915492
+          ],
+          "tpr": [
+            0.4225352112676056,
+            0.647887323943662
+          ],
+          "fpr_per_candidate": [
+            0.09788732394366197,
+            0.16056338028169015
+          ],
+          "fpr_any_per_object": [
+            0.6056338028169014,
+            0.8169014084507042
+          ]
+        }
+      },
+      "invalid": {
+        "status_counts": {
+          "measured": 0,
+          "invalid_input": 6
+        },
+        "line_counts": {
+          "injected_visible": 0,
+          "injected_matched": 0,
+          "false_line_matches": 0,
+          "line_positions_tested": 0
+        },
+        "noise_probes": 0,
+        "noise_positive_probes": 0,
+        "objects_with_false_line_matches": 0,
+        "requested": 6,
+        "reference_objects": 0,
+        "controls": 0,
+        "auroc_paired": null,
+        "tpr": null,
+        "fpr_per_candidate": null,
+        "fpr_any_per_object": null
+      }
+    }
+  },
+  "control_groups": {
+    "unconditional": {
+      "requested": 96,
+      "reference_objects": 78,
+      "controls": 780,
+      "missing_controls": 0,
+      "auroc_paired": 0.7487179487179487,
+      "tpr": 0.5384615384615384,
+      "fpr_per_candidate": 0.13846153846153847,
+      "fpr_any_per_object": 0.6153846153846154,
+      "status_counts": {
+        "measured": 90,
+        "invalid_input": 6
+      },
+      "line_counts": {
+        "injected_visible": 102,
+        "injected_matched": 90,
+        "false_line_matches": 19,
+        "line_positions_tested": 282
+      },
+      "noise_probes": 120,
+      "noise_positive_probes": 9,
+      "objects_with_false_line_matches": 15,
+      "object_bootstrap_95": {
+        "auroc_paired": [
+          0.6878205128205128,
+          0.8083493589743588
+        ],
+        "tpr": [
+          0.4230769230769231,
+          0.6410256410256411
+        ],
+        "fpr_per_candidate": [
+          0.10766025641025642,
+          0.17051282051282052
+        ],
+        "fpr_any_per_object": [
+          0.5128205128205128,
+          0.717948717948718
+        ]
+      }
+    },
+    "coverage_conditioned": {
+      "requested": 96,
+      "reference_objects": 78,
+      "controls": 780,
+      "missing_controls": 0,
+      "auroc_paired": 0.748076923076923,
+      "tpr": 0.5384615384615384,
+      "fpr_per_candidate": 0.10128205128205128,
+      "fpr_any_per_object": 0.46153846153846156,
+      "status_counts": {
+        "measured": 90,
+        "invalid_input": 6
+      },
+      "line_counts": {
+        "injected_visible": 102,
+        "injected_matched": 90,
+        "false_line_matches": 19,
+        "line_positions_tested": 282
+      },
+      "noise_probes": 120,
+      "noise_positive_probes": 9,
+      "objects_with_false_line_matches": 15,
+      "object_bootstrap_95": {
+        "auroc_paired": [
+          0.6756089743589743,
+          0.8160256410256409
+        ],
+        "tpr": [
+          0.4230769230769231,
+          0.6410256410256411
+        ],
+        "fpr_per_candidate": [
+          0.07051282051282051,
+          0.1358974358974359
+        ],
+        "fpr_any_per_object": [
+          0.358974358974359,
+          0.5644230769230751
+        ]
+      }
+    }
+  },
+  "status_counts": {
+    "measured": 90,
+    "invalid_input": 6
+  },
+  "bootstrap": {
+    "replicates": 2000,
+    "seed": 20261020,
+    "unit": "object_with_all_controls"
+  },
+  "limitations": [
+    "Development only; no predictor accuracy comparison.",
+    "Paired AUROC is reference-versus-controls within object, ties weighted 0.5.",
+    "Injected recall concerns line matches at reference z; no peak-level completeness claim.",
+    "Historical 20/139 and 17.5% used one control and are not reproduced here; not a general FPR estimate.",
+    "Noise has no true z; 20 unconditional probes use the frozen recipe seed.",
+    "No threshold search; baseline uses historical 0.4."
+  ],
+  "injected_lines": {
+    "injected_visible": 102,
+    "injected_matched": 90,
+    "false_line_matches": 19,
+    "line_positions_tested": 282
+  },
+  "noise": {
+    "objects": 6,
+    "probes": 120,
+    "positive_probes": 9,
+    "objects_any_positive": 5
+  },
+  "ordering": {
+    "case-577e62d650c28c511ecb482a": true,
+    "case-d4b358a164f0fed2bc518717": true,
+    "case-278178ce41ff2bdc4df66080": true,
+    "case-048465ac2cb9503d365b17f9": true,
+    "case-ce199e44e49e55d8d10873a8": true,
+    "case-88c6180f439f6c07288e25a6": true,
+    "case-a77a5885c22cbce6a528825f": true,
+    "case-21ea146ffaa14fd5597ab99a": true,
+    "case-65444f79dd5e76d35b11cd8d": true,
+    "case-431b516f8437f8e6aa6bcfce": true,
+    "case-b286fd51fd4e2c980fd482c0": true,
+    "case-8d2f1f5b2c5da57ed78e1da4": true
+  },
+  "gate_passes": false,
+  "harness_sha256": {
+    "scripts/batch5b_development.py": "6cd7cf5a96473618cd90e2ef2a482c6c7db22e534a5d17f9768e8ae6eb5563f5",
+    "scripts/measure_batch5b_matcher.py": "d05156e31eaba9300029fefb49b82a45919a22577cc38e4b306e0d05ac319ccb"
+  },
+  "input_code_frozen_parity": {
+    "src/desi_fm/data.py": "e197b3945881c8198efad5ab4b8c9591d6899aa8497daf7e480150c63482d6f4",
+    "src/desi_fm/inputs.py": "b251e1c3142f5f63f2dc19ccdb9494d1314b4576ee45953325a0b667dfbce1d1",
+    "src/desi_fm/local_data.py": "37af116bf28964866ca676d4c08b82f0ab8dea6dd2276667fd9230f81fcd3cc9"
+  },
+  "private_rows_sha256": "6ddc005d84ad4434b99cca7eb6a536498b3fdc24360a44cffc5dbf09e23bb7ca",
+  "harness_tests_passed": 4,
+  "preliminary_attempt": "Preserved separately; support helper corrected to the existing v3 1.5-neighbor rule before inspecting results; final rerun has identical headline metrics. No threshold or recipe change."
+}
