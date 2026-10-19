@@ -1,0 +1,87 @@
+{
+  "proposal": {
+    "retrieved": "2026-10-19",
+    "proposal_model": "claude-haiku-4-5-20251001",
+    "provider": "Anthropic first-party standard API",
+    "input_usd_per_million": 1,
+    "output_usd_per_million": 5,
+    "cache_5m_write": 1.25,
+    "cache_1h_write": 2,
+    "cache_read": 0.1,
+    "sources": [
+      "https://platform.claude.com/docs/en/models/haiku-4-5/overview",
+      "https://platform.claude.com/docs/en/about-claude/pricing"
+    ],
+    "note": "Model is legacy but listed available. No migration or provider change without authorization; no actual API calls. Newer models exist; proposal pins this supported snapshot for known behavior and rate.",
+    "additional_sources": [
+      "https://platform.claude.com/docs/en/build-with-claude/token-counting",
+      "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview"
+    ]
+  },
+  "cases": 128,
+  "real": 80,
+  "synthetic_public_recipe": 48,
+  "limits": {
+    "input_tokens_per_case": 64000,
+    "output_tokens_per_case": 4096,
+    "max_output_per_call": 512,
+    "llm_calls_per_case": 8,
+    "analysis_calls_including_predict": 6,
+    "attempts": 1,
+    "automatic_retries": 0,
+    "case_seconds": 120,
+    "usd_per_case": 0.1,
+    "usd_total": 12.8
+  },
+  "estimated_maximum_usd": 10.81344,
+  "authorized_paid_usd": 0,
+  "simulation": {
+    "mode": "offline SDK MockTransport simulation",
+    "remote_calls": 0,
+    "paid_usd": 0,
+    "simulated_http_calls": 2,
+    "stopped_before_call": 3,
+    "stop_reason": "usd_budget_exhausted",
+    "ledger": {
+      "model": "claude-haiku-4-5-20251001",
+      "calls": 2,
+      "retries": 0,
+      "input_tokens": 10000,
+      "output_tokens": 20,
+      "usd": 0.0101,
+      "known_usd": 0.0101,
+      "reserved_usd": 0.0,
+      "cost_certified": true,
+      "cap_usd": 0.018,
+      "events": [
+        {
+          "input_bound": 6192,
+          "output_bound": 512,
+          "microdollars": 8752,
+          "status": "settled",
+          "input_tokens": 5000,
+          "output_tokens": 10,
+          "actual_microdollars": 5050
+        },
+        {
+          "input_bound": 6192,
+          "output_bound": 512,
+          "microdollars": 8752,
+          "status": "settled",
+          "input_tokens": 5000,
+          "output_tokens": 10,
+          "actual_microdollars": 5050
+        }
+      ],
+      "input_bound_policy": "UTF-8 request JSON bytes + 4096 framing/tool allowance; text-only; over-bound usage invalidates certification"
+    }
+  },
+  "tests": {
+    "passed": 86,
+    "scope": "budget/policy/citations/evaluator persistence and real SDK with mocked HTTP; not real LLM validation",
+    "log": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/T5-budget-verified.log",
+    "sha256": "aaf13b9cc96c6a472277eef454ff8f9f180fd72665ae5f839e6546e59078b23a"
+  },
+  "limits_of_certification": "Conservative UTF-8 request byte count plus 4096 framing/tool allowance for text-only requests; includes published 496-token tool prompt. This declared assumption is not a provider billing guarantee. Unexpected usage/categories lock the ledger and cost becomes uncertified; no further calls. No server tools, cache or thinking in this proposal.",
+  "T5_status": "partial: budget implemented; sealed evaluator and candidate identity pending"
+}

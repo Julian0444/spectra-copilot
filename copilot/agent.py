@@ -29,17 +29,19 @@ import anthropic
 from anthropic import beta_tool
 
 from copilot import rag, tools, explanation
+from copilot.budget import Budget, Limits, BudgetStop, PINNED_MODEL, new_budget, guard_sdk
 from copy import deepcopy
 import inspect
 from copilot.report import SYSTEM, system_prompt
 from desi_fm.predict import model_identity, _prepare_inputs
 from desi_fm.inputs import read_npz, bounded_real, positive_int, SpectrumInputError
 
-DEFAULT_MODEL = "claude-opus-4-8"
+DEFAULT_MODEL = PINNED_MODEL
 
 # USD per million tokens (input, output). Cache writes bill at 1.25x input,
 # cache reads at 0.1x.
 PRICES = {
+    PINNED_MODEL: (1.0, 5.0),
     "claude-opus-4-8": (5.0, 25.0),
     "claude-haiku-4-5": (1.0, 5.0),
 }
@@ -160,6 +162,27 @@ def agent_input(source):
         yield str(target), provenance
 
 
+def wire_observation(observation):
+    """Compact the LLM view; the executor retains every original measurement.
+
+    No alternatives are dropped. Repeated provenance and detailed support tables
+    stay in the ledger. Counts, peak origins and uniform scores remain visible.
+    """
+    view=deepcopy(observation)
+    if view['tool']=='identify_spectral_lines' and not view.get('error'):
+        data=view['result']
+        data['measurements']=data.get('measurements',[])[:5]
+        data.pop('support_intervals',None)
+        data.pop('line_support',None)
+        for candidate in data.get('candidates',[]):
+            candidate.pop('provenance',None)
+            comparison=candidate['comparison']
+            candidate['comparison']={k:comparison[k] for k in
+                ('z_tested','n_expected_in_coverage','n_matched','match_fraction','matched_lines')}
+        data['wire_omissions']='Full support tables, remaining peaks and repeated provenance are retained in executor ledger.'
+    return view
+
+
 class RunTools:
     """Executor-owned canonical prediction and immutable observation ledger."""
     def __init__(self, path, structured=True):
@@ -236,38 +259,42 @@ class RunTools:
             if base.name == 'predict_redshift':
                 explanation.canonical_z(value)
                 self.prediction = deepcopy(value)
-            return json.dumps(self.record(base.name, safe_arguments, value))
+            return json.dumps(wire_observation(self.record(base.name, safe_arguments, value)))
         return beta_tool(execute)
 
 
-def execute_run(path, model, structured, state=None):
+def execute_run(path, model, structured, state=None, budget=None):
     state = state or RunTools(path, structured)
     state.bootstrap()
-    client = anthropic.Anthropic()
-    runner = client.beta.messages.tool_runner(
-        model=model, max_tokens=8000 if structured else 16000,
-        max_iterations=8,
-        system=system_prompt(state.prediction["model_identity"]) + STRUCTURED_RULE,
-        tools=state.tools,
-        messages=[{"role": "user", "content": f"Analyze the spectrum in {path} and " +
-                   "submit the result via submit_report. Initial executor observation: " + json.dumps(state.observations[0])}],
-        **request_kwargs(model))
-    history, final = state.history, None
-    usage = state.usage
-    for message in runner:
-        final = message
-        history.append({"role": "assistant", "content": message.to_dict()["content"]})
-        if any(b.type == 'text' and b.text.strip() for b in message.content):
-            state.violations.append('unvalidated_generated_text')
-        if any(b.type == 'tool_use' and b.name not in {t.name for t in state.tools} for b in message.content):
-            state.violations.append('unknown_tool')
-        for key in USAGE_KEYS:
-            usage[key] += getattr(message.usage, key, None) or 0
-        response = runner.generate_tool_call_response()
-        if response is not None:
-            history.append(_jsonable(response))
-        if state.result is not None:
-            break
+    budget = budget or new_budget(model)
+    state.budget = budget
+    budget.begin()
+    client = anthropic.Anthropic(max_retries=0, timeout=budget.limits.seconds)
+    with guard_sdk(client, budget):
+        runner = client.beta.messages.tool_runner(
+            model=model, max_tokens=budget.limits.max_output_per_call,
+            max_iterations=8,
+            system=system_prompt(state.prediction["model_identity"]) + STRUCTURED_RULE,
+            tools=state.tools,
+            messages=[{"role": "user", "content": f"Analyze the spectrum in {path} and " +
+                       "submit the result via submit_report. Initial executor observation: " + json.dumps(state.observations[0])}],
+            **request_kwargs(model))
+        history, final = state.history, None
+        usage = state.usage
+        for message in runner:
+            final = message
+            history.append({"role": "assistant", "content": message.to_dict()["content"]})
+            if any(b.type == 'text' and b.text.strip() for b in message.content):
+                state.violations.append('unvalidated_generated_text')
+            if any(b.type == 'tool_use' and b.name not in {t.name for t in state.tools} for b in message.content):
+                state.violations.append('unknown_tool')
+            for key in USAGE_KEYS:
+                usage[key] += getattr(message.usage, key, None) or 0
+            response = runner.generate_tool_call_response()
+            if response is not None:
+                history.append(_jsonable(response))
+            if state.result is not None:
+                break
     return state, final, usage, history
 
 
@@ -308,16 +335,20 @@ class AgentRunError(RuntimeError):
         self.code, self.history, self.usage = code, history, usage
 
 
-def run_structured(npz_path: str, model: str = DEFAULT_MODEL) -> dict:
+def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None) -> dict:
     """Always retain status and any valid official prediction, including failures."""
     usage, history, provenance, state = dict.fromkeys(USAGE_KEYS, 0), [], None, None
     try:
+        budget = budget or new_budget(model)
         with agent_input(npz_path) as (path, provenance):
             state = RunTools(path, True)
-            state, final, usage, history = execute_run(path, model, True, state=state)
+            state, final, usage, history = execute_run(path, model, True, state=state, budget=budget)
         report = state.finish()
         report['completion_code'] = ('iteration_limit' if len([m for m in history if m['role']=='assistant']) >= 8
                                      and state.result is None else 'invalid_or_missing_report' if report['status']=='explanation_incomplete' else None)
+    except BudgetStop as exc:
+        report = state.finish(status='explanation_incomplete') if state else explanation.result(status='explanation_incomplete')
+        report['completion_code'] = exc.code
     except SpectrumInputError:
         report = state.finish(status='explanation_incomplete') if state and state.prediction is not None else explanation.result(status='invalid_input')
     except Exception:
@@ -326,12 +357,13 @@ def run_structured(npz_path: str, model: str = DEFAULT_MODEL) -> dict:
         usage, history = state.usage, state.history
     report.update(tokens_in=usage['input_tokens'], tokens_out=usage['output_tokens'],
                   usage=usage, input_provenance=provenance, history=history,
-                  history_is_unvalidated=True)
+                  history_is_unvalidated=True,
+                  execution_budget=state.budget.snapshot() if state and getattr(state,'budget',None) else None)
     return report
 
 
-def run(npz_path: str, model: str = DEFAULT_MODEL, transcript: str | None = None) -> str:
-    report = run_structured(npz_path, model)
+def run(npz_path: str, model: str = DEFAULT_MODEL, transcript: str | None = None, *, budget=None) -> str:
+    report = run_structured(npz_path, model, budget=budget)
     if transcript:
         target = Path(transcript)
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -357,10 +389,14 @@ def main() -> int:
     )
     p.add_argument("npz_path")
     p.add_argument("--model", default=DEFAULT_MODEL)
+    p.add_argument("--budget-usd", type=float, default=0., help="Explicit paid ceiling; default zero. 5C requires prior authorization.")
     p.add_argument("--save-transcript", default=None, metavar="PATH")
     args = p.parse_args()
+    if not 0 <= args.budget_usd <= .10 or (args.budget_usd and args.model != PINNED_MODEL):
+        p.error('Paid proposal requires the pinned model and USD ceiling at most 0.10')
+    budget = Budget(args.model, Limits(usd=args.budget_usd)) if args.budget_usd else None
     try:
-        print(run(args.npz_path, args.model, args.save_transcript))
+        print(run(args.npz_path, args.model, args.save_transcript, budget=budget))
     except AgentRunError as exc:
         print(explanation.render(exc.result))
         print(json.dumps({'status': 'error', 'code': exc.code}), file=sys.stderr)

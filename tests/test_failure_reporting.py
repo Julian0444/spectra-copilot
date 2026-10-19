@@ -63,8 +63,8 @@ def test_report_exhaustion_sdk_trace_and_cli(tmp_path,monkeypatch,preamble,capsy
         blocks=([{'type':'text','text':preamble}] if preamble else [])
         blocks += [{'type':'tool_use','id':f'call{len(requests)}','name':'lookup_reference','input':{'query':'DESI'}}]
         return httpx.Response(200,json={'id':'simulated','type':'message','role':'assistant','model':'fixture','content':blocks,'stop_reason':'tool_use','stop_sequence':None,'usage':{'input_tokens':1,'output_tokens':1}})
-    client=sdk_client(api_key='synthetic-unused',http_client=httpx.Client(transport=httpx.MockTransport(reply)))
-    monkeypatch.setattr(agent.anthropic,'Anthropic',lambda:client)
+    client=sdk_client(api_key='synthetic-unused',max_retries=0,http_client=httpx.Client(transport=httpx.MockTransport(reply)))
+    monkeypatch.setattr(agent.anthropic,'Anthropic',lambda **kwargs:client)
     target=tmp_path/'trace.json'
     with pytest.raises(RuntimeError,match='iteration_limit'):
         agent.run(str(source),model='claude-haiku-4-5',transcript=str(target))

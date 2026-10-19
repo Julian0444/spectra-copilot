@@ -36,7 +36,7 @@ from desi_fm.inputs import CONTRACT_VERSION
 EVAL_DIR = Path(__file__).resolve().parent
 FIELDS = ["case", "z_true", "z_model", "z_final", "confidence",
           "dzn", "ok15", "ok05", "tokens", "status"]
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 
 
 def dz_norm(z: float, z_true: float) -> float:
@@ -147,7 +147,7 @@ def run_identity(items: list[str], labels: dict, cases: Path, baseline: bool,
             'llm_model': None if baseline else model,
             'protocol': {'model_input': 'full-spectrum', 'ok15': 'dzn < 0.15',
                          'policy': 'explanatory-model-z-v1',
-                         'ok05': 'dzn < 0.05', 'agent_attempts': 2,
+                         'ok05': 'dzn < 0.05', 'agent_attempts': 1,
                          'input_contract': CONTRACT_VERSION,
                          'agent_input': 'opaque-scientific-input-v2',
                          'max_analysis_calls': 6, 'max_runner_iterations': 8},
@@ -271,7 +271,7 @@ def main() -> int:
                     if a.baseline_only:
                         row['status'] = 'baseline'
                     else:
-                        for attempt in (1, 2):
+                        for attempt in (1,):
                             try:
                                 result = agent.run_structured(npz, model=a.model)
                                 if result is None or result.get('status') not in {'complete', 'ambiguous', 'insufficient_data'}:

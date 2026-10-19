@@ -117,7 +117,7 @@ def test_failure_rows_and_baselines_are_preserved_and_retried(harness, monkeypat
 
     monkeypatch.setattr(mod.agent, 'run_structured', fail)
     run()
-    assert calls == ['a', 'b', 'b', 'c']
+    assert calls == ['a', 'b', 'c']
     summary = printed_summary(capsys)
     assert summary['n_error'] == 1 and summary['model_only']['n'] == 3
     assert summary['agent']['n'] == 2

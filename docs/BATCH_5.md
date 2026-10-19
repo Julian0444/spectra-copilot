@@ -636,3 +636,43 @@ FAISS ni despliegue. v2.1 sigue por defecto. No se afirma superioridad científi
 Evidencia: `docs/evidence/batch5b2-cnn-operational.json`; trazas privadas conservan
 todos los casos y repeticiones. Respaldo antes de cargar: **no hay respaldo
 independiente verificado**. T4 cerrado operativamente; T5 todavía pendiente.
+
+### 5B-2 T5 — presupuesto implementado; cierre todavía pendiente
+
+Propuesta para 5C: Anthropic API estándar, snapshot
+`claude-haiku-4-5-20251001`, 128 casos (80 reales, 48 mecanismos sintéticos con
+recetas públicas), un intento sin retry, seis llamadas de análisis contando
+predict y ocho turnos SDK. Por caso: 64.000 tokens input acumulados, 4.096 output,
+512 output por llamada y US$0,10; total ≤US$12,80. Con tarifas oficiales consultadas
+2026-10-19 (US$1/M input, US$5/M output), cota estimada por los límites de tokens:
+US$10,81344. Modelo legacy todavía listado disponible; no se cambia de modelo
+ni se reduce N automáticamente si deja de ser viable.
+Fuentes: https://platform.claude.com/docs/en/models/haiku-4-5/overview y
+https://platform.claude.com/docs/en/about-claude/pricing.
+
+El ejecutor usa presupuesto **cero por defecto**, incluso en CLI, y no construye
+cliente API sin un presupuesto positivo explícito. La propuesta todavía exige
+la autorización de Julian en 5C; no se ejecutó llamada remota. El SDK tiene
+max_retries=0. Se reserva input/output/USD antes del POST real, también cuando
+lo origina tool_runner.parse, y se concilia usage después. Un error o consumo
+no conocido/inesperado conserva la reserva, marca coste no certificado y bloquea
+nuevas llamadas. Los límites se agregan entre casos mediante un ledger padre.
+
+La reserva input cuenta bytes UTF-8 del JSON completo más 4.096 tokens de margen
+para framing/herramientas, incluyendo los 496 publicados para Haiku 4.5. Es una
+hipótesis conservadora declarada para texto, sin cache, thinking, herramientas
+servidor ni adjuntos; no una garantía del proveedor sobre facturación. count_tokens
+es una estimación según su documentación, no se usa como garantía exacta. Una
+desviación del límite reservado invalida la certificación de coste y detiene la
+corrida. La autorización de 5C debe aceptar esta política y fijar tarifas.
+Fuentes: https://platform.claude.com/docs/en/build-with-claude/token-counting y
+https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview.
+
+Simulación con SDK real y MockTransport: dos POST locales, coste simulado
+US$0,01010, tercera llamada bloqueada antes de superar US$0,018. Llamadas remotas
+0, gasto real 0. 86 regresiones pasan. Se conservan model_z y evidencia completa;
+la vista LLM omite tablas extensas y procedencia repetida, declara esas omisiones
+y conserva todos los candidatos. El evaluador histórico ahora hace un intento
+(schema 4) y mantiene sus pruebas de persistencia; no es el runner de aceptación.
+Faltan todavía el runner separado de etiquetas y la identidad candidata para
+cerrar T5. Evidencia: `docs/evidence/batch5b2-budget.json`.

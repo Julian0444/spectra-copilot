@@ -65,7 +65,7 @@ def test_valid_report_and_abstention_keep_executor_prediction(monkeypatch, tmp_p
 
 def test_technical_failure_after_predict_keeps_model_z(monkeypatch, tmp_path):
     setup_run(monkeypatch)
-    monkeypatch.setattr(agent.anthropic, 'Anthropic', lambda: (_ for _ in ()).throw(RuntimeError('private path or credential')))
+    monkeypatch.setattr(agent.anthropic, 'Anthropic', lambda **kwargs: (_ for _ in ()).throw(RuntimeError('private path or credential')))
     report = agent.run_structured(str(_source(tmp_path)))
     assert report['status'] == 'technical_error' and report['model_z'] == .42
     assert 'private path' not in json.dumps(report)
@@ -121,8 +121,8 @@ def test_unknown_tool_sdk_attempt_is_recorded_without_inventing_results(monkeypa
         return httpx.Response(200, json=dict(id='simulated', type='message', role='assistant', model='fixture',
             content=[dict(type='tool_use', id=f'call{len(requests)}', name=name, input=arguments)],
             stop_reason='tool_use', stop_sequence=None, usage=dict(input_tokens=1, output_tokens=1)))
-    client = constructor(api_key='synthetic-unused', http_client=httpx.Client(transport=httpx.MockTransport(reply)))
-    monkeypatch.setattr(agent.anthropic, 'Anthropic', lambda: client)
+    client = constructor(api_key='synthetic-unused',max_retries=0, http_client=httpx.Client(transport=httpx.MockTransport(reply)))
+    monkeypatch.setattr(agent.anthropic, 'Anthropic', lambda **kwargs: client)
     report = agent.run_structured(str(_source(tmp_path)))
     assert len(requests) == 2
     assert report['model_z'] == .42 and report['status'] == 'explanation_incomplete'
