@@ -31,9 +31,18 @@ def id_pattern(ids, boundaries=True):
     alternatives = '|'.join(re.escape(value) for value in sorted(ids, key=lambda value: (-len(value), value)))
     if not alternatives:
         return re.compile(r'(?!)')
-    # Unicode letters/digits are not delimiters; punctuation (including _, -, /) is.
-    return re.compile(r'(?<![^\W_])(?:' + alternatives + r')(?![^\W_])' if boundaries
-                      else '(?:' + alternatives + ')')
+    if not boundaries:
+        return re.compile('(?:' + alternatives + ')')
+    # Real numeric IDs may touch letters (obj<ID>), but never match inside a
+    # longer number. Opaque case IDs retain their alphanumeric boundaries.
+    numeric = '|'.join(re.escape(value) for value in ids if value.isdecimal())
+    opaque = '|'.join(re.escape(value) for value in ids if not value.isdecimal())
+    patterns = []
+    if numeric:
+        patterns.append(r'(?<!\d)(?:' + numeric + r')(?!\d)')
+    if opaque:
+        patterns.append(r'(?<![^\W_])(?:' + opaque + r')(?![^\W_])')
+    return re.compile('|'.join(patterns))
 
 
 def matching_ids(text, ids):
@@ -143,48 +152,41 @@ def inspect_text(text, private):
 
 
 def acceptance_references(text):
-    """Catch direct references, aliases and simple constant expressions, not obfuscation."""
+    """Reject executable selector/generator references, regardless of role.
+
+    Development consumers must read the frozen JSON manifest. Documentation
+    mentioning a filename and scripts copying source bytes are not imports.
+    Full Git blobs are parsed as Python; the lexical fallback also checks
+    imports in patches/messages and the previous reserved-role guard.
+    """
     direct = re.findall(r'\bsynthetic\s*\(\s*(?:role\s*=\s*)?([\'"])acceptance\1', text)
-    count = len(direct)
+    count = len(direct) + len(re.findall(
+        r'(?:from\s+[\w.]*select_batch5b\s+import\b|'
+        r'\bimport\s+[\w.]*select_batch5b\b|'
+        r'from\s+[\w.]+\s+import\s+select_batch5b\b)', text))
     try:
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             tree = ast.parse(text)
     except (SyntaxError, ValueError, RecursionError):
         return count
-    strings, aliases = {}, {'synthetic'}
-    def literal(node):
-        if isinstance(node, ast.Constant) and isinstance(node.value, str):
-            return node.value
-        if isinstance(node, ast.Name):
-            return strings.get(node.id)
-        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
-            left, right = literal(node.left), literal(node.right)
-            if left is not None and right is not None:
-                return left + right
-    def generator(node):
-        return ((isinstance(node, ast.Name) and node.id in aliases) or
-                (isinstance(node, ast.Attribute) and node.attr == 'synthetic') or
-                (isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and
-                 node.func.id == 'getattr' and len(node.args) > 1 and literal(node.args[1]) == 'synthetic'))
-    # A conservative static rule: constants/aliases anywhere in the file count.
-    nodes = list(ast.walk(tree))
-    for node in nodes:
-        if isinstance(node, ast.ImportFrom):
-            aliases.update(alias.asname or alias.name for alias in node.names if alias.name == 'synthetic')
-        if isinstance(node, ast.Assign):
-            for target in node.targets:
-                if isinstance(target, ast.Name):
-                    value = literal(node.value)
-                    if value is not None:
-                        strings[target.id] = value
-                    if generator(node.value):
-                        aliases.add(target.id)
-    for node in nodes:
-        if isinstance(node, ast.Call) and generator(node.func):
-            arguments = list(node.args[:1]) + [kw.value for kw in node.keywords if kw.arg == 'role']
-            if any(literal(value) == 'acceptance' for value in arguments):
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name) and node.id == 'select_batch5b':
+            count += 1
+        elif isinstance(node, ast.Attribute) and (node.attr == 'select_batch5b' or
+                (node.attr == 'synthetic' and isinstance(node.value, ast.Name) and
+                 node.value.id in {'selection', 'select_batch5b'})):
+            count += 1
+        elif isinstance(node, ast.Call):
+            name = (node.func.id if isinstance(node.func, ast.Name) else
+                    node.func.attr if isinstance(node.func, ast.Attribute) else '')
+            if name == 'synthetic':
                 count += 1
+            if name in {'__import__', 'import_module', 'run_path', 'spec_from_file_location', 'getattr'}:
+                for arg in node.args:
+                    if isinstance(arg, ast.Constant) and isinstance(arg.value, str):
+                        if 'select_batch5b' in arg.value or (name == 'getattr' and arg.value == 'synthetic'):
+                            count += 1
     return count
 
 

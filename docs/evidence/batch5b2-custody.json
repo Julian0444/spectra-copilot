@@ -1,0 +1,39 @@
+{
+  "session": "5B-2 custody prerequisite",
+  "review": {
+    "REVIEW.md": "767a44596e2da8bb4f77683feeddde7ba99b02d8eeda3cc5e5ebb23aac65e856",
+    "verification.json": "dc54685dba764395a6aa71603c5b945ca038f6b9fee2f1ae0bca828608739ad2",
+    "custody-scan-counts.json": "754d98a437331b1586116d9da532cd3f778ccf66273684da17f503abdc4dd2ce"
+  },
+  "red": {
+    "failed": 12,
+    "passed": 26
+  },
+  "green": {
+    "FM3.9": 38,
+    "FM3.12": 38,
+    "Copilot3.12": 38
+  },
+  "regeneration": {
+    "custody/acceptance.json": {
+      "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+      "matches": true
+    },
+    "development.json": {
+      "sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+      "matches": true
+    },
+    "commitment.json": {
+      "sha256": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99",
+      "matches": true
+    }
+  },
+  "leak_check": {
+    "checked_surfaces": 3141,
+    "violating_surfaces": 0,
+    "violations": []
+  },
+  "policy": "Executable references/imports of selector or its generator forbidden outside the two original allowed files, including development. Consumers read frozen JSON. Numeric IDs have digit boundaries. Documentation, copying source filenames, and unrelated args.synthetic booleans are not imports.",
+  "frozen_files_unchanged": true,
+  "paid_calls": 0
+}

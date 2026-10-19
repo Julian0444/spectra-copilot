@@ -24,7 +24,7 @@ def invented_cases():
 
 def test_exact_ids_and_pairs_but_not_isolated_redshift(invented_cases):
     private = leaks.custody(invented_cases)
-    assert leaks.inspect_text('a987654321987654321 9876543219876543210 .123456789', private) == (0,0,0)
+    assert leaks.inspect_text('0987654321987654321 9876543219876543210 .123456789', private) == (0,0,0)
     ids, pairs, _ = leaks.inspect_text('"987654321987654321", 0.123456789', private)
     assert ids == pairs == 1
     assert leaks.inspect_text('input_987654321987654321.npz', private)[0] == 1
@@ -210,9 +210,9 @@ def test_cli_punctuation_boundaries_and_complete_redaction(custody_cli, surface)
     assert run(1)['violating_surfaces'] > 0
 
 
-def test_cli_does_not_match_alphanumeric_substrings_longer_numbers_or_redshift(custody_cli):
+def test_cli_does_not_match_case_substrings_longer_numbers_or_redshift(custody_cli):
     _, visible, run = custody_cli
-    visible.write_text('a987654321987654321 987654321987654321b 9876543219876543210 '
+    visible.write_text('9876543219876543210 '
                       '0987654321987654321 xcase-abcdef0123456789abcdef0123 '
                       'case-abcdef0123456789abcdef0123f 0.123456789')
     assert run(0)['violating_surfaces'] == 0
@@ -271,15 +271,53 @@ def test_cli_rejects_public_acceptance_generator_reference(custody_cli, source):
     assert run(1)['violating_surfaces'] > 0
 
 
-def test_cli_accepts_development_generator_and_only_exact_allowed_paths(custody_cli):
+def test_cli_accepts_only_exact_allowed_generator_paths(custody_cli):
     root, _, run = custody_cli
-    (root/'consumer.py').write_text("selection.synthetic('development')")
+    (root/'consumer.py').write_text("import json\njson.loads('{}')\nif args.synthetic: pass")
     (root/'scripts').mkdir(); (root/'tests').mkdir()
     for name in ['scripts/select_batch5b.py', 'tests/test_batch5b_protocol.py']:
         (root/name).write_text("selection.synthetic('acceptance')")
     assert run(0)['violating_surfaces'] == 0
     (root/'other').mkdir()
     (root/'other'/'select_batch5b.py').write_text("selection.synthetic('acceptance')")
+    assert run(1)['violating_surfaces'] > 0
+
+
+@pytest.mark.parametrize('source', [
+    "import select_batch5b as s\nfor role in ['development', 'acceptance']:\n s.synthetic(role)",
+    "from select_batch5b import synthetic\nx = [synthetic(r) for r in ['development', 'acceptance']]",
+    "import pytest\nfrom select_batch5b import synthetic\n@pytest.mark.parametrize('role', ['development', 'acceptance'])\ndef test_x(role): synthetic(role)",
+    "from scripts import select_batch5b as s\na, b = ('development', 'acceptance')\ns.synthetic(b)",
+    "import select_batch5b as s\ns.synthetic({'role': 'acceptance'}['role'])",
+    "import select_batch5b as s",  # unused imports are also forbidden
+    "selection.synthetic('development')",
+    "from select_batch5b import choose",  # any selector access, not just synthetic
+], ids=['for_roles', 'comprehension', 'parametrize', 'tuple', 'dict', 'import_only',
+        'development', 'other_function'])
+def test_cli_rejects_any_selector_access_outside_allowed_paths(custody_cli, source):
+    root, _, run = custody_cli
+    (root/'consumer.py').write_text(source)
+    assert run(1)['violating_surfaces'] > 0
+
+
+@pytest.mark.parametrize('surface', ['content', 'filename', 'index', 'history'])
+def test_cli_numeric_id_digit_boundaries(custody_cli, surface):
+    root, visible, run = custody_cli
+    if surface == 'content':
+        visible.write_text('obj987654321987654321suffix')
+    else:
+        path = root/'obj987654321987654321.txt'
+        path.write_text('safe')
+        if surface == 'index':
+            path.unlink()
+            path = root/'sample.txt'
+            path.write_text('obj987654321987654321suffix')
+            leaks.git(root, 'add', path.name)
+            path.write_text('safe')
+        elif surface == 'history':
+            commit(root)
+            path.unlink()
+            commit(root)
     assert run(1)['violating_surfaces'] > 0
 
 

@@ -518,3 +518,10 @@ citas ni harness CNN; **5B-2 no iniciada**.
 regeneración por hashes, fronteras/redacción, blobs/mensajes, regla N-1,
 diagnóstico stderr y preservación. Solo después corresponde iniciar 5B-2 sobre
 desarrollo bajo el protocolo y su adenda. No abrir ni evaluar aceptación.
+
+
+## 5B-2 — requisito de custodia previo a T1 (2026-10-19)
+
+La revisión independiente de Claude sobre FM beedd100 / Copilot f13dacea habilita 5B-2 con dos residuales P3. Se prohíbe acceso ejecutable al selector/generador desde consumidores (incluido desarrollo y roles calculados); desarrollo se lee del JSON congelado. Las IDs numéricas se detectan con frontera de dígitos, incluyendo prefijos alfabéticos, sin marcar números más largos. Se conservan las dos rutas permitidas.
+
+Regresiones CLI con datos inventados: 12 fallos sobre el comprobador previo; 38 aprobadas después. Incluyen for, comprensión, parametrize, tupla, diccionario, import sin uso, y frontera numérica en árbol, índice e historial. El primer ensayo falló por importar el wheel antiguo; se corrigió PYTHONPATH y no se contabiliza como detección. Se acotó un falso positivo de la regla sobre flags booleanos args.synthetic ajenos al selector. Regeneración por SHA-256 idéntica para aceptación, desarrollo y compromiso; copia privada temporal borrada sin mostrar contenidos. No cambian protocolo ni selección. Evidencia: `evidence/batch5b2-custody.json`. Esto no es T1 ni aceptación del agente.
