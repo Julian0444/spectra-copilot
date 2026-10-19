@@ -599,3 +599,40 @@ independientes, soporte por par afirmación–cita, discrepancias/adjudicación 
 fallos por afirmaciones sin respaldo; no usa regex como evaluación semántica.
 `BATCH_5C_REVIEW.md` prepara la rúbrica sin cambiar el protocolo. La revisión
 semántica real y sus resultados permanecen pendientes de 5C.
+
+### 5B-2 T4 — CNN-17 operativa, alcance cerrado
+
+Harness FM `76415ff`, checkout aislado detached
+`4387dd36c6ad640f00c6d9fc3bf6448ef3644d50`: 25/25 fuentes exactas, entorno
+histórico idéntico, MPS sincronizado y cuatro hilos CPU. CNN-17 paso 6.000,
+11.874.874 bytes, SHA-256
+335b396c3e2ee737a5e62d51851eedb596b42fb815f9a3f4861e42a2cdc9d6f8,
+carga estricta. No se modifica ni rodea la guarda de HEAD. Contrato
+`batch4-grid-v1:unnormalized-spectra-input-v2`, normalización histórica visible
+mediana/IQR–std–eps, arcsinh y clip ±8. No se etiqueta como adaptación a v3.
+
+48/48 reales de desarrollo procesados (24 train, 24 validación); 42/48 sintéticos
+procesados y seis rechazos invalid_input esperados, cero errores técnicos o
+pendientes. Tres repeticiones por válido: 90/90 repetibles, 12/12 ordenamientos
+con preprocesado idéntico. Para los 48 reales, preprocesar los arrays originales
+con código histórico coincide exactamente con el derivado congelado. Paridad
+con predicciones ya persistidas: 24/24 a atol/rtol 1e-6, diferencia máxima
+2.38418579e-07. Esa validación seleccionó el checkpoint; no es
+confirmatoria. Train solo prueba repetibilidad, sin inventar una referencia.
+
+Latencia real por solicitud: p95 primer pase 0.002022 s,
+p95 caliente 0.002013 s; carga+primera solicitud fría
+0.979476 s. RSS máximo del proceso
+308674560 bytes. Se separan verificación/setup, carga y medición;
+la condición exacta está en la evidencia. El primer pase completo no son 48
+arranques fríos independientes. Sintéticos preprocesados antes del cronómetro;
+reales incluyen normalización por solicitud. No comparar sus latencias como si
+fueran idénticas cargas de trabajo.
+
+El harness restringe batch a IDs autorizados y bloquea opens del subárbol test,
+incluso por enlace simbólico; siete regresiones pasan en Python 3.9/3.12.
+No inferencia nueva sobre test, cambio de selección, reconstrucción CNN, índice
+FAISS ni despliegue. v2.1 sigue por defecto. No se afirma superioridad científica.
+Evidencia: `docs/evidence/batch5b2-cnn-operational.json`; trazas privadas conservan
+todos los casos y repeticiones. Respaldo antes de cargar: **no hay respaldo
+independiente verificado**. T4 cerrado operativamente; T5 todavía pendiente.

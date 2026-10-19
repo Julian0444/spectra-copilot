@@ -1,0 +1,181 @@
+{
+  "backup_status": "no hay respaldo independiente verificado",
+  "capabilities": [
+    "classification MAP redshift",
+    "secondary posterior moment",
+    "uncalibrated posterior concentration"
+  ],
+  "checkpoint": {
+    "bytes": 11874874,
+    "sha256": "335b396c3e2ee737a5e62d51851eedb596b42fb815f9a3f4861e42a2cdc9d6f8"
+  },
+  "checkpoint_and_model_load_seconds": 0.1807059160200879,
+  "cold_load_plus_first_request_seconds": 0.9794762069359422,
+  "contract": "batch4-grid-v1:unnormalized-spectra-input-v2",
+  "cpu_threads": 4,
+  "development": {
+    "bytes": 61654,
+    "sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4"
+  },
+  "device": "mps",
+  "environment": {
+    "packages": {
+      "numpy": "2.5.1",
+      "pyarrow": "25.0.0",
+      "scipy": "1.18.0",
+      "torch": "2.13.0"
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "python": "3.12.13"
+  },
+  "first_request_seconds": 0.7987702909158543,
+  "gate_passes": true,
+  "harness_files": {
+    "scripts/batch5b_development.py": {
+      "bytes": 5357,
+      "sha256": "6cd7cf5a96473618cd90e2ef2a482c6c7db22e534a5d17f9768e8ae6eb5563f5"
+    },
+    "scripts/check_batch5b_cnn.py": {
+      "bytes": 15670,
+      "sha256": "88109635194b986dabc77e2e5360bae3cb0a5368548f9e0da21a7bd6dce00b4f"
+    }
+  },
+  "harness_head": "76415ffb8f796937eaaec68a5acae448d3ea75d7",
+  "historical_head": "4387dd36c6ad640f00c6d9fc3bf6448ef3644d50",
+  "historical_source": {
+    "files": {
+      "scripts/batch4.py": "6164f177ff9a1b170f7f27ed5e93a7789071dc2803396ee8c52aec7e0a7ad1c3",
+      "scripts/check_batch4_data.py": "a2fe62d4ce0ffb5171e664d999972e12f999e791e0d20ae5e5c57e62dd45e249",
+      "scripts/check_batch4_resume.py": "4e47384f1b5a4c76f3a74d444e0f15213555362f1e1479c29b7e989662941b04",
+      "scripts/prepare_batch4.py": "dc185c79d79c4abff2353ddbeb486d132b8a129f8b810626937c28892993f57e",
+      "src/desi_fm/__init__.py": "da64b2dd45657dda388c280af97305459078843266a3abe632d2b47366c57976",
+      "src/desi_fm/api.py": "fcd601c3dbcedde5d8c93de38542ce23c5e3ebc8fb4aee82e91d5e19ca393db0",
+      "src/desi_fm/assets.py": "82762af295c81b5bcbab9430a93dcea950d8d0096a6fe73e6c13c2e095ff0bd6",
+      "src/desi_fm/data.py": "8cd81bb83da17e0996ed5637cb07072efc1ff2df018ad1bd3a5632e4b6dfb6f7",
+      "src/desi_fm/evaluate.py": "3216e2c35ca30b0ad9f471d1da480f1a86e23318f5fa6a8e224aeae923fc65d2",
+      "src/desi_fm/experiment/__init__.py": "1368f944c9a12d42a6289544fbcc8ef8ebd3fd843e9f92fb3458dd126a1b936b",
+      "src/desi_fm/experiment/artifacts.py": "ad2efca5f3c72749de5078b84080d4db80d8777d34e1f7bd2449832a01a13fdb",
+      "src/desi_fm/experiment/data.py": "5400c7307aeec5382e6e4a2727ccd31dad10e30be6614ec7681dbe76df642211",
+      "src/desi_fm/experiment/final.py": "36e1b7e576ae9ae7978f24e61961201b399b07ebb4fab9537c88df39ab2d575f",
+      "src/desi_fm/experiment/metrics.py": "14e4c4da2f8d111cefb2c9cdc8e015d7fa563564bd532418f192d9192071a71d",
+      "src/desi_fm/experiment/models.py": "3a9f8fcd50b61504d86889cff43eb3cf59ed39ee9bc789a445e1d6e33da292f5",
+      "src/desi_fm/experiment/ridge.py": "3b900422356f6355dbbb5ba0bdb8975c460d2b55777014764e1d222af81c08ad",
+      "src/desi_fm/experiment/splits.py": "8f7aca221fbdc7c673c68be6185a40f45c794fd0da7c5ddeffd46871c00f3ec6",
+      "src/desi_fm/experiment/training.py": "9526e70ecc104d9d14b8706ac0418cef8b0d0ef76a5cec6327a572320a39a484",
+      "src/desi_fm/historical.py": "799f1267341f5238833f2977af25e3c725b9c58da77bedd277be749e0fb2c1fd",
+      "src/desi_fm/inputs.py": "c7a3ca7a9b2ba9a1a4a5398aa26ab529a163b7fd4c0a41d6318a17f5f9425a23",
+      "src/desi_fm/inspect_schema.py": "ed116a9c344c8d77acdc53d5b1d351f18496e4a418647406bd03a7bbecfc3c8c",
+      "src/desi_fm/local_data.py": "3b61452b1c3da0e71e4176494ee991e21129dd696ff3fe9f9be9590e9986d3dc",
+      "src/desi_fm/model.py": "75012f0114496e6343b67c7bf84bfd736d2b48ba31baae07aee4b2a1072bc019",
+      "src/desi_fm/predict.py": "5d73adec302d5a57584c83277c5e0d5f8c7a257b8e91016cd7d137161cd123e7",
+      "src/desi_fm/train.py": "712af03239f140e6a195af441b574665db6ea764841e17a7a6d88201e0035dc1"
+    },
+    "head": "4387dd36c6ad640f00c6d9fc3bf6448ef3644d50",
+    "sha256": "828a7187545d30c9dbab55a9b49cc64925cfbdbeaa9160f3f52567c6f6f2152c"
+  },
+  "imports": {
+    "desi_fm": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/__init__.py",
+    "desi_fm.assets": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/assets.py",
+    "desi_fm.data": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/data.py",
+    "desi_fm.experiment": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/experiment/__init__.py",
+    "desi_fm.experiment.artifacts": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/experiment/artifacts.py",
+    "desi_fm.experiment.data": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/experiment/data.py",
+    "desi_fm.experiment.metrics": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/experiment/metrics.py",
+    "desi_fm.experiment.models": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/experiment/models.py",
+    "desi_fm.experiment.training": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/experiment/training.py",
+    "desi_fm.historical": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/historical.py",
+    "desi_fm.inputs": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/inputs.py",
+    "desi_fm.model": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/cnn-historical/src/desi_fm/model.py"
+  },
+  "latency": {
+    "real": {
+      "first_pass": {
+        "maximum": 0.7987702909158543,
+        "n": 48,
+        "p50": 0.0017396879848092794,
+        "p95": 0.0020216499164234848
+      },
+      "warm": {
+        "maximum": 0.004063209053128958,
+        "n": 96,
+        "p50": 0.0012876454857178032,
+        "p95": 0.002012531302170828
+      }
+    },
+    "synthetic": {
+      "first_pass": {
+        "maximum": 0.0022921659983694553,
+        "n": 42,
+        "p50": 0.0014271875261329114,
+        "p95": 0.0016590978193562478
+      },
+      "warm": {
+        "maximum": 0.0014066249132156372,
+        "n": 84,
+        "p50": 0.0009210625430569053,
+        "p95": 0.0012454516545403749
+      }
+    }
+  },
+  "limitations": [
+    "No reconstruction head",
+    "No embedding compatibility with transformer FAISS",
+    "No superiority/generalization evidence",
+    "v2.1 remains default"
+  ],
+  "model_parameters": 912548,
+  "mps_current_allocated_bytes": 3708928,
+  "mps_driver_allocated_bytes": 44777472,
+  "normalization": "visible_only_median_iqr_std_eps_identity_if_lt8",
+  "ordering_equivalent": 12,
+  "parity_applicable": 24,
+  "parity_max_abs": 2.384185791015625e-07,
+  "parity_passed": 24,
+  "peak_host_rss_bytes": 308674560,
+  "preprocessing": {
+    "clip_value": 8.0,
+    "eps": 1e-06,
+    "lambda_max": 9800.0,
+    "lambda_min": 3600.0,
+    "n_pixels": 7081,
+    "wavelength_grid": "log"
+  },
+  "real_processed": 48,
+  "real_requested": 48,
+  "repeatable": 90,
+  "scope": "Operational development only; validation selected CNN-17. No accuracy comparison, test, deployment, FAISS or reconstruction.",
+  "status_counts": {
+    "invalid_input": 6,
+    "pending": 0,
+    "processed": 90,
+    "technical_error": 0
+  },
+  "strict_load": true,
+  "synthetic_invalid_input": 6,
+  "synthetic_processed": 42,
+  "synthetic_requested": 48,
+  "test_access": "process-wide open audit forbids data_root/test; no test inference",
+  "timing_conditions": "Synchronized MPS, single case requests, historical CPU normalization; per-request includes normalization for real cases. Derivative verification and setup reported outside request latency. First-pass cases separated, only first overall request is truly cold.",
+  "evidence": {
+    "cnn-operational-v1/summary.json": {
+      "sha256": "be92e2dcf8894306e330a88fa55e3e6531fb844bdd5101499920d1baa182e2d9",
+      "bytes": 8316
+    },
+    "cnn-operational-v1/rows.json": {
+      "sha256": "a866b8fc4b9ce2d542ea8180c26027c0442d5c93eb09a3c534f92a614b4414bd",
+      "bytes": 109484
+    },
+    "cnn-preflight.json": {
+      "sha256": "804297bf90204992ae81cabbff22df8acf1fb2c343b97641c66ab6a016e6a6ea",
+      "bytes": 4536
+    },
+    "T4-harness-final39.log": {
+      "sha256": "bf57a87e7fe91a0d8a8815a680d416938ba682dee7e8a176a4973cb35e527edc",
+      "bytes": 98
+    },
+    "T4-harness-final312.log": {
+      "sha256": "f99ebebc084c88b058ca5992a95d3d5379e1d1bc59bd065abbb435915b564266",
+      "bytes": 98
+    }
+  }
+}
