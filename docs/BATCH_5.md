@@ -579,3 +579,23 @@ hipótesis finitas extremas (p. ej., z=1e308): devuelve longitud nula y soporte
 fuera del dominio numérico. Ningún z medido activa esa rama; la regresión prueba
 serialización JSON finita. T2 queda implementado y medido en desarrollo; el
 comportamiento del LLM y la aceptación siguen pendientes de 5C.
+
+### 5B-2 T3 — citas y revisión separadas
+
+Cada recuperación devuelve corpus_revision, recurso y SHA-256, texto íntegro,
+fragmento con offsets de caracteres y hash. El ejecutor coteja el contenido con
+el corpus y solo publica citas de IDs reales recuperados en observaciones
+seleccionadas. submit_report no recibe afirmaciones libres ni texto atribuido;
+renderiza extractos exactos con su procedencia y una limitación explícita sobre
+predicciones individuales. El contenido del corpus no se modifica; las notas son
+editoriales locales y las entradas de catálogo no tienen bibliografía externa
+por entrada. No se confunde su hash con veracidad científica.
+
+Se comprobaron todos los ejemplos de cita del prompt contra el corpus:
+Halpha_6563 sí existe; solo se permite tras recuperarlo. 52 pruebas pasan,
+incluidos ID inexistente/no recuperado, fuente/texto/hash alterado y separación
+entre ID válido, respaldo textual y ciencia. `copilot.review` registra juicios
+independientes, soporte por par afirmación–cita, discrepancias/adjudicación y
+fallos por afirmaciones sin respaldo; no usa regex como evaluación semántica.
+`BATCH_5C_REVIEW.md` prepara la rúbrica sin cambiar el protocolo. La revisión
+semántica real y sus resultados permanecen pendientes de 5C.

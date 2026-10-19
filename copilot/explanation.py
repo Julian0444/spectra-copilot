@@ -6,6 +6,7 @@ protects software fidelity, not the accuracy of the predictor or of an LLM.
 """
 from copy import deepcopy
 import math
+from copilot import rag
 
 POLICY_VERSION = 'explanatory-model-z-v1'
 STATES = {'complete', 'invalid_input', 'insufficient_data', 'ambiguous',
@@ -28,7 +29,7 @@ def canonical_z(prediction):
 
 
 def result(prediction=None, observations=(), selected=(), assessment='descriptive',
-           status=None, violations=()):
+           status=None, violations=(), reference_ids=None):
     by_id = {o['id']: o for o in observations}
     if any(key not in by_id for key in selected):
         raise ValueError('Unknown observation; invented tool evidence is forbidden')
@@ -40,6 +41,18 @@ def result(prediction=None, observations=(), selected=(), assessment='descriptiv
     z = canonical_z(prediction) if prediction is not None else None
     if status in {'complete', 'ambiguous', 'insufficient_data'} and z is None:
         raise ValueError('A valid report requires an official prediction')
+    retrieved = {}
+    for key in selected:
+        observation = by_id[key]
+        if observation['tool'] == 'lookup_reference' and not observation.get('error'):
+            rag.validate_retrieval(observation['result'])
+            for item in observation['result']['results']:
+                retrieved[item['id']] = dict(item, observation_id=key,
+                                             corpus_revision=observation['result']['corpus_revision'])
+    reference_ids = list(retrieved) if reference_ids is None else reference_ids
+    if len(set(reference_ids)) != len(reference_ids) or any(i not in retrieved or i not in rag.valid_ids() for i in reference_ids):
+        raise ValueError('Citation must be real and retrieved in selected evidence')
+    citations = [retrieved[i] for i in reference_ids]
     explanations, alternatives = [], []
     for key in selected:
         obs = by_id[key]
@@ -72,7 +85,8 @@ def result(prediction=None, observations=(), selected=(), assessment='descriptiv
                      'predictor': prediction.get('model_identity') if prediction else None,
                      'input_contract': prediction.get('coverage', {}).get('contract') if prediction else None,
                      'prediction': prediction, 'alternatives': alternatives,
-                     'observations': list(observations), 'explanation': explanations,
+                     'observations': list(observations), 'explanation': explanations, 'citations': citations,
+                     'citation_policy': 'Exact local excerpts only; ID validity, textual support and scientific accuracy are distinct.',
                      'limitations': LIMITS, 'policy_violations': list(violations),
                      'free_text_publication': 'disabled; requires independent semantic review'})
 
@@ -84,6 +98,10 @@ def render(report):
              'Official model_z: '+('unavailable' if z is None else repr(z)),
              'Predictor: '+str(report['predictor']), 'Input contract: '+str(report['input_contract'])]
     lines.extend(f'{e["text"]} [{e["observation_id"]}]' for e in report['explanation'])
+    for citation in report.get('citations', []):
+        lines.append(f'Retrieved local excerpt [{citation["id"]}] (source: {citation["source"]}; '
+                     f'fragment SHA-256: {citation["fragment_sha256"]}; corpus: {citation["corpus_revision"]}):\n'
+                     + citation['text'] + '\nThis excerpt is not independent certification of this spectrum or its prediction.')
     lines.extend(report['limitations'])
     if report['policy_violations']:
         lines.append('Unvalidated or incompatible generated content was withheld: '+', '.join(report['policy_violations']))

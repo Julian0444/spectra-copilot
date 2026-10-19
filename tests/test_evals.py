@@ -61,7 +61,7 @@ def _source(tmp_path):
 
 def test_submit_report_returns_validated_payload():
     import json, pytest
-    args=dict(observation_ids=['obs-1'], assessment='ambiguous')
+    args=dict(observation_ids=['obs-1'], assessment='ambiguous', reference_ids=None)
     assert json.loads(agent.submit_report.call(args))==args
     for fields in [dict(observation_ids=[]), dict(assessment='high'), dict(model_z=9.),
                    dict(z_final=9.), dict(lines_matched=99), dict(summary='z is 9')]:

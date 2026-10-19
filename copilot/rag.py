@@ -1,6 +1,6 @@
 """Mini-RAG over the line catalog and DESI reference notes (plan 12).
 
-The corpus is ~30 short, technical documents committed under refs/:
+The corpus contains short local reference documents committed under refs/:
 `refs/lines.json` (the extended spectral-line catalog) plus one markdown
 note per DESI topic, each carrying its public source URL on a `source:`
 first line. Retrieval is BM25 — for a corpus this small with controlled
@@ -39,7 +39,8 @@ def _corpus() -> tuple[list[dict], BM25Okapi]:
     for e in json.loads((REFS_DIR / "lines.json").read_text()):
         docs.append({
             "id": e["name"],
-            "source": "line-catalog",
+            "source": "local:refs/lines.json (editorial catalog; no external bibliography)",
+            "resource": "refs/lines.json",
             "text": f"{e['name']} at rest {e['rest_angstrom']} A. {e['text']}",
         })
     for path in sorted((p for p in REFS_DIR.iterdir() if p.name.endswith(".md")), key=lambda p: p.name):
@@ -47,8 +48,15 @@ def _corpus() -> tuple[list[dict], BM25Okapi]:
         docs.append({
             "id": path.name[:-3],
             "source": lines[0].removeprefix("source:").strip(),
+            "resource": "refs/"+path.name,
             "text": "\n".join(lines[1:]).strip(),
         })
+    hashes = corpus_hashes()
+    for doc in docs:
+        doc['resource_sha256'] = hashes[doc['resource']]
+        doc['text_sha256'] = hashlib.sha256(doc['text'].encode()).hexdigest()
+    if len({d['id'] for d in docs}) != len(docs):
+        raise RuntimeError('Duplicate corpus IDs')
     bm25 = BM25Okapi([_tokenize(d["id"] + " " + d["text"]) for d in docs])
     return docs, bm25
 
@@ -72,17 +80,40 @@ def lookup_reference_impl(query: str, k: int = 3) -> dict:
     scores = bm25.get_scores(_tokenize(query))
     k = min(k, len(docs))
     top = sorted(range(len(docs)), key=lambda i: -scores[i])[:k]
+    hashes = corpus_hashes()
+    if any(d['resource_sha256'] != hashes[d['resource']] for d in docs):
+        raise RuntimeError('Corpus changed after loading')
     return {
-        "results": [
-            {
-                "id": docs[i]["id"],
-                "source": docs[i]["source"],
-                "snippet": docs[i]["text"][:400],
-            }
-            for i in top
-            if scores[i] > 0
-        ]
+        'corpus_revision': corpus_revision(),
+        'retrieval': 'BM25 over local editorial notes; score is not claim support',
+        'results': [dict(docs[i], snippet=docs[i]['text'][:400],
+                         fragment_start=0, fragment_end=len(docs[i]['text']),
+                         fragment_sha256=docs[i]['text_sha256'])
+                    for i in top if scores[i] > 0],
     }
+
+
+def validate_retrieval(retrieved):
+    """Validate exact local fragments and provenance, not their scientific truth."""
+    if retrieved.get('corpus_revision') != corpus_revision():
+        raise ValueError('Corpus identity mismatch')
+    docs = {d['id']: d for d in _corpus()[0]}
+    seen = set()
+    for item in retrieved['results']:
+        reference = item['id']
+        if reference not in valid_ids() or reference in seen:
+            raise ValueError('Invalid or duplicate reference ID')
+        seen.add(reference)
+        doc = docs.get(reference)
+        if doc is None or any(item.get(k) != v for k, v in doc.items()):
+            raise ValueError('Retrieved content or source mismatch')
+        if (item.get('snippet') != doc['text'][:400] or item.get('fragment_start') != 0
+                or item.get('fragment_end') != len(doc['text'])
+                or item.get('fragment_sha256') != doc['text_sha256']
+                or doc['resource_sha256'] != corpus_hashes()[doc['resource']]):
+            raise ValueError('Fragment provenance mismatch')
+    return True
+
 
 
 def corpus_hashes():

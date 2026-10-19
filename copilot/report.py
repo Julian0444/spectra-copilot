@@ -9,6 +9,12 @@ posterior. z_confidence = 1 - H(p)/log(n_bins), not calibrated accuracy.
 Use identify_spectral_lines for descriptive observations, not physical confirmation.
 Use find_similar_spectra only with its shared-encoder caveat: not independent confirmation.
 Use lookup_reference for source excerpts. Reference existence is not claim support.
+Select retrieved real reference_ids; never invent a citation or attribute a claim
+that the retrieved fragment does not state. For example, [Halpha_6563] exists in
+the local editorial corpus, but may be cited only after retrieving it. The corpus
+contains local notes, not automatic independent certification of a prediction.
+The executor quotes exact fragments and their hashes; scientific accuracy and
+interpretation still require independent semantic review.
 Use reconstruct_spectrum only for a masking stability question.
 You have at most six analysis calls including the executor's initial prediction.
 Never invent a tool, result, alternative, citation or numerical value.

@@ -132,6 +132,7 @@ def lookup_reference(query: str, k: Annotated[int, Field(ge=1, le=30, strict=Tru
 def submit_report(
     observation_ids: list[str],
     assessment: Literal["descriptive", "ambiguous", "insufficient_data"] = "descriptive",
+    reference_ids: list[str] | None = None,
 ) -> str:
     """Select recorded observation IDs and a conservative assessment exactly once.
 
@@ -140,7 +141,7 @@ def submit_report(
     """
     if not observation_ids or len(observation_ids) != len(set(observation_ids)):
         raise SpectrumInputError("Nonempty, distinct observation IDs required")
-    return json.dumps(dict(observation_ids=observation_ids, assessment=assessment))
+    return json.dumps(dict(observation_ids=observation_ids, assessment=assessment, reference_ids=reference_ids))
 
 
 @contextmanager
@@ -208,7 +209,8 @@ class RunTools:
                 payload = json.loads(base.func(*args, **kwargs))
                 try:
                     self.result = explanation.result(self.prediction, self.observations,
-                        payload['observation_ids'], payload['assessment'], violations=self.violations)
+                        payload['observation_ids'], payload['assessment'], violations=self.violations,
+                        reference_ids=payload['reference_ids'])
                 except (ValueError, KeyError):
                     self.violations.append('invalid_report')
                     raise SpectrumInputError('Invalid report evidence or missing prediction') from None
@@ -224,6 +226,8 @@ class RunTools:
                 safe_arguments['npz_path'] = 'spectrum.npz'
             try:
                 value = json.loads(base.func(*args, **kwargs))
+                if base.name == 'lookup_reference':
+                    rag.validate_retrieval(value)
             except Exception as exc:
                 code = 'invalid_input' if isinstance(exc, SpectrumInputError) else 'technical_error'
                 self.record(base.name, safe_arguments, None, code)
