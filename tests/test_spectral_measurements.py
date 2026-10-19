@@ -98,3 +98,10 @@ def test_candidate_negative_rejection_and_snr_formula(tmp_path):
     a['ivar']*=4; s=measure(tmp_path,a)['measurements'][0]
     assert s['snr']==pytest.approx(2*p['snr'])
     assert '51-pixel' in r['snr_definition'] and 'instrumental' in r['resolution']
+
+
+def test_extreme_finite_hypothesis_has_no_nonfinite_measurements(tmp_path):
+    import json
+    r=measure(tmp_path,spectrum(),1e308)
+    assert r['n_expected_in_coverage']==0
+    json.dumps(r,allow_nan=False)

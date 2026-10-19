@@ -541,3 +541,41 @@ El ejecutor obtiene la predicción antes de consultar al LLM; conserva el númer
 Estados distintos: completo, entrada inválida, datos insuficientes, ambigüedad, explicación incompleta y fallo técnico. Una abstención o fallo posterior conserva toda predicción oficial válida; sin ella model_z es null. CLI, salida estructurada y evaluador aplican la política; el evaluador v3 rechaza sustituciones y no adopta corridas históricas. Su columna histórica z_final proyecta model_z; confidence=not_applicable, no una confianza inventada. Los CSV históricos no cambian.
 
 66 regresiones pertinentes aprobadas, incluidas simulaciones del SDK con HTTP local: sobrescritura, mediciones/prosa incompatibles, herramienta/observación inventada, presupuesto, informe ausente, error técnico posterior, entrada inválida frente a activo ausente, persistencia y CLI. Son pruebas de contratos de software; la conducta de un LLM real queda sin validar. La conservación de model_z no es una mejora de precisión del LLM. Citas y matcher continúan en T3/T2; T1 no los da por terminados.
+
+
+### 5B-2 T2 — mediciones descriptivas (implementación)
+
+La puerta de T2.1 falló y se retira `verdict`; la salida declara
+`physical_confirmation=false`. El catálogo histórico queda idéntico, sin
+correcciones aire/vacío. El SNR de píxel es `(flux - mediana local de 51 píxeles)
+* sqrt(ivar)`, con signo para emisión/absorción y detección fija SNR≥5. No propaga
+incertidumbre del continuo, covarianza ni resolución instrumental. IVAR ausente
+sigue siendo uno por contrato; no se estima una varianza para rescatar ejemplos.
+
+Las regiones se separan por mask, IVAR inválida y saltos de coordenadas según la
+regla de soporte v3. Cada línea requiere ventana completa de max(12 Å, dos pasos
+locales). Ca H/K usa absorción; las demás líneas del catálogo usan emisión.
+Modalidades no soportadas y líneas fuera de soporte no se tratan como refutación.
+Cada pico y candidato incluye procedencia; `lambda_observada/lambda_reposo−1` se
+calcula en código y todas las interpretaciones usan la misma comparación. Una
+línea con varias interpretaciones queda ambigua, sin sustituir model_z.
+
+54 regresiones de mecanismos/interfaces pasan con datos locales; incluyen ruido,
+z erróneo, fuera de cobertura, huecos por tres mecanismos, mask/ivar, inversión,
+permutación, absorción y cuatro interpretaciones de una línea. El ejemplo
+histórico trap_single_line carece de IVAR medida y no supera SNR≥5 con el valor
+por defecto; se conserva ese resultado. Medición terminada en código 01bed86: 96 solicitados, 90 medidos, seis entradas
+inválidas, 78 referencias con 1.560 controles sin faltantes. AUROC pareada 0,77147;
+TPR 0,21795; FPR por candidato 0,00128; alguna falsa señal por objeto 0,02564.
+Ruido 0/120 cruces de umbral en seis objetos. Líneas inyectadas visibles: 74/102
+recuperadas, cero falsos matches en 270 posiciones. Las 12 grillas reordenadas
+coinciden exactamente. Puerta **FALLA por TPR**. Un cruce del umbral 0,4 aquí es
+un diagnóstico del score, nunca un veredicto publicado. No se prueba otro umbral.
+`docs/evidence/batch5b2-matcher-descriptive.json` contiene estratos, controles,
+IC bootstrap de 2.000 réplicas por objeto y hashes de trazas privadas.
+
+Después de medir se agregó exclusivamente la guarda de desbordamiento para
+hipótesis finitas extremas (p. ej., z=1e308): devuelve longitud nula y soporte
+fuera del dominio numérico. Ningún z medido activa esa rama; la regresión prueba
+serialización JSON finita. T2 queda implementado y medido en desarrollo; el
+comportamiento del LLM y la aceptación siguen pendientes de 5C.

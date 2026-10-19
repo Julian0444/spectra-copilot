@@ -72,6 +72,10 @@ def measure(flux, wave, ivar, mask, z, catalog, tolerance=12.):
         for name, rest in catalog.items():
             expected = float(rest*(1+hypothesis))
             modality = 'absorption' if name in ABSORPTION else 'emission'
+            if not math.isfinite(expected):
+                lines.append({'line': name, 'lambda_rest': rest, 'lambda_expected': None,
+                              'modality': modality, 'support': 'outside_numeric_domain'})
+                continue
             entry = {'line': name, 'lambda_rest': rest, 'lambda_expected': expected, 'modality': modality}
             containing = next(((lo, hi) for lo, hi in segments if w[lo] <= expected <= w[hi-1]), None)
             if containing is None:
