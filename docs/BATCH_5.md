@@ -396,3 +396,47 @@ después iniciar 5B-2 desde estas ramas: protección model_z y separación de
 alternativas, matcher B7/B9 bajo este protocolo, citas y harness CNN en desarrollo.
 No ejecutar aceptación ni llamadas pagas sin la autorización de 5C. No publicar.
 Respaldo: **no hay respaldo independiente verificado**. Rotación: **sin verificar**.
+
+
+### Registro de cierre 5B-1 y commits de congelado
+
+| Repositorio | Rama exacta | HEAD corregido de 5A | Primer commit propio: congelado |
+|---|---|---|---|
+| FM | codex/lote-5b | c99ec856f968f2965a4b6ebd73c399fe2ecb107c | 2b94b3c9544e8d3b6675648785bed359350a74c1 |
+| Copilot | codex/lote-5b | 9c5cf0e232736a7a0ce386a487d218517a59de9c | ed9bedc1efbc937cb179200cdb3f91fdbc2b6b4b |
+
+Se comprobó que cada commit de congelado tiene como padre directo su HEAD 5A
+corregido. Este registro posterior añade únicamente hashes y handoff; no altera
+el protocolo congelado ni implementa 5B-2. Los scripts/protocolo/manifiestos son
+idénticos en ambos repositorios. La matriz H-01–H-18 actualizada está arriba.
+
+Después del primer congelado se añadió una regresión sintética que detectó que
+una ruta con ID y etiqueta ocultaba el ID pero podía mostrar la etiqueta. Se
+corrigió únicamente la redacción de rutas del comprobador: FM `8e723153afe3449b6b19df40dedf8d7a1d7c1e8a`,
+Copilot `4942f90045d1d9b05f9abd8e601447be94db0a79`. La prueba falló antes (1 fallo, 5 aprobadas) y las
+6 aprobaron después en los tres entornos. No se detectó ninguna filtración real;
+no cambian protocolo, población, selección, manifiestos ni hash de aceptación.
+Chequeo posterior: 2.248 superficies y cero violaciones. La revisión independiente
+debe incluir estos commits posteriores, además del primer congelado.
+
+Estado separado: **R5A-01 cerrado; R5A-02 cerrado; O-1 brecha cerrada;
+congelado completado localmente**. Antes de commitear: chequeo de árbol, diff,
+staging e inputs visibles: **2.216 superficies, cero filtraciones**; fixtures
+plantadas detectadas sin imprimir secretos de custodia. Repetición final de las
+6 pruebas del comprobador tras ampliar staging: aprobada en los tres entornos.
+Inventario final contra 5A: 1.174 archivos sin cambios de SHA-256/tamaño.
+No se añadieron secretos, pesos, datasets, CSV históricos ni logs voluminosos.
+
+SHA-256 de la aceptación final: `b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05`;
+82805 bytes, 128 casos (80 reales, 48 sintéticos), sin abrir contenidos
+ni ejecutar casos. Evidencia: [batch5b-close.json](evidence/batch5b-close.json).
+**Respaldo independiente: no hay respaldo independiente verificado.**
+**Rotación de claves: sin verificar.** **H-18: explicación personal de Julian
+pendiente.** Nada de 5B-2 iniciado; ninguna publicación ni llamada paga.
+
+Siguiente paso exacto: revisión independiente de los commits de congelado, su
+refuerzo posterior de custodia y sus bases, R5A/O-1, rúbrica y comprobador,
+sin abrir aceptación. Tras esa revisión,
+5B-2 implementará exclusivamente sobre desarrollo protección de model_z,
+alternativas, matcher B7/B9, citas y harness CNN-17 según BATCH_5B_PROTOCOL.md.
+Aceptación real/LLM autorizado, paquetes, instalación y cierre quedan en 5C.

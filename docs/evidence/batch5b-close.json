@@ -1,0 +1,151 @@
+{
+  "session": "5B-1",
+  "state": {
+    "fm": {
+      "corrected_5a_head": "c99ec856f968f2965a4b6ebd73c399fe2ecb107c",
+      "branch": "codex/lote-5b",
+      "freeze_commit": "2b94b3c9544e8d3b6675648785bed359350a74c1"
+    },
+    "copilot": {
+      "corrected_5a_head": "9c5cf0e232736a7a0ce386a487d218517a59de9c",
+      "branch": "codex/lote-5b",
+      "freeze_commit": "ed9bedc1efbc937cb179200cdb3f91fdbc2b6b4b"
+    }
+  },
+  "tickets": {
+    "R5A-01": "closed",
+    "R5A-02": "closed",
+    "O-1": "coverage gap closed; no functional bug claimed",
+    "freeze": "first own commit on each 5B branch"
+  },
+  "acceptance": {
+    "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+    "bytes": 82805,
+    "counts": {
+      "cnn_exposure": {
+        "none_synthetic": 48,
+        "train": 40,
+        "validation": 40
+      },
+      "real": 80,
+      "synthetic": 48,
+      "synthetic_families": {
+        "absorption": 6,
+        "coverage_gap": 6,
+        "emission": 6,
+        "invalid_support": 6,
+        "noise": 6,
+        "permuted_grid": 6,
+        "reversed_grid": 6,
+        "single_line": 6
+      },
+      "total": 128
+    }
+  },
+  "preservation": {
+    "files": 1174,
+    "counts": {
+      "lote-4b-01": 658,
+      "preparation": 171,
+      "batch4a-v1": 18,
+      "FINAL PROJECT DEEP LEARNING": 162,
+      "spectra-copilot": 165
+    },
+    "bytes": {
+      "lote-4b-01": 6059818657,
+      "preparation": 87279004,
+      "batch4a-v1": 3014928724,
+      "FINAL PROJECT DEEP LEARNING": 2508937756,
+      "spectra-copilot": 77911544
+    },
+    "mismatches": 0,
+    "extra": 0,
+    "baseline_sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239"
+  },
+  "staging": {
+    "fm": {
+      "staged": [
+        "docs/BATCH_5.md",
+        "docs/BATCH_5B_PROTOCOL.md",
+        "docs/evidence/batch5b-commitment.json",
+        "docs/evidence/batch5b-freeze.json",
+        "docs/protocol/batch5b-development.json",
+        "scripts/check_batch5b_leaks.py",
+        "scripts/select_batch5b.py",
+        "tests/test_batch5b_protocol.py"
+      ],
+      "bytes": 144306,
+      "forbidden_files": [],
+      "secret_candidates": [],
+      "first_own_commit": true
+    },
+    "copilot": {
+      "staged": [
+        "docs/BATCH_5.md",
+        "docs/BATCH_5B_PROTOCOL.md",
+        "docs/evidence/batch5b-commitment.json",
+        "docs/evidence/batch5b-freeze.json",
+        "docs/protocol/batch5b-development.json",
+        "eval/README.md",
+        "scripts/check_batch5b_leaks.py",
+        "scripts/select_batch5b.py",
+        "tests/test_batch5b_protocol.py"
+      ],
+      "bytes": 152573,
+      "forbidden_files": [],
+      "secret_candidates": [],
+      "first_own_commit": true
+    }
+  },
+  "leak_check_precommit": {
+    "checked_surfaces": 2216,
+    "violating_surfaces": 0,
+    "log_sha256": "7961deb1097c1fdecc53f508b30c549760a9f7034e2affdd820ed385e9646862"
+  },
+  "tests": {
+    "FM3.9": 136,
+    "FM3.12": 136,
+    "Copilot3.12": 121,
+    "final_custody_subset_each_environment": 6
+  },
+  "post_suite_custody_logs": {
+    "custody-staged39.log": "dead0fcb52c81418e8846c40c9d4fac626fb985fb814f151d5419bfe293c31d7",
+    "custody-staged312.log": "7e3ac74221d1b2f996aaaba6bd6dd00e1ec499a0feac6f1768f726a8c9247489",
+    "custody-stagedcp.log": "db642d347e992ce6165864a2d7bc81335813b1ff4b913e60d28547404f005500"
+  },
+  "authorization": {
+    "paid_calls": 0,
+    "push": false,
+    "merge": false,
+    "publication": false,
+    "deployment": false,
+    "test_4b_inference": false,
+    "5B-2_started": false
+  },
+  "independent_backup": "no hay respaldo independiente verificado",
+  "key_rotation": "sin verificar",
+  "H-18": "pendiente de Julian",
+  "post_freeze_custody_hardening": {
+    "commits": {
+      "fm": "8e723153afe3449b6b19df40dedf8d7a1d7c1e8a",
+      "copilot": "4942f90045d1d9b05f9abd8e601447be94db0a79"
+    },
+    "scope": "redact private labels in reported violation paths; selection and protocol unchanged",
+    "synthetic_regression_before": {
+      "failed": 1,
+      "passed": 5
+    },
+    "synthetic_regressions_after_each_environment": 6,
+    "leak_check": {
+      "checked_surfaces": 2248,
+      "violating_surfaces": 0
+    },
+    "log_sha256": {
+      "custody-path-red.log": "fa2e4ea3f2a6ebc60ccc4660882b77a96a46a5ba6f8e35e7733f41d9b3ad4336",
+      "custody-path-green39.log": "6b3d1f0242a91d3f2a4c4ae7e79027a393c4643c11eb038779122863bbd61ae0",
+      "custody-path-green312.log": "9263a4797bedb7951d944bd1fd9e113c7c3fca6f4e29226580debde6cbbe54bc",
+      "custody-path-greencp.log": "e2edb01d708fa49697c4302268a176c486ad7401ab735fd47f7af9d43d08f855",
+      "leaks-custody-hardening.log": "8a1c43cb74f310a06eba807439bda2a03a3283d5480b8524e2ae8de8146062f3"
+    }
+  }
+}
