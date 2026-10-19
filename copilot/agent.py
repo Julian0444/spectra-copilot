@@ -263,11 +263,14 @@ class RunTools:
         return beta_tool(execute)
 
 
-def execute_run(path, model, structured, state=None, budget=None):
+def execute_run(path, model, structured, state=None, budget=None, progress=None):
     state = state or RunTools(path, structured)
     state.bootstrap()
     budget = budget or new_budget(model)
     state.budget = budget
+    if progress:
+        budget.on_change = lambda snapshot: progress(state.finish(), snapshot)
+        progress(state.finish(), budget.snapshot())
     budget.begin()
     client = anthropic.Anthropic(max_retries=0, timeout=budget.limits.seconds)
     with guard_sdk(client, budget):
@@ -293,6 +296,7 @@ def execute_run(path, model, structured, state=None, budget=None):
             response = runner.generate_tool_call_response()
             if response is not None:
                 history.append(_jsonable(response))
+            if progress:progress(state.finish(), budget.snapshot())
             if state.result is not None:
                 break
     return state, final, usage, history
@@ -335,14 +339,14 @@ class AgentRunError(RuntimeError):
         self.code, self.history, self.usage = code, history, usage
 
 
-def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None) -> dict:
+def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None, progress=None) -> dict:
     """Always retain status and any valid official prediction, including failures."""
     usage, history, provenance, state = dict.fromkeys(USAGE_KEYS, 0), [], None, None
     try:
         budget = budget or new_budget(model)
         with agent_input(npz_path) as (path, provenance):
             state = RunTools(path, True)
-            state, final, usage, history = execute_run(path, model, True, state=state, budget=budget)
+            state, final, usage, history = execute_run(path, model, True, state=state, budget=budget, progress=progress)
         report = state.finish()
         report['completion_code'] = ('iteration_limit' if len([m for m in history if m['role']=='assistant']) >= 8
                                      and state.result is None else 'invalid_or_missing_report' if report['status']=='explanation_incomplete' else None)

@@ -676,3 +676,34 @@ y conserva todos los candidatos. El evaluador histórico ahora hace un intento
 (schema 4) y mantiene sus pruebas de persistencia; no es el runner de aceptación.
 Faltan todavía el runner separado de etiquetas y la identidad candidata para
 cerrar T5. Evidencia: `docs/evidence/batch5b2-budget.json`.
+
+### 5B-2 T5 — ejecutor sellado y preparación de identidad
+
+`copilot.acceptance` solo admite plan sin etiquetas y conserva desde el inicio
+N completo. Producción exige 128 casos, identidad registrada verificable y worker
+nuevo por caso, timeout de 120 s y un intento sin retry. La reserva y la predicción
+válida se persisten antes del POST; consumo desconocido detiene el resto como
+pendiente. Un sello por hashes de manifest/outputs/summary precede a cualquier
+lectura de etiquetas en el proceso separado `copilot.acceptance_score`.
+
+Se separan métricas de fidelidad mecánica, model_z, citas, respaldo/ciencia según
+revisión independiente, ambigüedad, abstención, finalización, fallos, latencia y
+coste; se conservan denominadores, estratos y Wilson por caso. No se acepta
+ciencia por regex ni por citar un ID válido. Los candidatos usan longitud medida;
+el oráculo aritmético de la receta se comprueba separado sin exigir recuperar un
+centro invisible a SNR=0. `BATCH_5C_EXECUTION.md` detalla custodia y orden futuro.
+
+Ensayo inventado persistido: cuatro solicitados, dos respuestas, una interrupción
+y un pendiente; predicciones válidas conservadas y etiquetas leídas tras sellar.
+Cero llamadas remotas y cero gasto real. Identidad candidata: colector/verificador
+implementados para código, prompt, corpus, schemas, política, predictor, índice,
+evaluador, protocolo y entorno; captura real tras el commit de código.
+
+Suites completas finales de implementación: FM **175** en Python 3.9.6 y **175**
+en 3.12.13; Copilot **234** en 3.12.13. Tres mutaciones en copias privadas,
+precedidas cada una por baseline verde, detectadas: reemplazo de model_z,
+ignorar mask/ivar y cita inventada. Regresiones de 5A (MCP, R5A-01/02, O-1 y
+persistencia), 5B-1 y custodia nuevas permanecen en las suites completas.
+Evidencia ligera: `docs/evidence/batch5b2-runner.json`. Captura candidata,
+preservación/custodia de cierre y handoff final siguen a este commit; esta
+entrada no declara cerrado todavía 5B-2.

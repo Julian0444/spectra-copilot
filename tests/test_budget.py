@@ -122,3 +122,15 @@ def test_compact_tool_view_preserves_candidates_and_full_executor_evidence(tmp_p
     for full,compact in zip(measurement['candidates'],wire['result']['candidates']):
         assert compact['z']==full['z'] and compact['measurement_id']==full['measurement_id']
         assert compact['comparison']['n_matched']==full['comparison']['n_matched']
+
+
+def test_progress_is_durable_before_post_and_failure_prevents_send():
+    sent=[]
+    client=anthropic.Anthropic(api_key='unused-fixture',max_retries=0,http_client=httpx.Client(transport=httpx.MockTransport(lambda r:sent.append(r))))
+    budget=Budget(limits=Limits(usd=.1))
+    def cannot_persist(snapshot):
+        assert snapshot['reserved_usd']>0 and sent==[]
+        raise OSError('simulated persistence failure')
+    budget.on_change=cannot_persist
+    with guard_sdk(client,budget),pytest.raises(OSError):client.beta.messages.create(**body())
+    assert sent==[] and budget.events[0]['status']=='not_sent' and budget.spent==budget.reserved_usd==0

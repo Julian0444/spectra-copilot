@@ -1,0 +1,128 @@
+{
+  "scope": "5B-2 offline implementation and preparation; no real acceptance or paid calls",
+  "full_suites": {
+    "fm39": 175,
+    "fm312": 175,
+    "copilot312": 234
+  },
+  "mutations": {
+    "model_z": {
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true,
+      "test": "tests/test_explanatory_policy.py::test_valid_report_and_abstention_keep_executor_prediction",
+      "source_file": "copilot/explanation.py",
+      "copy": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/mutations-v1/model_z",
+      "mutation": "z = 9.99 if prediction is not None else None"
+    },
+    "ignore_mask_ivar": {
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true,
+      "test": "tests/test_spectral_measurements.py::test_invalidated_peak_cannot_contribute",
+      "source_file": "copilot/spectral.py",
+      "copy": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/mutations-v1/ignore_mask_ivar",
+      "mutation": "m = np.zeros_like(m, dtype=bool)\n    v = np.ones_like(v)\n    segments = _segments(f, w, v, m)"
+    },
+    "invented_citation": {
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true,
+      "test": "tests/test_citation_policy.py::test_exact_fragment_provenance_is_rendered_without_new_attribution",
+      "source_file": "copilot/explanation.py",
+      "copy": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/mutations-v1/invented_citation",
+      "mutation": "citations = [dict(retrieved[i], id='fabricated-citation') for i in reference_ids]"
+    }
+  },
+  "rehearsal": {
+    "mode": "invented offline simulation",
+    "remote_calls": 0,
+    "real_paid_usd": 0,
+    "requested": 4,
+    "completed": 2,
+    "interrupted": 1,
+    "pending": 1,
+    "preserved_model_z": {
+      "passed": 2,
+      "total": 2,
+      "rate": 1.0,
+      "wilson_95": [
+        0.34238022750665303,
+        1.0
+      ]
+    },
+    "labels_after_seal": true,
+    "summary": {
+      "requested": 4,
+      "status_counts": {
+        "ambiguous": 0,
+        "complete": 0,
+        "explanation_incomplete": 0,
+        "insufficient_data": 2,
+        "invalid_input": 0,
+        "pending": 1,
+        "technical_error": 1,
+        "timeout": 0
+      },
+      "attempted": 3,
+      "attempts_per_case_max": 1,
+      "llm_calls": 2,
+      "automatic_retries": 0,
+      "cost": {
+        "certified": true,
+        "total_usd": 4e-05,
+        "known_usd": 4e-05,
+        "mean_per_requested": 1e-05
+      },
+      "latency": {
+        "n": 3,
+        "p50": 0.0005864159902557731,
+        "p95": 0.00064090380910784,
+        "maximum": 0.0006469580112025142
+      },
+      "scientific_accuracy": "pending_independent_review",
+      "labels_loaded": false
+    },
+    "scope": "Contract/persistence rehearsal only; no real LLM, actual acceptance cases or semantic acceptance."
+  },
+  "artifacts": {
+    "T5-runner-verified.log": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/T5-runner-verified.log",
+      "sha256": "425afcd8e4f3955235c21bfaf967310f04b83d94916dbaa6d9678b1a69ecb63a",
+      "bytes": 1396
+    },
+    "final-copilot312.log": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/final-copilot312.log",
+      "sha256": "7e7a9a6e7d0de0b19cfb382dd61e7e4c57cb649b37b768d8b1934087ee070d72",
+      "bytes": 1769
+    },
+    "final-fm39.log": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/final-fm39.log",
+      "sha256": "22eb09faaaf4761dfba45c87e2f3ce4e1759460d8106e8699c71eb4e785ca31e",
+      "bytes": 3925
+    },
+    "final-fm312.log": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/final-fm312.log",
+      "sha256": "e41b8103e9e4ec039cc576aafc8a6eec74680f1a976c6ba6363226bc59c19e35",
+      "bytes": 1224
+    },
+    "mutations-v1/summary.json": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/mutations-v1/summary.json",
+      "sha256": "5498e28796ddcf2fd402005886ee8702c0f81d3298d8da56c44a713110097774",
+      "bytes": 1377
+    },
+    "sealed-rehearsal-v1/rehearsal.json": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/sealed-rehearsal-v1/rehearsal.json",
+      "sha256": "ba3902e57bb156d192599504c11b2d0a7602eea877fdb37cb6d95fb84161badb",
+      "bytes": 1176
+    },
+    "sealed-rehearsal-v1/execution/seal.json": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/sealed-rehearsal-v1/execution/seal.json",
+      "sha256": "83bb01373a3cbf6d802782229443c7ff43ad503350a825833817883f9fc7be4f",
+      "bytes": 384
+    }
+  },
+  "candidate_identity": "Collector and verifier implemented; real candidate capture follows the code commit.",
+  "acceptance_status": "not executed; independent scientific review remains pending",
+  "contract": "Label-free strict input plan, one isolated worker per case, progress before paid POST, all requested rows persisted, hard timeout, seal verified before labels read, zero paid budget default."
+}

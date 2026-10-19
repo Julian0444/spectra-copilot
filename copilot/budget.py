@@ -37,12 +37,12 @@ class Budget:
         if parent and parent.model!=model:raise ValueError('Aggregate model identity must match')
         if (any(type(getattr(self.limits,k)) is not int or getattr(self.limits,k)<0 for k in
                 ('input_tokens','output_tokens','calls','max_output_per_call','retries')) or self.limits.retries!=0
-                or not math.isfinite(self.limits.usd) or self.limits.usd<0 or self.limits.seconds<=0):
+                or not math.isfinite(self.limits.usd) or self.limits.usd<0 or not math.isfinite(self.limits.seconds) or self.limits.seconds<=0):
             raise ValueError('Invalid limits; automatic retries must be zero')
         self.cap=int(Decimal(str(self.limits.usd))*1000000)
         self.used_in=self.used_out=self.calls=self.spent=0
         self.reserved_in=self.reserved_out=self.reserved_usd=0
-        self.certified=True;self.events=[];self.started=time.monotonic();self.used=False
+        self.certified=True;self.events=[];self.on_change=None;self.started=time.monotonic();self.used=False
 
     def begin(self):
         if self.used:raise BudgetStop('retry_forbidden')
@@ -74,6 +74,12 @@ class Budget:
         self._check(n_in,n_out,cost)
         ticket={'input_bound':n_in,'output_bound':n_out,'microdollars':cost,'status':'reserved'}
         self._reserve(ticket);self.events.append(ticket)
+        try:
+            if self.on_change:self.on_change(self.snapshot())
+        except BaseException:
+            self._settle(ticket,0,0,0)
+            ticket.update(status='not_sent',input_tokens=0,output_tokens=0,actual_microdollars=0)
+            raise
         return ticket
 
     def _reserve(self,ticket):
@@ -98,6 +104,7 @@ class Budget:
         cost=n_in*RATES[self.model][0]+n_out*RATES[self.model][1]
         self._settle(ticket,n_in,n_out,cost)
         ticket.update(status='settled',input_tokens=n_in,output_tokens=n_out,actual_microdollars=cost)
+        if self.on_change:self.on_change(self.snapshot())
 
     def _settle(self,ticket,n_in,n_out,cost):
         self.reserved_in-=ticket['input_bound'];self.reserved_out-=ticket['output_bound'];self.reserved_usd-=ticket['microdollars']
@@ -108,6 +115,7 @@ class Budget:
         # Keep the full reservation charged against available budget, never retry.
         ticket['status']='unknown_usage';self.certified=False
         if self.parent:self.parent.uncertain(ticket)
+        if self.on_change:self.on_change(self.snapshot())
 
     def snapshot(self):
         return {'model':self.model,'calls':self.calls,'retries':0,'input_tokens':self.used_in,'output_tokens':self.used_out,
