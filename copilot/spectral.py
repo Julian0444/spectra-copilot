@@ -114,7 +114,7 @@ def measure(flux, wave, ivar, mask, z, catalog, tolerance=12.):
                                'lambda_observed': peak['lambda_observed'], 'measurement_id': peak['measurement_id'],
                                'formula': 'lambda_observed / lambda_rest - 1', 'provenance': provenance,
                                'comparison': compare(alternative)})
-    ambiguous = any(sum(c['measurement_id'] == p['measurement_id'] for c in candidates) > 1 for p in peaks)
+    ambiguous = len(peaks) == 1 or any(sum(c['measurement_id'] == p['measurement_id'] for c in candidates) > 1 for p in peaks)
     return dict(compare(z), measurement_policy='descriptive_only', physical_confirmation=False,
                 n_peaks_detected=len(peaks), strongest_peaks_angstrom=[round(p['lambda_observed'], 1) for p in peaks[:5]],
                 measurements=peaks, candidates=candidates, ambiguous=ambiguous,

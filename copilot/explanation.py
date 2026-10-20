@@ -8,7 +8,7 @@ from copy import deepcopy
 import math
 from copilot import rag
 
-POLICY_VERSION = 'explanatory-model-z-v1'
+POLICY_VERSION = 'explanatory-model-z-v2'
 STATES = {'complete', 'invalid_input', 'insufficient_data', 'ambiguous',
           'explanation_incomplete', 'technical_error'}
 LIMITS = [
@@ -54,6 +54,18 @@ def result(prediction=None, observations=(), selected=(), assessment='descriptiv
         raise ValueError('Citation must be real and retrieved in selected evidence')
     citations = [retrieved[i] for i in reference_ids]
     explanations, alternatives = [], []
+    # Citation selection controls only the explanatory excerpts. Every recorded
+    # measurement contributes to the executor's minimum caution and alternatives.
+    caution = {'complete': 0, 'ambiguous': 1, 'insufficient_data': 2}
+    for obs in observations:
+        if obs['tool'] != 'identify_spectral_lines' or obs.get('error'):
+            continue
+        data = obs['result']
+        alternatives.extend(dict(c, observation_id=obs['id']) for c in data.get('candidates', []))
+        minimum = ('insufficient_data' if data.get('assessment') == 'insufficient_line_evidence'
+                   else 'ambiguous' if data.get('ambiguous') else 'complete')
+        if status in caution and caution[minimum] > caution[status]:
+            status = minimum
     for key in selected:
         obs = by_id[key]
         tool, data = obs['tool'], obs['result']
@@ -68,9 +80,6 @@ def result(prediction=None, observations=(), selected=(), assessment='descriptiv
             text = (f'At hypothesis z={data["z_tested"]!r}, the matcher counted '
                     f'{data["n_matched"]} matches among {data["n_expected_in_coverage"]} line positions in coverage. '
                     'These are descriptive measurements, not physical confirmation.')
-            alternatives.extend(dict(c, observation_id=key) for c in data.get('candidates', []))
-            if data.get('ambiguous'):
-                status = 'ambiguous' if status == 'complete' else status
         elif tool == 'reconstruct_spectrum':
             text = f'One masking draw returned z={data["z_pred_under_masking"]!r}; this measures stability, not correctness.'
         elif tool == 'find_similar_spectra':
