@@ -334,3 +334,18 @@ assert module["TOKEN"].findall("obj-123_456") == ["obj-123", "456"]
     result = subprocess.run([sys.executable, '-c', code, str(SCRIPTS/'select_batch5b.py')],
                             capture_output=True, timeout=15)
     assert result.returncode == 0
+
+
+@pytest.mark.parametrize('source',[
+    "import subprocess\nsubprocess.run(['python', 'scripts/select_batch5b.py'])",
+    "from subprocess import Popen\nPopen('python scripts/select_batch5b.py', shell=True)",
+    "import subprocess as sp\ncommand=['python', 'scripts/select_batch5b.py']\nsp.check_call(command)",
+    "from subprocess import run as launch\nscript='scripts/select_batch5b.py'\nlaunch(['python',script])",
+    "exec(open('scripts/select_batch5b.py').read())",
+    "from pathlib import Path\npath=Path('scripts/select_batch5b.py')\nsource=path.read_text()\nexec(source)",
+    "import os\nos.system('python scripts/select_batch5b.py')",
+],ids=['run','popen','command_variable','function_alias','exec_open','exec_path','system'])
+def test_cli_rejects_selector_execution_outside_allowed_paths(custody_cli,source):
+    root,_,run=custody_cli
+    (root/'consumer.py').write_text(source)
+    assert run(1)['violating_surfaces']>0
