@@ -209,6 +209,16 @@ class RunTools:
         self.record('predict_redshift', {'npz_path': 'spectrum.npz'}, value)
 
     def finish(self, status='explanation_incomplete'):
+        # Revalidate even cached reports: the corpus can change during a run.
+        # Retain the original ledger for audit, but never publish stale citations.
+        try:
+            for observation in self.observations:
+                if observation['tool']=='lookup_reference' and not observation.get('error'):
+                    rag.validate_retrieval(observation['result'])
+        except (ValueError,KeyError,OSError):
+            return explanation.result(self.prediction,self.observations,
+                [o['id'] for o in self.observations if o['tool']!='lookup_reference'],
+                status='technical_error',violations=self.violations+['reference_validation_failed'])
         if self.result is not None and not self.violations and status == 'explanation_incomplete':
             return deepcopy(self.result)
         return explanation.result(self.prediction, self.observations,

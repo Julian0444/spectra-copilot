@@ -40,6 +40,9 @@ def reseal(directory):
     seal=json.loads((directory/'seal.json').read_text())
     for name in ('outputs','summary'):seal[name+'_sha256']=sha256(directory/(name+'.json'))
     write_json(directory/'seal.json',seal)
+    # The fixture intentionally authorizes this new seal, isolating alias order.
+    write_json(directory.with_name(directory.name+'.seal-record.json'),
+        {'schema':'batch5c-seal-record-v1','seal_sha256':sha256(directory/'seal.json')})
 
 
 def test_alias_order_checked_before_labels_even_with_matching_file_hashes(tmp_path,monkeypatch):

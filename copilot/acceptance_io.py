@@ -15,6 +15,21 @@ def sha256(path):
     return h.hexdigest()
 
 
+def seal_record_path(directory):
+    directory=Path(directory)
+    return directory.with_name(directory.name+'.seal-record.json')
+
+
+def register_seal(directory):
+    """Create an exclusive external hash record; never replace a prior record."""
+    path=seal_record_path(directory)
+    fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    with os.fdopen(fd,'w') as stream:
+        json.dump({'schema':'batch5c-seal-record-v1',
+                   'seal_sha256':sha256(Path(directory)/'seal.json')},stream)
+        stream.write('\n');stream.flush();os.fsync(stream.fileno())
+
+
 def write_json(path,value):
     path=Path(path)
     fd,temporary=tempfile.mkstemp(prefix='.'+path.name+'.',dir=path.parent)

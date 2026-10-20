@@ -84,7 +84,8 @@ def test_nonexistent_citation_cannot_count_as_supported_even_if_reviewers_agree(
     assert result['evaluation_failures']['invalid_citation_ids']==1
 
 
-def test_corpus_change_during_run_returns_technical_error_with_prediction_and_usage(monkeypatch,tmp_path):
+@pytest.mark.parametrize('submitted',[False,True])
+def test_corpus_change_during_run_returns_technical_error_with_prediction_and_usage(monkeypatch,tmp_path,submitted):
     import numpy as np
     setup_run(monkeypatch)
     path=tmp_path/'invented.npz';wave=np.linspace(3600,9800,128)
@@ -94,6 +95,7 @@ def test_corpus_change_during_run_returns_technical_error_with_prediction_and_us
         budget.settle(ticket,{'input_tokens':50,'output_tokens':10})
         lookup={t.name:t for t in state.tools}['lookup_reference']
         lookup.call({'query':'Halpha OII confusion'})
+        if submitted:state.tools[-1].call({'observation_ids':['obs-1','obs-2']})
         monkeypatch.setattr(rag,'corpus_revision',lambda:'changed-revision')
         return state,None,state.usage,state.history
     monkeypatch.setattr(agent,'execute_run',execute)

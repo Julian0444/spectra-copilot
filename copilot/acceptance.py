@@ -16,7 +16,7 @@ import numpy as np
 
 from copilot import explanation
 from copilot.budget import PINNED_MODEL
-from copilot.acceptance_io import sha256,write_json,sanitize
+from copilot.acceptance_io import sha256,write_json,sanitize,seal_record_path,register_seal
 
 SCHEMA='batch5c-inputs-v1'
 TERMINAL={'complete','ambiguous','insufficient_data','invalid_input','explanation_incomplete','technical_error','timeout'}
@@ -97,6 +97,8 @@ def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=12
     if plan['mode']=='proposal':
         from copilot.candidate_identity import verify
         verify(candidate,protocol_dir)
+    if seal_record_path(output).exists() or seal_record_path(output).is_symlink():
+        raise FileExistsError('Preserve the external seal registration')
     output.mkdir(mode=0o700,parents=True,exist_ok=False)
     traces=output/'traces';traces.mkdir(mode=0o700)
     identity={'schema':'batch5c-execution-v1','mode':plan['mode'],'model':PINNED_MODEL,
@@ -148,6 +150,7 @@ def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=12
         write_json(output/'seal.json',{'schema':'batch5c-output-seal-v1','manifest_sha256':sha256(output/'manifest.json'),
             'outputs_sha256':sha256(output/'outputs.json'),'summary_sha256':sha256(output/'summary.json'),
             'requested':len(rows),'persisted_rows':len(rows),'created_ns':time.time_ns()})
+        register_seal(output)
     return summarize(rows)
 
 

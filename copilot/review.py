@@ -67,9 +67,10 @@ def score_claim_review(claims, first=None, second=None, adjudication=None):
             support = agreed['textual_support']
             science = agreed['scientific_accuracy']
             # IDs and quotation checks cannot supply these semantic judgments.
-            result['textual_supported'] += sum(v=='supported' for v in agreed['reference_support'].values())
+            result['textual_supported'] += sum(v=='supported' and ref in valid
+                for ref,v in agreed['reference_support'].items())
             result['scientific_correct'] += science == 'correct' and c.get('scientific', c.get('external_scientific', False))
-            result['unsupported_claims'] += support == 'unsupported' or missing
+            result['unsupported_claims'] += support == 'unsupported' or missing or valid_n!=len(refs)
             result['critical_errors'] += agreed['critical_error']
         result['rows'].append(row)
     invalid = result['citation_mentions'] - result['valid_citation_mentions']

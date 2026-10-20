@@ -11,7 +11,7 @@ import hashlib
 from pathlib import Path
 
 from copilot import explanation,rag,review
-from copilot.acceptance_io import sha256,write_json
+from copilot.acceptance_io import sha256,write_json,seal_record_path
 
 
 def wilson(passed,total):
@@ -21,8 +21,17 @@ def wilson(passed,total):
     return {'passed':passed,'total':total,'rate':p,'wilson_95':[center-half,center+half]}
 
 
-def validate_seal(directory):
-    directory=Path(directory);seal=json.loads((directory/'seal.json').read_text())
+def validate_seal(directory,seal_record=None):
+    directory=Path(directory)
+    record=Path(seal_record) if seal_record is not None else seal_record_path(directory)
+    if record.resolve().is_relative_to(directory.resolve()):
+        raise ValueError('Seal registration must be outside output directory')
+    registered=json.loads(record.read_text())
+    seal_hash=sha256(directory/'seal.json')
+    if (registered.get('schema')!='batch5c-seal-record-v1' or
+            registered.get('seal_sha256')!=seal_hash):
+        raise ValueError('Seal differs from external registration')
+    seal=json.loads((directory/'seal.json').read_text())
     if seal.get('schema')!='batch5c-output-seal-v1':raise ValueError('Invalid output seal')
     for name in ('manifest','outputs','summary'):
         if sha256(directory/(name+'.json'))!=seal[name+'_sha256']:raise ValueError('Sealed output changed')
@@ -31,7 +40,10 @@ def validate_seal(directory):
     if len(rows)!=seal['requested'] or len(rows)!=seal['persisted_rows'] or len(rows)!=manifest['requested']:
         raise ValueError('Missing requested rows')
     if [r['alias'] for r in rows]!=[r['alias'] for r in manifest['input_identities']]:raise ValueError('Requested identities changed')
-    return rows,manifest,seal
+    summary=json.loads((directory/'summary.json').read_text())
+    if summary.get('outputs_sha256')!=seal['outputs_sha256']:
+        raise ValueError('Summary output identity mismatch')
+    return rows,manifest,seal,seal_hash,time.time_ns()
 
 
 def mechanical(report):
@@ -61,8 +73,9 @@ def mechanical(report):
             'citation_mentions':len(citations),'valid_citation_mentions':valid,'candidate_arithmetic':bool(arithmetic)}
 
 
-def score_sealed(directory,labels_path,*,review_path=None):
-    rows,manifest,seal=validate_seal(directory)  # Always before any label read.
+def score_sealed(directory,labels_path,*,review_path=None,seal_record=None):
+    rows,manifest,seal,seal_hash,verified_ns=validate_seal(directory,seal_record)
+    labels_read_started_ns=time.time_ns()
     label_bytes=Path(labels_path).read_bytes()
     labels_loaded_ns=time.time_ns()
     labels=json.loads(label_bytes)
@@ -124,7 +137,9 @@ def score_sealed(directory,labels_path,*,review_path=None):
             'status_counts':{s:sum(r['status']==s for r in group) for s in sorted({r['status'] for r in group})}}
     result={'schema':'batch5c-score-v1','mode':manifest['mode'],'outputs_sha256':seal['outputs_sha256'],
             'labels_sha256':hashlib.sha256(label_bytes).hexdigest(),'labels_loaded_ns':labels_loaded_ns,
-            'outputs_sealed_ns':seal['created_ns'],'seal_verified_before_label_read':True,
+            'outputs_sealed_ns':seal['created_ns'],'seal_sha256':seal_hash,
+            'seal_verified_ns':verified_ns,'labels_read_started_ns':labels_read_started_ns,
+            'seal_verified_before_label_read':verified_ns<=labels_read_started_ns<=labels_loaded_ns,
             'global':summarize(scored),'strata':{key:{str(v):summarize([r for r in scored if r[key]==v]) for v in sorted({r[key] for r in scored},key=str)} for key in ('kind','family','cnn_exposure')},
             'rows':scored,'execution_summary':json.loads((Path(directory)/'summary.json').read_text()),
             'acceptance_status':'not_accepted; independent rubric, omissions and final installed identity require 5C review',
@@ -139,7 +154,8 @@ def score_sealed(directory,labels_path,*,review_path=None):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--run',type=Path,required=True);p.add_argument('--labels',type=Path,required=True);p.add_argument('--reviews',type=Path)
-    a=p.parse_args();result=score_sealed(a.run,a.labels,review_path=a.reviews);print(json.dumps(result['global']));return 0
+    p.add_argument('--seal-record',type=Path,help='External registered seal hash; defaults to sibling <run>.seal-record.json')
+    a=p.parse_args();result=score_sealed(a.run,a.labels,review_path=a.reviews,seal_record=a.seal_record);print(json.dumps(result['global']));return 0
 
 
 if __name__=='__main__':raise SystemExit(main())

@@ -170,6 +170,26 @@ def acceptance_references(text):
             tree = ast.parse(text)
     except (SyntaxError, ValueError, RecursionError):
         return count
+    # Follow literal command/source assignments into process and exec sinks.
+    # Reading bytes for an archive is allowed; executing those bytes is not.
+    tainted=set()
+    def selector_value(node):
+        return any((isinstance(child,ast.Constant) and isinstance(child.value,str)
+                    and 'select_batch5b' in child.value) or
+                   (isinstance(child,ast.Name) and child.id in tainted)
+                   for child in ast.walk(node))
+    assignments=[node for node in ast.walk(tree) if isinstance(node,(ast.Assign,ast.AnnAssign))]
+    while True:
+        before=len(tainted)
+        for node in assignments:
+            if node.value is not None and selector_value(node.value):
+                targets=node.targets if isinstance(node,ast.Assign) else [node.target]
+                tainted.update(child.id for target in targets for child in ast.walk(target) if isinstance(child,ast.Name))
+        if len(tainted)==before:break
+    execution={'run','Popen','call','check_call','check_output','system','popen','exec','eval'}
+    for node in ast.walk(tree):
+        if isinstance(node,ast.ImportFrom) and node.module in {'subprocess','os','builtins'}:
+            execution.update(alias.asname for alias in node.names if alias.name in execution and alias.asname)
     for node in ast.walk(tree):
         if isinstance(node, ast.Name) and node.id == 'select_batch5b':
             count += 1
@@ -181,6 +201,9 @@ def acceptance_references(text):
             name = (node.func.id if isinstance(node.func, ast.Name) else
                     node.func.attr if isinstance(node.func, ast.Attribute) else '')
             if name == 'synthetic':
+                count += 1
+            if name in execution and any(selector_value(arg) for arg in
+                    [*node.args,*(keyword.value for keyword in node.keywords)]):
                 count += 1
             if name in {'__import__', 'import_module', 'run_path', 'spec_from_file_location', 'getattr'}:
                 for arg in node.args:
