@@ -127,9 +127,12 @@ def test_incompatible_text_redshift_or_citation_fails_mechanical_fidelity():
 
 
 def test_invalid_input_and_absent_prediction_not_fabricated(tmp_path):
+    import numpy as np
     p,labels,items=plan(tmp_path,1);l=json.loads(labels.read_text());l['cases'][0]['expected_answer']['must_reject_input']=True;write_json(labels,l)
-    r=explanation.result(status='invalid_input');r['execution_budget']={'calls':0,'usd':0,'known_usd':0,'cost_certified':True}
-    out=tmp_path/'run';execute.execute_plan(p,out,runner=lambda _:r)
+    path=Path(items[0]['input_path'])
+    np.savez(path,flux=np.ones(16),wavelength=np.linspace(3600,9800,16),ivar=np.zeros(16))
+    value=json.loads(p.read_text());value['inputs'][0]['input_sha256']=sha256(path);write_json(p,value)
+    out=tmp_path/'run';execute.execute_plan(p,out)
     score=scoring.score_sealed(out,labels)
     assert score['global']['completion']['passed']==1 and score['global']['model_z']['total']==0
     assert score['global']['model_z']['rate'] is None
