@@ -15,6 +15,13 @@ por turno. US$0,10/caso, US$12,80 global; límite estimado por tokens US$10,8134
 El presupuesto por defecto permanece cero. No usar claves en argumentos, logs
 ni manifiestos. El código no solicita claves ni descarga activos.
 
+5B-2.1 midió las solicitudes reales del SDK con transporte simulado sobre todo
+el desarrollo. La cota por bytes puede detener recorridos antes de ocho turnos;
+no se ha demostrado factibilidad para el LLM real. Las dos opciones, costes
+máximos condicionados a las tarifas registradas y limitaciones están en
+[batch5b21-budget.md](evidence/batch5b21-budget.md). Primero se requiere revisión
+independiente de 5B-2.1; después Julian decide presupuesto y modelo.
+
 ## Custodia de entradas y etiquetas
 
 Un custodio de 5C materializa los inputs científicos desde la selección sellada,
@@ -52,13 +59,24 @@ La latencia de cada caso incluye su proceso y carga; los timeouts cuentan 120 s.
 
 Al acabar o interrumpirse de forma controlada se escriben outputs.json,
 summary.json y seal.json con hashes, incluyendo errores/pendientes. Un corte que
-impida sellar no permite puntuar. Las trazas saneadas omiten credenciales y rutas
+impida sellar y registrar su hash no permite puntuar. El ejecutor crea además
+`<salidas>.seal-record.json`, como hermano del directorio de salidas, con el
+SHA-256 del sello. Nunca sobrescribe ese registro. El custodio debe conservarlo
+fuera de las salidas y llevar su hash al registro de la corrida antes de puntuar.
+Es una referencia externa de integridad; no equivale a almacenamiento inmutable
+ni a verificación independiente. Las trazas saneadas omiten credenciales y rutas
 locales; conservan mediciones y model_z. La vista LLM compacta solo tablas de
 soporte, picos fuera del top cinco y procedencia repetida; el ledger conserva
 las mediciones completas y nunca descarta interpretaciones candidatas.
 
 `python -m copilot.acceptance_score --run <salidas> --labels <vista-privada>`
-verifica los hashes del sello **antes** de abrir etiquetas. `--reviews` incorpora
+exige el registro externo (por defecto el hermano anterior; `--seal-record`
+permite indicar otra ruta externa), contrasta el SHA-256 del sello y los hashes
+de archivos, el orden de alias y `summary.outputs_sha256` **antes** de abrir
+etiquetas. Rechaza también un enlace que resuelva dentro de las salidas.
+Registra el instante de verificación, inicio y fin de lectura de etiquetas;
+`seal_verified_before_label_read` se calcula a partir de esos eventos.
+`--reviews` incorpora
 anotaciones independientes con el formato de BATCH_5C_REVIEW.md. No usar este
 comando con aceptación durante 5B-2. La puntuación conserva N completo, separa
 reales/sintéticos, familia y exposición, y no sustituye model_z por z de catálogo.

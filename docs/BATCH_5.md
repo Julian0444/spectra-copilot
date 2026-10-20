@@ -814,3 +814,96 @@ comparar CNN/v2.1 en este snapshot; los sintéticos públicos se informarán apa
 **Respaldo: no hay respaldo independiente verificado. Rotación de claves: sin
 verificar. H-18: explicación personal de Julian pendiente.** La sesión se detiene
 en el cierre técnico de 5B-2; no se declara cerrado el proyecto completo.
+
+### 5B-2.1 — correcciones previas a 5C (2026-10-19)
+
+**Sesión de implementación terminada; verificación independiente pendiente.
+5C no iniciada.** Se partió de las tres revisiones de FM `af8e598` y Copilot
+`def0d06`: Codex (§13.7 y `review-lote5b2-20261019-9cpqxx0m`), Claude A
+(`review-lote5b2-20261019-claude`) y Claude B
+(`review-lote5b2-20261019-claude-2`). Se contrastaron sus hallazgos con el código.
+El núcleo de 5B-2 se conserva. Esta sesión no es otra verificación independiente.
+
+Directorio privado 0700 de comandos, logs, mediciones y handoff:
+`/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/`.
+[BATCH 5B-2.1: evidencia](evidence/batch5b21-close.json),
+[opciones de presupuesto](evidence/batch5b21-budget.md),
+[diferencias de identidad](evidence/batch5b21-identity-diff.json).
+
+| Hallazgo | Resultado de implementación |
+|---|---|
+| R5B2-01 / T1 | Snapshot del presupuesto real también antes del bootstrap. Inválido con cero certificado permite seguir; fallos técnicos y consumo acumulado se conservan. Consumo desconocido/reserva en vuelo detienen. Integración execute_plan → worker → run_structured, SDK/modelo simulados y red bloqueada; prueba anterior deja de inyectar el ledger manualmente. |
+| C1 / T2 | Cautela mínima y alternativas salen de todas las observaciones, no de la selección del LLM. insufficient_line_evidence llega a insufficient_data. model_z permanece oficial. Sonda con selecciones distintas y SDK simulado sobre heldout_z020. |
+| Pico único azul / P3 | Una línea entre 3.600 y 3.727 Å sigue siendo ambigua aun con una sola interpretación no negativa. Corregido con C1. |
+| C2 / T3 | Nueve mutaciones de Copilot y cuatro de main CNN detectadas; 13 baselines verdes. Reproductor versionado en Copilot: `scripts/check_batch5b21_mutations.py`. CNN usa identidades falsas y salidas inertes en copias temporales: sin checkpoint real, test ni inferencia. |
+| C3 / T4 | Corpus visible y README coherentes con el matcher descriptivo y presupuesto cero. Citas 6/6 rotuladas como chequeos de IDs; ejemplos y cifras históricos conservados como históricos. Metadato de política del evaluador actualizado. |
+| Presupuesto 5C / T5 | 48 reales + 48 sintéticos de desarrollo; 90 válidos/6 inválidos, 540 conversaciones simuladas y 2.970 cuerpos HTTP medidos. Sin red ni gasto. Dos opciones propuestas, ninguna implementada; decide Julian después de revisión independiente. |
+| Sello / P3 | Registro SHA-256 externo obligatorio antes de etiquetas, cruce summary.outputs_sha256 y orden de alias; evento de verificación calculado, no constante. Registro hermano exclusivo y preservado; no se presenta como almacenamiento inmutable. |
+| ID inexistente / P3 | Nunca cuenta como respaldo textual aunque los dos revisores lo marquen supported. |
+| Corpus cambiante / P3 | Devuelve technical_error, conserva model_z/consumo/observaciones y omite citas obsoletas; cubre informe ya enviado y todavía pendiente. |
+| Ejecución de selector / P3 | Comprobador detecta subprocess y exec/open, variables y alias, fuera de las dos rutas permitidas; siete regresiones CLI inventadas, espejadas en ambos repositorios. |
+| Inode de test / P3 | Gancho CNN compara st_dev/st_ino además del path; regresiones con hardlink y descriptor. Inventario de metadatos del árbol inmutable, sin leer su contenido. |
+
+Regresiones antes de correcciones, en commits distintos: T1 `ae4d1cc` →
+`5effedd`; T2 `5d051a7` → `535a4c0`; T4 `5f37d6c` → `3d9d0ba`;
+T6 Copilot `42b689e` → `fa4f6f6`, FM `2e5df52` → `138a7b6`.
+T3 agrega cobertura sin cambio de producción: Copilot `ac7b66f`, FM `a16cb76`.
+T5 es medición y prueba de la limitación vigente: `268683a`, sin cambiar límites.
+
+**Pruebas finales:** Copilot **282** en Python 3.12.13; FM **189** en 3.9.6 y
+**189** en 3.12.13, todas aprobadas. Imports de los checkouts, TMPDIR corto y
+cachés privadas, modo offline. Las 13 mutaciones se repitieron tras T6, todas
+con baseline verde y fallo de aserción al mutar. No son validación de un LLM real.
+`git diff --check` y los hashes congelados se verifican al cierre.
+
+**Matcher:** se volvió a medir solo desarrollo después de C1. Las 96 filas son
+idénticas por SHA-256 (`a284077dd0ea1cc3ac1ff0ed930b47861e4839c9157048006ab5f21a024b0d7f`),
+cero filas o métricas cambiadas; solo cambia la identidad del resumen.
+AUROC 0,7714743589743589, TPR 0,21794871794871795, FPR objeto
+0,02564102564102564. La puerta sigue fallando y no cambian umbrales/conclusión.
+No se repitió la auditoría general ni la medición operacional histórica CNN.
+
+**Preservación:** 1.174 archivos verificados por SHA-256 y tamaño al inicio y
+al final, cero diferencias/extras. CSV FM intacto y sin versionar. Regeneración
+privada 0700 de aceptación/desarrollo/compromiso: tres hashes idénticos, copia
+borrada después; solo agregados. Protocolo, selección, manifiestos, umbrales,
+checkpoints y predictor por defecto intactos. Último barrido antes de los commits
+de código: 12.729 superficies, cero violaciones. El barrido de cierre incluye
+las superficies de 5B-2, nuevos logs recursivos y cuerpos SDK; resultado en
+`final-custody.log` y `FINAL_STATE.json` del directorio privado.
+
+**Única candidata nueva:** `docs/evidence/batch5b21-candidate.json`.
+Archivo SHA-256 `6fd41be3cfd00c2e60aebcead5339ad616984bb4ef4093f3dd46d53cf68cfcdc`;
+comportamiento `adb740ecd37305aa68af8bc58080b8529876514522754c488888dc7738adee4f`.
+Verificada contra el código. Se preserva íntegra `batch5b2-candidate.json`,
+archivo `db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4`,
+comportamiento `9e76fe83d40a3761d67a6519698cfa28291657287d2b45963c6e3e8cbb7d59dd`.
+El colector mantiene su rótulo de familia candidate-5b2; el archivo/hash nuevo
+identifica esta revisión 5B-2.1. No es la identidad final instalada de 5C.
+
+Cambian siete módulos Copilot, el harness CNN, metadatos del evaluador histórico,
+la política v1→v2 y dos notas del corpus. Revisión nueva del corpus:
+`ae5f3aaa01b843b3c68337081fbd9333c137d42e406bc634b977863d1830da08`.
+Prompt, schemas, activos, predictor, propuesta de modelo/límites, protocolo,
+contratos y entorno permanecen iguales. Diferencias por componente en el JSON
+citado. Heads al capturar: FM `138a7b6fa8170a6fa7129bd6a9ed446753d81d33`,
+Copilot `fa4f6f64ffd62de4d2aa64f5b53db7ecec48a92a`.
+Ambos originales siguen en `codex/lote-5b`; los commits posteriores solo contienen
+documentación/evidencia. Heads finales en `FINAL_STATE.json` y consenso §13.8,
+fuera del commit que describen.
+
+La matriz H-01–H-18 anterior conserva sus estados: H-14 añade el sello externo y
+la regresión integrada del presupuesto; H-16 añade cautela mínima de ejecutor y
+el riesgo de factibilidad medido; H-17 registra las tres revisiones de partida
+pero mantiene **pendiente la revisión independiente de 5B-2.1**. H-04/H-12 siguen
+pendientes de empaquetado/portabilidad en 5C. H-07: **no hay respaldo independiente
+verificado**. Rotación de claves: **sin verificar**. H-18: **explicación personal
+de Julian pendiente**. No hay nueva evidencia para modificar estos tres estados.
+
+**Siguiente paso:** verificación independiente de 5B-2.1; después decisión de
+Julian sobre presupuesto/modelo. Las dos opciones conservan los techos
+US$0,10/caso y US$12,80 total; con las tarifas registradas, generación máxima
+US$0,08448/caso y US$10,81344 total. No se ha elegido ni implementado una opción.
+v2.1 sigue por defecto; CNN no desplegada. Sin llamadas pagas, descargas,
+entrenamiento científico, test 4B nuevo, aceptación, publicación, despliegue,
+push ni merge. La sesión se detiene aquí, sin iniciar 5C.

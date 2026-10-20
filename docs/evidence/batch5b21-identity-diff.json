@@ -1,0 +1,87 @@
+{
+  "previous_file_sha256": "db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4",
+  "previous_behavior_sha256": "9e76fe83d40a3761d67a6519698cfa28291657287d2b45963c6e3e8cbb7d59dd",
+  "candidate_file_sha256": "6fd41be3cfd00c2e60aebcead5339ad616984bb4ef4093f3dd46d53cf68cfcdc",
+  "candidate_behavior_sha256": "adb740ecd37305aa68af8bc58080b8529876514522754c488888dc7738adee4f",
+  "differences": {
+    "source_content_sha256": {
+      "before": "44e6bfa0950fd941bfd83be4c881c75c96396c9bce4b6021233c3f90bb1189f9",
+      "after": "c34512104620779f6097c760c381a0ebd8d79868f2b60af6149cf2626f157ff6"
+    },
+    "policy": {
+      "before": "explanatory-model-z-v1",
+      "after": "explanatory-model-z-v2"
+    },
+    "auxiliary_code_sha256": {
+      "cnn_harness": {
+        "before": "88109635194b986dabc77e2e5360bae3cb0a5368548f9e0da21a7bd6dce00b4f",
+        "after": "ab6da0c429cd090bf124862e07bc8dd4f08e70dc921a86c93aee62f0b0a04375"
+      },
+      "legacy_evaluator": {
+        "before": "887a49b1d87c3494a47e8a4f0212548c32322f3ebb82787f5e6385bed1827c88",
+        "after": "47a08ac32ae54baf84ff6eb20eddbf5a46a113011c67c4718097890a09f472fc"
+      }
+    },
+    "corpus_files": {
+      "refs/absorption-dominated-spectra.md": {
+        "before": "035cf7db01f23136825dd37450356d9028fb6c0dd2f94caf420ee4bf4b3a3c3f",
+        "after": "88b112f718d6445ce1b3d9361d3fcaacc706fdf67fff4607aed5e8a0d1d057e0"
+      },
+      "refs/desi-targets-lrg.md": {
+        "before": "fc55e8a784a0e8a577e2e5394a3fc870c736bfad9570de2413be72ad23e2449e",
+        "after": "39851cd4a575fb52eb2189252dcfa7cf5199e2f400a309a9db49d4909ca244dc"
+      }
+    },
+    "corpus_revision": {
+      "before": "aee8ab08db20ed5ace83eaa52c702485e7c76bd04f3895e1947dee74c4e614b3",
+      "after": "ae5f3aaa01b843b3c68337081fbd9333c137d42e406bc634b977863d1830da08"
+    },
+    "code_sha256": {
+      "copilot/acceptance.py": {
+        "before": "dc4aa03db45a51464cabce09d39bdc8969776019d0ebbe86460a27c5dee76ee6",
+        "after": "dd2c72719055536dbe79e6f429d41eb62147dfc6b31d75a907fa306ac775296e"
+      },
+      "copilot/acceptance_io.py": {
+        "before": "27f68548c2181492bd51dfebe9213e81a0b653d70bf36bc42de60178eac0b247",
+        "after": "d916ad172db1d405f8e8b521caac111a2d93ab427096b6489997e941d90a3a39"
+      },
+      "copilot/acceptance_score.py": {
+        "before": "24b56f60d06a04c50ab968a337500285b2e9e2c645c3f75728607e6e96185a70",
+        "after": "baa45f04d825761ff70b1224ffd8858313a3f6a05b1c4952a254890833b840da"
+      },
+      "copilot/agent.py": {
+        "before": "f9cf99e958ff55caa083fa30261427f74b82191bd199de8bb712b79825a84aa9",
+        "after": "6d13a73b4a3874909711739785d9c37f52e0be5247df769f802078aee36c540e"
+      },
+      "copilot/explanation.py": {
+        "before": "c946776f6243b79fb23194dd7be24aed1646ee1dbc9c2ff041c7fa57ad1c1110",
+        "after": "2744559d03ff31c3c9efe33e585946f983161cd7a7cd753af384397031e349db"
+      },
+      "copilot/review.py": {
+        "before": "0181c81648c1814c8b841ad285ff4bdf2460280a55803b9c065928600c8cbd49",
+        "after": "e1c94b0d2a83079deff0e8e105ce88a37bfa88512d7d5d73a6f455b67371038e"
+      },
+      "copilot/spectral.py": {
+        "before": "9f007102549a5e21b7a59c1f4bd7f71d8cbd432afe30a2874b0687e2ba5c54c4",
+        "after": "0be9368b6ddc5964793fa4aaccfce15fec1df1b4ca003b5912c3d84db84bf4ed"
+      }
+    }
+  },
+  "unchanged_components": [
+    "assets",
+    "index_compatibility",
+    "input_contract",
+    "llm_proposal",
+    "predictor",
+    "prompt_sha256",
+    "protocol",
+    "runtime",
+    "tool_schemas_sha256"
+  ],
+  "verified_against_checkout": true,
+  "source_heads": {
+    "copilot": "fa4f6f64ffd62de4d2aa64f5b53db7ecec48a92a",
+    "desi_fm": "138a7b6fa8170a6fa7129bd6a9ed446753d81d33"
+  },
+  "note": "One new candidate for 5B-2.1; collector kind candidate-5b2 names the same candidate family, not the previous file. Not a final installed 5C identity."
+}

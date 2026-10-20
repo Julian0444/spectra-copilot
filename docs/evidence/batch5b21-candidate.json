@@ -1,0 +1,179 @@
+{
+  "schema": "spectra-system-identity-v1",
+  "kind": "candidate-5b2",
+  "behavior": {
+    "code_sha256": {
+      "copilot/__init__.py": "7b55669c070dae1e8feb62dcaffe12219e83a5484c0b00422c7436651fa0f053",
+      "copilot/__main__.py": "22364db6f4eac373633a7bc812afd81671c33ca4e30678dd1d12736534d0015c",
+      "copilot/acceptance.py": "dd2c72719055536dbe79e6f429d41eb62147dfc6b31d75a907fa306ac775296e",
+      "copilot/acceptance_io.py": "d916ad172db1d405f8e8b521caac111a2d93ab427096b6489997e941d90a3a39",
+      "copilot/acceptance_score.py": "baa45f04d825761ff70b1224ffd8858313a3f6a05b1c4952a254890833b840da",
+      "copilot/acceptance_worker.py": "57dd998c6afdc483ee16fe63c347a3629f7f893a014fcdfecfd37a1340cc400a",
+      "copilot/agent.py": "6d13a73b4a3874909711739785d9c37f52e0be5247df769f802078aee36c540e",
+      "copilot/budget.py": "e96341088df51cf7c948afb72501baa04dd446acff5176875f3ab515bd636595",
+      "copilot/candidate_identity.py": "fed056612ee2d972448cd869ba95ddf5c33f3b6cb73faf7eef9f2ea2c8add07f",
+      "copilot/explanation.py": "2744559d03ff31c3c9efe33e585946f983161cd7a7cd753af384397031e349db",
+      "copilot/mcp_server.py": "a22485e71858351ed45be0bb899455b639819d3c75bc2da7f3f31d67dcde360b",
+      "copilot/rag.py": "f118768c15bbd714ec3e06886159700385f10ee3b95711b0fbebdf59aff72aba",
+      "copilot/report.py": "132e606a22ca6b7a7df4a8a0c997ea813183fed88703a2617d6acd303a63f00b",
+      "copilot/review.py": "e1c94b0d2a83079deff0e8e105ce88a37bfa88512d7d5d73a6f455b67371038e",
+      "copilot/spectral.py": "0be9368b6ddc5964793fa4aaccfce15fec1df1b4ca003b5912c3d84db84bf4ed",
+      "copilot/tools.py": "fa992247b3aad458b655783da8eeef5ad6d479187aa80cd6f5136d6c6a0f3571",
+      "desi_fm/__init__.py": "da64b2dd45657dda388c280af97305459078843266a3abe632d2b47366c57976",
+      "desi_fm/api.py": "9dbdcf5611218d45ef43c966db196185b6040a0d054d67d4ec295541496d1e6a",
+      "desi_fm/assets.py": "82762af295c81b5bcbab9430a93dcea950d8d0096a6fe73e6c13c2e095ff0bd6",
+      "desi_fm/data.py": "e197b3945881c8198efad5ab4b8c9591d6899aa8497daf7e480150c63482d6f4",
+      "desi_fm/evaluate.py": "3216e2c35ca30b0ad9f471d1da480f1a86e23318f5fa6a8e224aeae923fc65d2",
+      "desi_fm/experiment/__init__.py": "1368f944c9a12d42a6289544fbcc8ef8ebd3fd843e9f92fb3458dd126a1b936b",
+      "desi_fm/experiment/artifacts.py": "ad2efca5f3c72749de5078b84080d4db80d8777d34e1f7bd2449832a01a13fdb",
+      "desi_fm/experiment/data.py": "21d245668545c4b22126454253f121872e05f7f446c89c31976524d8fea1b4a3",
+      "desi_fm/experiment/final.py": "36e1b7e576ae9ae7978f24e61961201b399b07ebb4fab9537c88df39ab2d575f",
+      "desi_fm/experiment/metrics.py": "14e4c4da2f8d111cefb2c9cdc8e015d7fa563564bd532418f192d9192071a71d",
+      "desi_fm/experiment/models.py": "3a9f8fcd50b61504d86889cff43eb3cf59ed39ee9bc789a445e1d6e33da292f5",
+      "desi_fm/experiment/ridge.py": "3b900422356f6355dbbb5ba0bdb8975c460d2b55777014764e1d222af81c08ad",
+      "desi_fm/experiment/splits.py": "8f7aca221fbdc7c673c68be6185a40f45c794fd0da7c5ddeffd46871c00f3ec6",
+      "desi_fm/experiment/training.py": "579b875dda477425ae6f7cb8c2fa4f9429f0c0b581e54a4753ebbe75a9cbd5a0",
+      "desi_fm/historical.py": "799f1267341f5238833f2977af25e3c725b9c58da77bedd277be749e0fb2c1fd",
+      "desi_fm/inputs.py": "b251e1c3142f5f63f2dc19ccdb9494d1314b4576ee45953325a0b667dfbce1d1",
+      "desi_fm/inspect_schema.py": "ed116a9c344c8d77acdc53d5b1d351f18496e4a418647406bd03a7bbecfc3c8c",
+      "desi_fm/local_data.py": "37af116bf28964866ca676d4c08b82f0ab8dea6dd2276667fd9230f81fcd3cc9",
+      "desi_fm/model.py": "75012f0114496e6343b67c7bf84bfd736d2b48ba31baae07aee4b2a1072bc019",
+      "desi_fm/predict.py": "bbff4228e5f08274c66e897d76ac49febb1bc7d7c96568ca5fb801214824a8ef",
+      "desi_fm/train.py": "712af03239f140e6a195af441b574665db6ea764841e17a7a6d88201e0035dc1"
+    },
+    "auxiliary_code_sha256": {
+      "cnn_harness": "ab6da0c429cd090bf124862e07bc8dd4f08e70dc921a86c93aee62f0b0a04375",
+      "cnn_development_reader": "6cd7cf5a96473618cd90e2ef2a482c6c7db22e534a5d17f9768e8ae6eb5563f5",
+      "legacy_evaluator": "47a08ac32ae54baf84ff6eb20eddbf5a46a113011c67c4718097890a09f472fc"
+    },
+    "source_content_sha256": "c34512104620779f6097c760c381a0ebd8d79868f2b60af6149cf2626f157ff6",
+    "prompt_sha256": "6eacd0e1e449af1c9e02cf557d1572239f0f1280bbacde2afab19c6de86e53b6",
+    "corpus_revision": "ae5f3aaa01b843b3c68337081fbd9333c137d42e406bc634b977863d1830da08",
+    "corpus_files": {
+      "refs/absorption-dominated-spectra.md": "88b112f718d6445ce1b3d9361d3fcaacc706fdf67fff4607aed5e8a0d1d057e0",
+      "refs/balmer-series.md": "817c26692180b05b7507dc45d7b27d944c3d9e1fa8647416f996461e79132438",
+      "refs/catastrophic-outliers.md": "ca61f4ebc4fe12eeae4f7bbf61f8f46c24912357616db3fd619bda4b6fa142b6",
+      "refs/desi-edr.md": "c4a1f63ecb3aba47254f485f58e4cca2543f08ca263f39ba111f77e1a828daf0",
+      "refs/desi-overview.md": "2307e81d16a8d491303ff2defef87b2a31bc1b6a51d4e47f6b4986c00df17d88",
+      "refs/desi-spectrograph-coverage.md": "047afeab37465f22f88ddb03c2432622276cc1d12393e3cee573079219068826",
+      "refs/desi-sv3.md": "0846c39365c541a56e3caa4914d9b122a38745275eb37727271cc7e93db7ab3e",
+      "refs/desi-targets-bgs.md": "3df5229dc923654aaf00685fe39a7c5f82d856ccf7d1fc01d3e19c42c4525386",
+      "refs/desi-targets-elg.md": "af3b0607090a1eafd08160f7216946c46f12e3714ec32d1c09bc461069423b44",
+      "refs/desi-targets-lrg.md": "39851cd4a575fb52eb2189252dcfa7cf5199e2f400a309a9db49d4909ca244dc",
+      "refs/desi-targets-qso.md": "c69593598460184ab1397d9ed990d5a53e2c0f784a7f88deabe5f149f302bead",
+      "refs/line-degeneracy-single-line.md": "24916bf433c7d2924bceb99f798b14374ec2c5f4c26fb4ef2220d3d25b5310c1",
+      "refs/lines.json": "87656abb3b29869dfd974a1075acec30ddc43ecbf782f4e9a240322073b34636",
+      "refs/oii-doublet.md": "21acda74f0fe1f0ef505c6f5239b187052908f43f3e8024ab567a96b0484f293",
+      "refs/redrock-pipeline.md": "2781d93fdde9e3b42d667d4028d344d987238e1659e3a4c039dd29397c5f9059",
+      "refs/sky-residuals.md": "4a2e1ba2881aa4cfa2197aa08a2c685d726bab18364bf73a23187e4f63447212"
+    },
+    "tool_schemas_sha256": "bc8aec0abaaf3d1cf28b4b1b928c6ad7310060d331a6c034541f24c7b986aee0",
+    "policy": "explanatory-model-z-v2",
+    "assets": {
+      "predictor_checkpoint": {
+        "sha256": "40247cbe0e706a66084d001b36424081554c26d3eb75c1f8b0ebec89cf5afe5a",
+        "bytes": 103964688
+      },
+      "faiss_index": {
+        "sha256": "fc13007f951e2d1c1dc7e30338f6de4203b65d5c9c44fddc1d39ce4da921968b",
+        "bytes": 30720045
+      },
+      "index_metadata": {
+        "sha256": "83e4bdc035328618636b1e86ddad49367df8b2d70dd9ac90a2bb8bd4f503e9ee",
+        "bytes": 60256
+      }
+    },
+    "predictor": {
+      "config": {
+        "n_pixels": 7081,
+        "n_tokens": 273,
+        "lambda_min": 3600.0,
+        "lambda_max": 9800.0,
+        "wavelength_grid": "log",
+        "d_model": 512,
+        "n_layers": 8,
+        "n_heads": 8,
+        "mlp_ratio": 4.0,
+        "dropout": 0.1,
+        "mask_ratio": 0.5,
+        "redshift_loss_weight": 1.0,
+        "reconstruction_loss_weight": 1.0,
+        "use_wavelength_embedding": true,
+        "use_learned_position": true,
+        "n_z_bins": 100,
+        "z_max": 6.0,
+        "z_label_smoothing": 0.0,
+        "normalize_redshift_ce": true
+      },
+      "checkpoint": {
+        "sha256": "40247cbe0e706a66084d001b36424081554c26d3eb75c1f8b0ebec89cf5afe5a",
+        "step": 30000,
+        "migration": null
+      },
+      "source": "checkpoint",
+      "redshift": {
+        "configured_range": [
+          0,
+          6.0
+        ],
+        "bin_center_range": [
+          0.009777036495506763,
+          5.932223320007324
+        ],
+        "z_pred": "expm1(E[log(1+z)])",
+        "z_confidence": "1 - H(p)/log(n_bins)",
+        "observed_max": null
+      }
+    },
+    "input_contract": "spectra-input-v3",
+    "index_compatibility": "historical encoder/index compatibility remains unverified",
+    "llm_proposal": {
+      "model": "claude-haiku-4-5-20251001",
+      "rates_usd_per_million": [
+        1,
+        5
+      ],
+      "limits": {
+        "input_tokens": 64000,
+        "output_tokens": 4096,
+        "calls": 8,
+        "max_output_per_call": 512,
+        "usd": 0.0,
+        "retries": 0,
+        "seconds": 120.0
+      },
+      "paid_default_usd": 0
+    },
+    "protocol": {
+      "BATCH_5B_PROTOCOL.md": "7d418d12d11d2406a30f94dc64a8f91d6462a1c364ddaac48e2d14bf37b98dc3",
+      "protocol/batch5b-development.json": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+      "evidence/batch5b-commitment.json": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99"
+    },
+    "runtime": {
+      "python": "3.12.13",
+      "platform": "macOS-26.6.2-arm64-arm-64bit",
+      "packages": {
+        "numpy": "2.5.1",
+        "scipy": "1.18.0",
+        "torch": "2.13.0",
+        "pyarrow": "25.0.0",
+        "anthropic": "0.120.2",
+        "httpx": "0.28.1",
+        "faiss-cpu": "1.15.0",
+        "rank_bm25": "0.2.2",
+        "mcp": "2.0.0",
+        "pydantic": "2.13.4"
+      }
+    }
+  },
+  "behavior_sha256": "adb740ecd37305aa68af8bc58080b8529876514522754c488888dc7738adee4f",
+  "source_locations": {
+    "copilot": "/Users/jirustaroure/proyectos/spectra-copilot/copilot",
+    "desi_fm": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING/src/desi_fm"
+  },
+  "source_heads": {
+    "copilot": "fa4f6f64ffd62de4d2aa64f5b53db7ecec48a92a",
+    "desi_fm": "138a7b6fa8170a6fa7129bd6a9ed446753d81d33"
+  },
+  "closure": "Candidate only. 5C must record the final installed identity and justify every behavioral difference before real acceptance."
+}

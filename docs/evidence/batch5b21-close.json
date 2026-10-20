@@ -1,0 +1,1087 @@
+{
+  "session": "5B-2.1",
+  "date": "2026-10-19",
+  "scope": "Corrections only; no 5C or independent verification by this session",
+  "private_evidence": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b",
+  "initial": {
+    "fm": {
+      "path": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING",
+      "branch": "codex/lote-5b",
+      "head": "af8e598b8c679d14f36ac891aaa6444a2ba934d6",
+      "status": "?? runs/desi_50k_big/predictions_heldout.csv",
+      "frozen": {
+        "scripts/select_batch5b.py": "d6b24c2387ab0a4f76dc87b44f0ce72a5402fab50e385aa5dd50bc2ece83a51e",
+        "docs/BATCH_5B_PROTOCOL.md": "7d418d12d11d2406a30f94dc64a8f91d6462a1c364ddaac48e2d14bf37b98dc3",
+        "docs/protocol/batch5b-development.json": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+        "docs/evidence/batch5b-commitment.json": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99",
+        "docs/evidence/batch5b2-candidate.json": "db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4"
+      }
+    },
+    "copilot": {
+      "path": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "branch": "codex/lote-5b",
+      "head": "def0d0649a5d176697bde637b6192992eb875e62",
+      "status": "",
+      "frozen": {
+        "scripts/select_batch5b.py": "d6b24c2387ab0a4f76dc87b44f0ce72a5402fab50e385aa5dd50bc2ece83a51e",
+        "docs/BATCH_5B_PROTOCOL.md": "7d418d12d11d2406a30f94dc64a8f91d6462a1c364ddaac48e2d14bf37b98dc3",
+        "docs/protocol/batch5b-development.json": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+        "docs/evidence/batch5b-commitment.json": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99",
+        "docs/evidence/batch5b2-candidate.json": "db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4"
+      }
+    },
+    "acceptance": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-1-20261018T225723/custody-final/acceptance.json",
+      "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+      "bytes": 82805
+    }
+  },
+  "review_sources": [
+    {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/review-lote5b2-20261019-9cpqxx0m/REVIEW.md",
+      "bytes": 6228,
+      "sha256": "e60fbbd9ba968d30946722cbf689af52d8cb3894ce489dae95a745df5d502e3a"
+    },
+    {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/review-lote5b2-20261019-claude/REVIEW.md",
+      "bytes": 8183,
+      "sha256": "4d4567cff42171a7cc5ad7330a733b811566bc5b6d173c32073c39c7d7643145"
+    },
+    {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/review-lote5b2-20261019-claude-2/REVIEW.md",
+      "bytes": 10078,
+      "sha256": "f766fc8b010cf03ad0eddaed81a4728734e416119ecf547be4f05ba6655338bf"
+    }
+  ],
+  "findings": {
+    "R5B2-01": "corrected: actual ledger on every run_structured exit; real execution-worker integration",
+    "C1": "corrected: all-observation caution and alternatives, insufficient_line_evidence, single blue peak ambiguity",
+    "C2": "corrected: 13 specified mutants detected, 13 green baselines, versioned reproducer",
+    "C3": "corrected: README and two packaged corpus notes, historical figures retained, corpus revision captured",
+    "budget_5C": "measured offline, two options proposed in batch5b21-budget.md, decision pending Julian; limits unchanged",
+    "P3_seal": "corrected: external hash registration, computed verification ordering and summary output hash",
+    "P3_invalid_citation": "corrected: nonexistent reference never counts as supported",
+    "P3_corpus_drift": "corrected: technical_error preserves prediction, ledger and observations; no stale citations",
+    "P3_selector_execution": "corrected: subprocess/exec/open references and aliases detected; seven CLI probes",
+    "P3_cnn_inode": "corrected: st_dev/st_ino plus path guard, hardlink and descriptor regressions",
+    "P3_single_blue_peak": "corrected with C1; no single-line unique solution"
+  },
+  "verification": {
+    "copilot_python312": 282,
+    "fm_python39": 189,
+    "fm_python312": 189,
+    "mutation_baselines_green": 13,
+    "mutations_detected": 13
+  },
+  "commands": {
+    "T1-red-verified": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_worker_accounting.py",
+        "tests/test_acceptance.py"
+      ],
+      "exit": 1
+    },
+    "T1-green": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_worker_accounting.py",
+        "tests/test_acceptance.py",
+        "tests/test_budget.py",
+        "tests/test_failure_reporting.py",
+        "tests/test_explanatory_policy.py"
+      ],
+      "exit": 0
+    },
+    "T2-red": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_executor_caution.py"
+      ],
+      "exit": 1
+    },
+    "T2-green": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_executor_caution.py",
+        "tests/test_explanatory_policy.py",
+        "tests/test_spectral_measurements.py",
+        "tests/test_acceptance.py",
+        "tests/test_evals.py"
+      ],
+      "exit": 0
+    },
+    "T4-red": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_current_surfaces.py"
+      ],
+      "exit": 1
+    },
+    "T4-green": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_current_surfaces.py",
+        "tests/test_rag.py",
+        "tests/test_citation_policy.py",
+        "tests/test_eval_persistence.py"
+      ],
+      "exit": 0
+    },
+    "T5-measurement-tests": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_budget_measurement.py"
+      ],
+      "exit": 0
+    },
+    "T5-development": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "scripts/measure_batch5b21_budget.py",
+        "--development",
+        "docs/protocol/batch5b-development.json",
+        "--raw-root",
+        "/Users/jirustaroure/.local/share/spectra-data/933b9056b93b0f3e7790ee28c43412b49c39e232",
+        "--index",
+        "/Users/jirustaroure/.local/share/spectra-data/derived-933b9056/spectra-input-v2.sqlite",
+        "--output",
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/budget-development"
+      ],
+      "exit": 0
+    },
+    "T6-cp-red": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_batch5b21_minor.py",
+        "tests/test_batch5b_protocol.py",
+        "-q"
+      ],
+      "exit": 1
+    },
+    "T6-fm-red": {
+      "cwd": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_batch5b_cnn.py",
+        "tests/test_batch5b_protocol.py",
+        "-q"
+      ],
+      "exit": 1
+    },
+    "T6-cp-green": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_batch5b21_minor.py",
+        "tests/test_batch5b_protocol.py",
+        "tests/test_acceptance.py",
+        "tests/test_citation_policy.py",
+        "tests/test_worker_accounting.py",
+        "tests/test_executor_caution.py",
+        "tests/test_batch5b21_guards.py",
+        "-q"
+      ],
+      "exit": 0
+    },
+    "T6-fm-green": {
+      "cwd": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_batch5b_cnn.py",
+        "tests/test_batch5b_cnn_main.py",
+        "tests/test_batch5b_protocol.py",
+        "-q"
+      ],
+      "exit": 0
+    },
+    "full-cp312": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "exit": 0
+    },
+    "full-fm312": {
+      "cwd": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "exit": 0
+    },
+    "full-fm39": {
+      "cwd": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING",
+      "cmd": [
+        "/usr/bin/python3",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "exit": 0
+    },
+    "T3-mutations-final": {
+      "cwd": "/Users/jirustaroure/proyectos/spectra-copilot",
+      "cmd": [
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-2-20261009/wheel-env/bin/python",
+        "scripts/check_batch5b21_mutations.py",
+        "--fm-root",
+        "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING",
+        "--output",
+        "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/mutations-final"
+      ],
+      "exit": 0
+    }
+  },
+  "logs": {
+    "T1-red-verified": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T1-red-verified.log",
+      "bytes": 2631,
+      "sha256": "adb5c8c3a8f70d93ee14890852e6ea211da8d48d3129112b74c6ca1d9ae46a31"
+    },
+    "T1-green": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T1-green.log",
+      "bytes": 1317,
+      "sha256": "981e5d8cb3b378b765fdfa55a83f081d409ef6a363ecca373491e62a652849f6"
+    },
+    "T2-red": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T2-red.log",
+      "bytes": 9288,
+      "sha256": "c36a7d536ead2c1129f00b31219d1179389e70dcf6699a83009dfa325a9d3225"
+    },
+    "T2-green": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T2-green.log",
+      "bytes": 1315,
+      "sha256": "05a3492dbd7cffbd926196d54491c76eedeee2819eeac3d2b4f6976f8758121d"
+    },
+    "T4-red": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T4-red.log",
+      "bytes": 4498,
+      "sha256": "6ff7b3e0797eb28e6167c6e044d2b48d181fc1f82ea7176f285854fc39f14266"
+    },
+    "T4-green": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T4-green.log",
+      "bytes": 99,
+      "sha256": "a5c43735de353bacb4562ba6668b0b06f34b3a5f2f26cf826030ad7a755cb22b"
+    },
+    "T5-measurement-tests": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T5-measurement-tests.log",
+      "bytes": 98,
+      "sha256": "aad379e7b2a64858e712e62619e117bec18395755c8c673c8e0ff100744c7455"
+    },
+    "T5-development": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T5-development.log",
+      "bytes": 533191,
+      "sha256": "810ef343ce2b1df59f86d2a79560dfecb266477bbd308e7f2b053b817c21b601"
+    },
+    "T6-cp-red": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T6-cp-red.log",
+      "bytes": 32412,
+      "sha256": "42752ec000c4990952dcaa4b6f5d986abd19ff3ec3f01cdaf875160d8d614e37"
+    },
+    "T6-fm-red": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T6-fm-red.log",
+      "bytes": 17510,
+      "sha256": "87558fcb1a060988bacb653a1407fd24a4cb671058d7fa99b5831543a281f719"
+    },
+    "T6-cp-green": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T6-cp-green.log",
+      "bytes": 1049,
+      "sha256": "0c452067cab04d47ee2c9c48553cc589724d247c868a694167603976a00606c3"
+    },
+    "T6-fm-green": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T6-fm-green.log",
+      "bytes": 100,
+      "sha256": "d76259782de8a1ce58cb6d54ea633ef5dc4eb403accb1b8c7d6af504e6722029"
+    },
+    "full-cp312": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/full-cp312.log",
+      "bytes": 1854,
+      "sha256": "cb28f5c9edbea7e3f20c62a39ff5897a47c7f4a20c257f60da2494ffbd2572f7"
+    },
+    "full-fm312": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/full-fm312.log",
+      "bytes": 1224,
+      "sha256": "d67fff11c29ba5d60bf2d5a9aedc597f0fecec74e1d0060861239fb2320265c7"
+    },
+    "full-fm39": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/full-fm39.log",
+      "bytes": 3935,
+      "sha256": "060bad34052398538d262852745520ed2e3ded782b5e1c909c1d8c2acb9567f9"
+    },
+    "T3-mutations-final": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/T3-mutations-final.log",
+      "bytes": 34,
+      "sha256": "cebcc1e4a7993f1b85585e7c577a8a3257789dea025c28ea655f369fbdad680f"
+    }
+  },
+  "mutations": {
+    "alternative_replaces_model_z": {
+      "repository": "copilot",
+      "source_file": "copilot/explanation.py",
+      "test": "tests/test_executor_caution.py::test_all_registered_alternatives_and_ambiguity_survive_selection",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "drop_ambiguity": {
+      "repository": "copilot",
+      "source_file": "copilot/explanation.py",
+      "test": "tests/test_executor_caution.py::test_all_registered_alternatives_and_ambiguity_survive_selection",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "drop_alternatives": {
+      "repository": "copilot",
+      "source_file": "copilot/explanation.py",
+      "test": "tests/test_executor_caution.py::test_all_registered_alternatives_and_ambiguity_survive_selection",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "skip_input_hash": {
+      "repository": "copilot",
+      "source_file": "copilot/acceptance.py",
+      "test": "tests/test_batch5b21_guards.py::test_changed_input_hash_prevents_worker_call",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "missing_ledger_certified": {
+      "repository": "copilot",
+      "source_file": "copilot/acceptance.py",
+      "test": "tests/test_batch5b21_guards.py::test_missing_execution_budget_is_unknown_and_stops",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "skip_alias_order": {
+      "repository": "copilot",
+      "source_file": "copilot/acceptance_score.py",
+      "test": "tests/test_batch5b21_guards.py::test_alias_order_checked_before_labels_even_with_matching_file_hashes",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "resume_changed_model_z": {
+      "repository": "copilot",
+      "source_file": "eval/run_evals.py",
+      "test": "tests/test_batch5b21_guards.py::test_resume_rejects_internally_consistent_alternative_redshift",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "outside_lines_as_absences": {
+      "repository": "copilot",
+      "source_file": "copilot/spectral.py",
+      "test": "tests/test_batch5b21_guards.py::test_outside_support_and_gap_lines_are_excluded_from_denominator",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "unconditioned_wrong_controls": {
+      "repository": "copilot",
+      "source_file": "scripts/batch5b_development.py",
+      "test": "tests/test_batch5b21_guards.py::test_wrong_controls_retain_expected_line_count_condition",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "cnn_skip_checkpoint_record": {
+      "repository": "fm",
+      "source_file": "scripts/check_batch5b_cnn.py",
+      "test": "tests/test_batch5b_cnn_main.py::test_main_rejects_false_identity_before_loading_checkpoint",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "cnn_skip_frozen_identity": {
+      "repository": "fm",
+      "source_file": "scripts/check_batch5b_cnn.py",
+      "test": "tests/test_batch5b_cnn_main.py::test_main_rejects_false_identity_before_loading_checkpoint",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "cnn_skip_source_environment": {
+      "repository": "fm",
+      "source_file": "scripts/check_batch5b_cnn.py",
+      "test": "tests/test_batch5b_cnn_main.py::test_main_rejects_false_identity_before_loading_checkpoint",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    },
+    "cnn_skip_parity_gate": {
+      "repository": "fm",
+      "source_file": "scripts/check_batch5b_cnn.py",
+      "test": "tests/test_batch5b_cnn_main.py::test_main_gate_rejects_one_failed_validation_parity",
+      "green_exit": 0,
+      "mutated_exit": 1,
+      "detected": true
+    }
+  },
+  "matcher_comparison": {
+    "changed_rows": 0,
+    "changed_fields": {},
+    "summary_equal_fields": [
+      "global",
+      "strata",
+      "control_groups",
+      "status_counts",
+      "bootstrap",
+      "limitations",
+      "injected_lines",
+      "noise",
+      "ordering",
+      "gate_passes"
+    ],
+    "summary_changed_fields": [
+      "identity"
+    ],
+    "previous_rows_sha256": "a284077dd0ea1cc3ac1ff0ed930b47861e4839c9157048006ab5f21a024b0d7f",
+    "new_rows_sha256": "a284077dd0ea1cc3ac1ff0ed930b47861e4839c9157048006ab5f21a024b0d7f"
+  },
+  "budget_summary": {
+    "scope": "Offline scripted request-size measurement, not real LLM acceptance or billing",
+    "requested": 96,
+    "status_counts": {
+      "measured": 90,
+      "invalid_input": 6,
+      "pending": 0
+    },
+    "real_measured": 48,
+    "synthetic_measured": 42,
+    "by_turns": {
+      "3": {
+        "valid_conversations": 90,
+        "serialized_requests": 270,
+        "wire_bytes": {
+          "minimum": 8935,
+          "median": 13909.5,
+          "p95": 28599.999999999993,
+          "maximum": 35708
+        },
+        "profiles": {
+          "full_reserved_bound": {
+            "complete": 69,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 21,
+              "3": 69,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_2_bytes_per_token": {
+            "complete": 90,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 90,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_4_bytes_per_token": {
+            "complete": 90,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 90,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          }
+        }
+      },
+      "4": {
+        "valid_conversations": 90,
+        "serialized_requests": 360,
+        "wire_bytes": {
+          "minimum": 8935,
+          "median": 15453.5,
+          "p95": 30207.9,
+          "maximum": 36474
+        },
+        "profiles": {
+          "full_reserved_bound": {
+            "complete": 0,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 21,
+              "3": 69,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_2_bytes_per_token": {
+            "complete": 77,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 13,
+              "4": 77,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_4_bytes_per_token": {
+            "complete": 90,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 90,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          }
+        }
+      },
+      "5": {
+        "valid_conversations": 90,
+        "serialized_requests": 450,
+        "wire_bytes": {
+          "minimum": 8935,
+          "median": 16219.0,
+          "p95": 35842.19999999999,
+          "maximum": 59447
+        },
+        "profiles": {
+          "full_reserved_bound": {
+            "complete": 0,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 21,
+              "3": 69,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_2_bytes_per_token": {
+            "complete": 58,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 13,
+              "4": 19,
+              "5": 58,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_4_bytes_per_token": {
+            "complete": 71,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 19,
+              "5": 71,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          }
+        }
+      },
+      "6": {
+        "valid_conversations": 90,
+        "serialized_requests": 540,
+        "wire_bytes": {
+          "minimum": 8935,
+          "median": 18587.5,
+          "p95": 43701.29999999999,
+          "maximum": 61115
+        },
+        "profiles": {
+          "full_reserved_bound": {
+            "complete": 0,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 21,
+              "3": 69,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_2_bytes_per_token": {
+            "complete": 40,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 13,
+              "4": 19,
+              "5": 18,
+              "6": 40,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_4_bytes_per_token": {
+            "complete": 63,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 19,
+              "5": 8,
+              "6": 63,
+              "7": 0,
+              "8": 0
+            }
+          }
+        }
+      },
+      "7": {
+        "valid_conversations": 90,
+        "serialized_requests": 630,
+        "wire_bytes": {
+          "minimum": 8935,
+          "median": 16517.0,
+          "p95": 41799.94999999999,
+          "maximum": 61413
+        },
+        "profiles": {
+          "full_reserved_bound": {
+            "complete": 0,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 50,
+              "4": 40,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_2_bytes_per_token": {
+            "complete": 0,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 3,
+              "4": 17,
+              "5": 26,
+              "6": 44,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_4_bytes_per_token": {
+            "complete": 62,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 1,
+              "5": 20,
+              "6": 7,
+              "7": 62,
+              "8": 0
+            }
+          }
+        }
+      },
+      "8": {
+        "valid_conversations": 90,
+        "serialized_requests": 720,
+        "wire_bytes": {
+          "minimum": 8935,
+          "median": 16049.5,
+          "p95": 40316.14999999999,
+          "maximum": 61711
+        },
+        "profiles": {
+          "full_reserved_bound": {
+            "complete": 0,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 21,
+              "4": 69,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            }
+          },
+          "illustrative_2_bytes_per_token": {
+            "complete": 0,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 7,
+              "5": 17,
+              "6": 26,
+              "7": 40,
+              "8": 0
+            }
+          },
+          "illustrative_4_bytes_per_token": {
+            "complete": 58,
+            "admitted_histogram": {
+              "0": 0,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 3,
+              "6": 21,
+              "7": 8,
+              "8": 58
+            }
+          }
+        }
+      }
+    },
+    "network_attempts": 0,
+    "remote_calls": 0,
+    "real_paid_usd": 0,
+    "production_limits_unchanged": {
+      "input_tokens": 64000,
+      "output_tokens": 4096,
+      "calls": 8,
+      "max_output_per_call": 512,
+      "usd": 0.0,
+      "retries": 0,
+      "seconds": 120.0
+    },
+    "model": "claude-haiku-4-5-20251001",
+    "cost_maximum_from_registered_rates": {
+      "per_case": 0.08448,
+      "all_128": 10.81344
+    },
+    "identity": {
+      "head": "268683a0975988cbccc9cefd2c58f0a8b3376a68",
+      "harness_sha256": "c494c5a6879b6bc60f0a41e735bab6ee11c6ca8831d0b1677b17643e0c0fd81b",
+      "development_sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+      "corpus_revision": "ae5f3aaa01b843b3c68337081fbd9333c137d42e406bc634b977863d1830da08"
+    },
+    "limits": [
+      "Serialized requests beyond the production stop are offline counterfactual probes only.",
+      "3..6 turns add lines, reference, neighbors, alternate lines, reconstruction and then submit; initial predict counts as one of six analysis tools.",
+      "7..8 turns add one/two rejected schema calls before the six-turn sequence; they illustrate argument repair, not retries of network requests.",
+      "Real tool payloads cached within each case across scenarios; masking draw seed 20261019; no training or test data.",
+      "No actual tokenizer usage exists: full-bound replay is conservative; 2/4 bytes per token plus 496 overhead are illustrative, not provider guarantees.",
+      "All replays use unchanged 64000 input /4096 output /512 per call /8 calls /zero retries and monetary ceilings.",
+      "Prices inherited from the registered 5B-2 candidate ($1/M input, $5/M output); reconfirm model and rates when Julian authorizes 5C."
+    ]
+  },
+  "preservation_before": {
+    "files": 1174,
+    "counts": {
+      "lote-4b-01": 658,
+      "preparation": 171,
+      "batch4a-v1": 18,
+      "FINAL PROJECT DEEP LEARNING": 162,
+      "spectra-copilot": 165
+    },
+    "bytes": {
+      "lote-4b-01": 6059818657,
+      "preparation": 87279004,
+      "batch4a-v1": 3014928724,
+      "FINAL PROJECT DEEP LEARNING": 2508937756,
+      "spectra-copilot": 77911544
+    },
+    "mismatches": 0,
+    "extra": 0,
+    "baseline_sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239"
+  },
+  "preservation_after": {
+    "files": 1174,
+    "counts": {
+      "lote-4b-01": 658,
+      "preparation": 171,
+      "batch4a-v1": 18,
+      "FINAL PROJECT DEEP LEARNING": 162,
+      "spectra-copilot": 165
+    },
+    "bytes": {
+      "lote-4b-01": 6059818657,
+      "preparation": 87279004,
+      "batch4a-v1": 3014928724,
+      "FINAL PROJECT DEEP LEARNING": 2508937756,
+      "spectra-copilot": 77911544
+    },
+    "mismatches": 0,
+    "extra": 0,
+    "baseline_sha256": "13d63c5c8b423d1c90e7dbd62a70f82cf21a397c1f07e00fdd0cedf8e3f1d239"
+  },
+  "regeneration": {
+    "command": [
+      "scripts/select_batch5b.py",
+      "--index",
+      "/Users/jirustaroure/.local/share/spectra-data/derived-933b9056/spectra-input-v2.sqlite",
+      "--splits",
+      "/Users/jirustaroure/.local/share/spectra-data/batch4a-v1",
+      "--historical",
+      "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING/docs/evidence/batch3-historical-ids.json",
+      "--labels",
+      "eval/cases/labels.csv",
+      "--examples",
+      "examples",
+      "--examples",
+      "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING/examples",
+      "--repository",
+      "/Users/jirustaroure/proyectos/spectra-copilot",
+      "9c5cf0e232736a7a0ce386a487d218517a59de9c",
+      "--repository",
+      "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING",
+      "c99ec856f968f2965a4b6ebd73c399fe2ecb107c",
+      "--visible",
+      "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-1-20261018T225723/consensus-before.md",
+      "--visible",
+      "/Users/jirustaroure/Desktop/PROYECTS OVERVIEW/ZsummaryOfEveryFolder/ModelTrainedAuditoriaClaudeLotes1a4.md",
+      "--visible",
+      "/Users/jirustaroure/Desktop/PROYECTS OVERVIEW/ZsummaryOfEveryFolder/ModelTrainedTechnicalReview.md",
+      "--private-dir",
+      "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/regenerate-ekk3h3kb/custody",
+      "--development",
+      "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/regenerate-ekk3h3kb/development.json",
+      "--commitment",
+      "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/regenerate-ekk3h3kb/commitment.json"
+    ],
+    "temporary_mode": "0o700",
+    "hashes": {
+      "custody/acceptance.json": {
+        "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05",
+        "bytes": 82805,
+        "matches": true
+      },
+      "development.json": {
+        "sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+        "bytes": 61654,
+        "matches": true
+      },
+      "commitment.json": {
+        "sha256": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99",
+        "bytes": 2461,
+        "matches": true
+      }
+    },
+    "exit": 0,
+    "private_copy_deleted": true
+  },
+  "identity": {
+    "previous_file_sha256": "db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4",
+    "previous_behavior_sha256": "9e76fe83d40a3761d67a6519698cfa28291657287d2b45963c6e3e8cbb7d59dd",
+    "candidate_file_sha256": "6fd41be3cfd00c2e60aebcead5339ad616984bb4ef4093f3dd46d53cf68cfcdc",
+    "candidate_behavior_sha256": "adb740ecd37305aa68af8bc58080b8529876514522754c488888dc7738adee4f",
+    "differences": {
+      "source_content_sha256": {
+        "before": "44e6bfa0950fd941bfd83be4c881c75c96396c9bce4b6021233c3f90bb1189f9",
+        "after": "c34512104620779f6097c760c381a0ebd8d79868f2b60af6149cf2626f157ff6"
+      },
+      "policy": {
+        "before": "explanatory-model-z-v1",
+        "after": "explanatory-model-z-v2"
+      },
+      "auxiliary_code_sha256": {
+        "cnn_harness": {
+          "before": "88109635194b986dabc77e2e5360bae3cb0a5368548f9e0da21a7bd6dce00b4f",
+          "after": "ab6da0c429cd090bf124862e07bc8dd4f08e70dc921a86c93aee62f0b0a04375"
+        },
+        "legacy_evaluator": {
+          "before": "887a49b1d87c3494a47e8a4f0212548c32322f3ebb82787f5e6385bed1827c88",
+          "after": "47a08ac32ae54baf84ff6eb20eddbf5a46a113011c67c4718097890a09f472fc"
+        }
+      },
+      "corpus_files": {
+        "refs/absorption-dominated-spectra.md": {
+          "before": "035cf7db01f23136825dd37450356d9028fb6c0dd2f94caf420ee4bf4b3a3c3f",
+          "after": "88b112f718d6445ce1b3d9361d3fcaacc706fdf67fff4607aed5e8a0d1d057e0"
+        },
+        "refs/desi-targets-lrg.md": {
+          "before": "fc55e8a784a0e8a577e2e5394a3fc870c736bfad9570de2413be72ad23e2449e",
+          "after": "39851cd4a575fb52eb2189252dcfa7cf5199e2f400a309a9db49d4909ca244dc"
+        }
+      },
+      "corpus_revision": {
+        "before": "aee8ab08db20ed5ace83eaa52c702485e7c76bd04f3895e1947dee74c4e614b3",
+        "after": "ae5f3aaa01b843b3c68337081fbd9333c137d42e406bc634b977863d1830da08"
+      },
+      "code_sha256": {
+        "copilot/acceptance.py": {
+          "before": "dc4aa03db45a51464cabce09d39bdc8969776019d0ebbe86460a27c5dee76ee6",
+          "after": "dd2c72719055536dbe79e6f429d41eb62147dfc6b31d75a907fa306ac775296e"
+        },
+        "copilot/acceptance_io.py": {
+          "before": "27f68548c2181492bd51dfebe9213e81a0b653d70bf36bc42de60178eac0b247",
+          "after": "d916ad172db1d405f8e8b521caac111a2d93ab427096b6489997e941d90a3a39"
+        },
+        "copilot/acceptance_score.py": {
+          "before": "24b56f60d06a04c50ab968a337500285b2e9e2c645c3f75728607e6e96185a70",
+          "after": "baa45f04d825761ff70b1224ffd8858313a3f6a05b1c4952a254890833b840da"
+        },
+        "copilot/agent.py": {
+          "before": "f9cf99e958ff55caa083fa30261427f74b82191bd199de8bb712b79825a84aa9",
+          "after": "6d13a73b4a3874909711739785d9c37f52e0be5247df769f802078aee36c540e"
+        },
+        "copilot/explanation.py": {
+          "before": "c946776f6243b79fb23194dd7be24aed1646ee1dbc9c2ff041c7fa57ad1c1110",
+          "after": "2744559d03ff31c3c9efe33e585946f983161cd7a7cd753af384397031e349db"
+        },
+        "copilot/review.py": {
+          "before": "0181c81648c1814c8b841ad285ff4bdf2460280a55803b9c065928600c8cbd49",
+          "after": "e1c94b0d2a83079deff0e8e105ce88a37bfa88512d7d5d73a6f455b67371038e"
+        },
+        "copilot/spectral.py": {
+          "before": "9f007102549a5e21b7a59c1f4bd7f71d8cbd432afe30a2874b0687e2ba5c54c4",
+          "after": "0be9368b6ddc5964793fa4aaccfce15fec1df1b4ca003b5912c3d84db84bf4ed"
+        }
+      }
+    },
+    "unchanged_components": [
+      "assets",
+      "index_compatibility",
+      "input_contract",
+      "llm_proposal",
+      "predictor",
+      "prompt_sha256",
+      "protocol",
+      "runtime",
+      "tool_schemas_sha256"
+    ],
+    "verified_against_checkout": true,
+    "source_heads": {
+      "copilot": "fa4f6f64ffd62de4d2aa64f5b53db7ecec48a92a",
+      "desi_fm": "138a7b6fa8170a6fa7129bd6a9ed446753d81d33"
+    },
+    "note": "One new candidate for 5B-2.1; collector kind candidate-5b2 names the same candidate family, not the previous file. Not a final installed 5C identity."
+  },
+  "frozen": {
+    "fm": {
+      "scripts/select_batch5b.py": "d6b24c2387ab0a4f76dc87b44f0ce72a5402fab50e385aa5dd50bc2ece83a51e",
+      "docs/BATCH_5B_PROTOCOL.md": "7d418d12d11d2406a30f94dc64a8f91d6462a1c364ddaac48e2d14bf37b98dc3",
+      "docs/protocol/batch5b-development.json": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+      "docs/evidence/batch5b-commitment.json": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99",
+      "docs/evidence/batch5b2-candidate.json": "db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4"
+    },
+    "copilot": {
+      "scripts/select_batch5b.py": "d6b24c2387ab0a4f76dc87b44f0ce72a5402fab50e385aa5dd50bc2ece83a51e",
+      "docs/BATCH_5B_PROTOCOL.md": "7d418d12d11d2406a30f94dc64a8f91d6462a1c364ddaac48e2d14bf37b98dc3",
+      "docs/protocol/batch5b-development.json": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+      "docs/evidence/batch5b-commitment.json": "2075bc6d1316203c8043a6bdf73ad0d9c08329c3f4e528d6e71229c77f16ce99",
+      "docs/evidence/batch5b2-candidate.json": "db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4"
+    },
+    "acceptance": {
+      "path": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-1-20261018T225723/custody-final/acceptance.json",
+      "bytes": 82805,
+      "sha256": "b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05"
+    }
+  },
+  "untracked_csv": {
+    "path": "/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING/runs/desi_50k_big/predictions_heldout.csv",
+    "bytes": 161796,
+    "sha256": "db2a7f4d26780d0787f9f9bea9118f7ccd992494b0a7cd382d9152ff92ce4eab"
+  },
+  "custody_pre_documentation": {
+    "checked_surfaces": 12729,
+    "violating_surfaces": 0,
+    "violations": []
+  },
+  "final_custody_record": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/final-custody.log",
+  "final_heads_record": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/FINAL_STATE.json",
+  "preserved_pending": {
+    "backup": "no hay respaldo independiente verificado",
+    "key_rotation": "sin verificar",
+    "H-18": "explicación personal de Julian pendiente"
+  },
+  "next": "Independent verification of 5B-2.1, then Julian budget/model decision. Stop; do not start 5C."
+}
