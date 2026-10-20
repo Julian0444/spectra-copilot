@@ -5,7 +5,7 @@
 LLM agent that analyzes astronomical spectra using the
 [desi-fm](https://github.com/Julian0444/desi-spectra-fm) multitask transformer as a
 tool — deterministic tools plus a Claude-API agent that calls the model,
-cross-checks predictions with an emission-peak matching heuristic and writes
+describes emission and supported absorption measurements and writes
 reports intended to cite tools and references. Citation IDs do not establish
 scientific correctness. Every
 tool returns compact JSON conclusions, never raw arrays.
@@ -18,7 +18,7 @@ tool returns compact JSON conclusions, never raw arrays.
 The 60-second version:
 
 - **5 tools + agent + [MCP server](#use-it-from-any-mcp-client)** — redshift prediction,
-  spectral-line verification, masked-reconstruction stability, FAISS semantic
+  descriptive spectral measurements, masked-reconstruction stability, FAISS semantic
   search over 15k spectra, and BM25 reference lookup with a citation contract.
 - **[End-to-end evals on 150 held-out spectra](#end-to-end-evals-does-verification-actually-help-n--150)**
   with an honest headline: the bare model beats its own cheap-LLM agent
@@ -27,27 +27,30 @@ The 60-second version:
   policy gets back to 90.0 % (by avoiding breaks, not by recovering
   outliers). **The eval caught a deployment-relevant failure that four
   cherry-picked demos had hidden** — that is what evals are for.
-- **[Mini-RAG with verified citations](#mini-rag-cited-references-bm25)** —
-  every citation in every verified run matched a document actually retrieved
-  in that conversation: 6/6 backed, 0 invented (checked by ID in the saved transcripts).
+- **[Mini-RAG with citation ID checks](#mini-rag-cited-references-bm25)** —
+  historical saved transcripts passed 6/6 ID checks, 0 invented IDs. These checks
+  establish retrieval membership, not textual support or scientific accuracy.
 - **Tests cover tools, the agent contract, MCP, RAG and evaluation persistence.**
   Some integration tests require a local or previously cached checkpoint. They
   simulate the LLM; no paid API call is needed for tests. Historical structured
   evaluation cost was documented as US$4.06; that is not a current price quote.
 
 Local consolidation, October 2026, pending publication. The negative historical
-result remains authoritative for this version. The future product policy is to
-preserve the model redshift; the current agent can still propose replacements.
-Prompt facts, label clues and tool contracts remain work for later batches.
+result remains authoritative for the historical policy that produced it.
+Current source preserves executor-owned model_z. Alternatives are calculated in
+code and never replace it; all registered measurements determine minimum
+ambiguity or insufficiency, even when the LLM does not cite them. The real LLM
+acceptance, installed identity and release remain pending in 5C.
 
 **Tools** (`copilot/tools.py`):
 
 - `predict_redshift` — desi-fm v2.1 prediction: `z_pred_map` (official) +
   `z_confidence` + `z_pred` (`expm1(E[log(1+z)])` from the same classification posterior).
-- `identify_spectral_lines` — detects emission peaks and checks whether known
-  lines (Lyα … [SII]) land where a given z predicts; it also reports the
-  strongest detected peaks, so the agent can derive alternative z hypotheses
-  from an unexplained peak. This is a heuristic cross-check, not physical verification.
+- `identify_spectral_lines` — measures emission and Ca H/K absorption with
+  mask/ivar, gaps and line coverage, and computes alternative z hypotheses in
+  code from observed wavelengths. A single line remains ambiguous. Unsupported
+  modalities and missing coverage do not refute a hypothesis. Its development
+  gate failed; physical confirmation is disabled.
 - `reconstruct_spectrum` — masks a fraction of the model's tokens and
   re-predicts, probing the stability of the prediction.
 - `find_similar_spectra` — embeds the spectrum with the model's encoder and
@@ -83,7 +86,10 @@ and cached. The `examples/` spectra are historical DESI validation objects (excl
 with strongly supported v1 exposure and checkpoint selection; not an independent test), each with its `z_true` for reference —
 `examples/trap_single_line.npz` is the synthetic exception, see below.
 
-Historical CLI output from contract v1 (`examples/heldout_z020.npz`, catalog z = 0.204). The current CLI omits labels and original paths and adds coverage/model identity:
+Historical CLI output from contract v1 (`examples/heldout_z020.npz`, catalog z = 0.204).
+This archived example retains its obsolete verdict and numbers. The current CLI
+omits labels/original paths, includes coverage/model identity and emits descriptive
+measurements with `physical_confirmation=false`, without a `verdict` field:
 
 ```json
 {
@@ -110,35 +116,44 @@ Historical CLI output from contract v1 (`examples/heldout_z020.npz`, catalog z =
 }
 ```
 
-Note what the line tool buys the agent: at the model's `z_pred_map = 0.2267`
+In that historical example, at the model's `z_pred_map = 0.2267`
 only 2/11 lines match, but at the true `z = 0.2036` the same spectrum matches
 **8/11 (`consistent`)** — and the strongest peak (7900.8 Å) read as Hα gives
 exactly that z. This selected example illustrates the heuristic; it does not establish
 discrimination against incorrect redshifts. Incorrect candidates can also receive
-`consistent`. Matcher controls and acceptance are pending in 5B.
+`consistent`. Development controls in 5B-2 failed the frozen gate; the current
+tool has retired that verdict. Real LLM acceptance remains pending in 5C.
 
 ## The agent (Claude API)
 
-`copilot/agent.py` drives Claude through the SDK tool runner: predict →
-verify against lines → if `z_confidence < 0.3` or the match is weak, derive
-alternative hypotheses from the strongest peaks and compare their
-match_fractions before concluding; `find_similar_spectra` adds a
-neighbor comparison from the same supervised encoder. (The four Opus reference
+`copilot/agent.py` obtains the official prediction before the SDK tool runner.
+Claude selects tools and registered observations; the executor renders a protected
+explanatory report. Concentration is not calibrated accuracy, and neighbors from
+the same supervised encoder are not independent evidence. The four Opus reference
 transcripts below predate `find_similar_spectra` and `lookup_reference` and
 call only `predict_redshift` + `identify_spectral_lines`; the three
 `*_rag.json` transcripts in the same folder, run with `claude-haiku-4-5`,
-reflect the current 5-tool set and exercise both newer tools.)
+exercise the historical five-tool set and predate the protected explanatory policy.
+
+The paid budget is **zero by default**. An API key alone does not authorize a
+request: the CLI returns an incomplete result and exit code 2. The examples below
+require separate approval of model, rates and limits before use; they were not
+executed in 5B-2 or 5B-2.1. The maximum is eight SDK turns and six analysis tools,
+but the byte-based input reservation can stop earlier. Feasibility and options
+are recorded in [BATCH_5.md](docs/BATCH_5.md) for Julian's decision before 5C.
 
 ```bash
-# Set ANTHROPIC_API_KEY securely in your environment; never commit it.
-python -m copilot.agent eval/inputs-v2/spectrum_0001.npz
+# Only after separate authorization; keep ANTHROPIC_API_KEY out of files and logs.
+python -m copilot.agent eval/inputs-v2/spectrum_0001.npz \
+    --model claude-haiku-4-5-20251001 --budget-usd 0.10
 python -m copilot.agent eval/inputs-v2/spectrum_0004.npz \
-    --model claude-haiku-4-5 --save-transcript eval/runs/new-trap.json
+    --model claude-haiku-4-5-20251001 --budget-usd 0.10 \
+    --save-transcript eval/runs/new-trap.json
 ```
 
 Historically documented cost per analysis in this report mode, with the original 3-tool set
 (`predict_redshift`, `identify_spectral_lines`, `reconstruct_spectrum`; token
-usage is printed to stderr after each run): **`claude-opus-4-8`** (default) ≈
+usage was printed to stderr after each run): **`claude-opus-4-8`** (historical default) ≈
 **$0.09–0.13**; **`claude-haiku-4-5`** ≈ **$0.013** — cheap enough to iterate
 with, and it completes the full verify-then-refine loop too. With the five-tool set, a historical
 Haiku report run cost ≈ $0.023 (as printed to stderr in the `*_rag.json`
@@ -320,13 +335,18 @@ targets — `lookup_reference("Halpha OII confusion")` — retrieves the
 single-line degeneracy note plus the `Halpha_6563` / `OII_3727` catalog
 entries (pinned by a unit test).
 
-**Verified on 3 real Haiku runs (~$0.07 total):** in every analysis the agent
+**Historical ID checks on 3 real Haiku runs (~$0.07 total):** in every analysis the agent
 consulted `lookup_reference` unprompted when the redshift was ambiguous, and
 **all 6 citations across the 3 reports matched documents actually returned in
 that conversation** — zero invented references (checked against
 `rag.valid_ids()` and the transcripts in `eval/transcripts/*_rag.json`).
-The low-confidence outlier report, verbatim (`claude-haiku-4-5`, $0.023 as printed to stderr in that run —
-note how both citations do real work as priors):
+This did not evaluate textual support or scientific accuracy. Those dimensions
+require the independent review prepared for 5C.
+
+**Historical transcript**, verbatim, from the low-confidence outlier
+(`claude-haiku-4-5`, $0.023 as printed to stderr in that run). Its weak/consistent
+verdicts and free-form conclusions predate the current descriptive tool and
+protected policy; they are preserved as evidence, not current recommendations:
 
 > ## Observation report
 >
@@ -414,8 +434,9 @@ the MCP tools and the client's own reasoning):
    `z = 0.204` → **consistent** (8/11 lines, match_fraction 0.73, deltas
    < 2 Å).
 
-Same detect-and-refine story as the agent's, reproduced by an off-the-shelf
-MCP client: the tool descriptions alone are enough to steer the loop.
+That historical detect-and-refine sequence used the retired matcher verdict.
+Current MCP tools return descriptive evidence; this session is not validation
+of the present policy or authority to replace the official model prediction.
 (`find_similar_spectra` was added after that session; called through the same
 MCP layer on the same spectrum it returns the neighbor cluster shown in the
 semantic-search section — z ∈ [0.187, 0.202] around the true 0.204.)
@@ -436,7 +457,11 @@ their [CC BY 4.0 attribution, EDR citation and modification notices](ATTRIBUTION
 
 Batch 2 contracts, opaque agent inputs, executable limits and local wheel installation: [BATCH_2.md](docs/BATCH_2.md). Historical examples and transcripts retain their original labels and protocols; the runner strips label-bearing metadata and paths before any LLM request.
 
-Current consolidation: [batch 5A](docs/BATCH_5.md). v2.1 remains the default. Model-z protection and the explanatory policy are pending in 5B; current code still permits experimental agent replacements. Archived 0.2.0 wheels certify batch 2, not current source.
+Current consolidation: [5B-2.1](docs/BATCH_5.md). v2.1 remains the default.
+Executor-owned model_z and explanatory states are protected in current source;
+alternatives cannot replace that prediction. Real acceptance and the final
+installed identity remain pending in 5C. Archived 0.2.0 wheels certify batch 2,
+not current source.
 
 ### MCP error contract (5A correction)
 
