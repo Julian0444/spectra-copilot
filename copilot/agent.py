@@ -362,7 +362,7 @@ def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None, pr
     report.update(tokens_in=usage['input_tokens'], tokens_out=usage['output_tokens'],
                   usage=usage, input_provenance=provenance, history=history,
                   history_is_unvalidated=True,
-                  execution_budget=state.budget.snapshot() if state and getattr(state,'budget',None) else None)
+                  execution_budget=budget.snapshot() if budget is not None else None)
     return report
 
 
