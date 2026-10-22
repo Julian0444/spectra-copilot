@@ -1,4 +1,4 @@
-"""Offline request-size probes on all frozen development cases, never acceptance.
+"""HISTORICAL 5B-2.1 / Haiku 4.5 replay, never acceptance.
 
 Real SDK/tool results, scripted responses, mandatory MockTransport and blocked
 sockets. Counterfactual conversations serialize 3..8 turns even beyond the
@@ -26,15 +26,18 @@ import torch
 
 from copilot import agent, rag, tools
 from copilot.acceptance_io import sha256,write_json
-from copilot.budget import Budget,Limits,BudgetStop,PINNED_MODEL,request_bound
+from copilot.budget import Budget,Limits,BudgetStop,HISTORICAL_MODEL,request_bound
 from desi_fm.inputs import SpectrumInputError
 from batch5b_development import read_development,materialize
 
 PROFILES=('full_reserved_bound','illustrative_2_bytes_per_token','illustrative_4_bytes_per_token')
+PINNED_MODEL=HISTORICAL_MODEL
+HISTORICAL_LIMITS=Limits(input_tokens=64000,output_tokens=4096,max_output_per_call=512)
 
 
 def replay(requests,profile):
-    ledger=Budget(limits=Limits(usd=.1));ledger.begin();admitted=0;reason=None
+    from dataclasses import replace
+    ledger=Budget(model=HISTORICAL_MODEL,limits=replace(HISTORICAL_LIMITS,usd=.1));ledger.begin();admitted=0;reason=None
     for row in requests:
         try:ticket=ledger.reserve(row['input_bound'],512)
         except BudgetStop as exc:reason=exc.code;break
@@ -160,7 +163,7 @@ def main():
         'real_measured':sum(r['kind']=='real' and r['status']=='measured' for r in rows),
         'synthetic_measured':sum(r['kind']=='synthetic' and r['status']=='measured' for r in rows),
         'by_turns':aggregate(rows),'network_attempts':0,'remote_calls':0,'real_paid_usd':0,
-        'production_limits_unchanged':vars(Limits()),'model':PINNED_MODEL,
+        'historical_limits':vars(HISTORICAL_LIMITS),'model':PINNED_MODEL,
         'cost_maximum_from_registered_rates':{'per_case':(64000+4096*5)/1e6,'all_128':128*(64000+4096*5)/1e6},
         'identity':{'head':subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip(),
                     'harness_sha256':sha256(__file__),'development_sha256':sha256(args.development),'corpus_revision':rag.corpus_revision()},

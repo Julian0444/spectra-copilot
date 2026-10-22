@@ -14,7 +14,7 @@ from test_explanatory_policy import PREDICTION
 
 
 def body():
-    return {'model':PINNED_MODEL,'max_tokens':512,'messages':[{'role':'user','content':'Describe evidence'}]}
+    return {'model':PINNED_MODEL,'max_tokens':512,'messages':[{'role':'user','content':'Describe evidence'}], **agent.request_kwargs(PINNED_MODEL)}
 
 
 def test_zero_budget_stops_before_client_construction(monkeypatch,tmp_path):
@@ -27,7 +27,7 @@ def test_zero_budget_stops_before_client_construction(monkeypatch,tmp_path):
     assert r['execution_budget']['calls']==0 and r['execution_budget']['usd']==0
 
 
-@pytest.mark.parametrize('limits,code',[(Limits(usd=.001),'usd_budget_exhausted'),
+@pytest.mark.parametrize('limits,code',[(Limits(usd=.0001),'usd_budget_exhausted'),
     (Limits(usd=1,input_tokens=1),'input_budget_exhausted'),
     (Limits(usd=1,output_tokens=1),'output_budget_exhausted'),
     (Limits(usd=1,calls=0),'call_budget_exhausted'),
@@ -49,13 +49,13 @@ def test_post_boundary_stops_before_third_call_and_aggregate_limit():
     client=anthropic.Anthropic(api_key='unused-fixture',max_retries=0,http_client=httpx.Client(transport=httpx.MockTransport(reply)))
     # Pad the request so actual simulated usage lies within its byte bound.
     payload=body();payload['messages'][0]['content']='x'*2000
-    parent=Budget(limits=Limits(usd=.018,calls=100,input_tokens=100000))
+    parent=Budget(limits=Limits(usd=.0018,calls=100,input_tokens=100000))
     for _ in range(2):
         child=Budget(limits=Limits(usd=.10),parent=parent)
         with guard_sdk(client,child):client.beta.messages.create(**payload)
     child=Budget(limits=Limits(usd=.10),parent=parent)
     with guard_sdk(client,child),pytest.raises(BudgetStop,match='usd_budget'):client.beta.messages.create(**payload)
-    assert len(requests)==2 and parent.snapshot()['usd']==pytest.approx(.0101)
+    assert len(requests)==2 and parent.snapshot()['usd']==pytest.approx(.00101)
     assert parent.spent+parent.reserved_usd<=parent.cap and child.calls==0
 
 
@@ -69,7 +69,7 @@ def test_unknown_or_unbudgeted_usage_locks_case_and_parent(usage):
     with pytest.raises(BudgetStop,match='uncertified'):child.settle(ticket,usage)
     assert child.snapshot()['usd'] is None and parent.snapshot()['usd'] is None
     with pytest.raises(BudgetStop,match='uncertified'):Budget(limits=Limits(usd=.1),parent=parent).reserve(1,1)
-    assert child.reserved_usd==7560
+    assert child.reserved_usd==756000  # nanodollars, not rounded microdollars
 
 
 def test_http_error_never_retries_and_reservation_stays_unknown():

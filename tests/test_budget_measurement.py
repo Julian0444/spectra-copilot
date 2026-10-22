@@ -1,4 +1,4 @@
-"""The feasibility replay must use the unchanged production reservation limits."""
+"""The historical 5B-2.1 replay retains its original Haiku 4.5 limits."""
 import importlib.util
 from pathlib import Path
 
@@ -19,7 +19,7 @@ def test_full_bound_replay_stops_before_fourth_request(monkeypatch):
     assert result['simulated_ledger']['input_tokens']==60000
     assert result['simulated_ledger']['output_tokens']==1536
     assert result['simulated_ledger']['usd']<=.1
-    assert vars(Limits())==dict(input_tokens=64000,output_tokens=4096,calls=8,max_output_per_call=512,usd=0.,retries=0,seconds=120.)
+    assert vars(module.HISTORICAL_LIMITS)==dict(input_tokens=64000,output_tokens=4096,calls=8,max_output_per_call=512,usd=0.,retries=0,seconds=120.)
 
 
 def test_estimated_usage_is_separate_and_does_not_lower_the_pre_request_bound(monkeypatch):

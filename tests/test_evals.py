@@ -40,7 +40,7 @@ def _install_fake_runner(monkeypatch, submit_args=None, captured=None, callback=
             offered={t.name:t for t in self.kwargs['tools']}
             if callback: callback(self.kwargs,offered)
             if submit_args is not None: offered['submit_report'].call(submit_args)
-            body={k:v for k,v in self.kwargs.items() if k in {'model','max_tokens','system','messages'}}
+            body={k:v for k,v in self.kwargs.items() if k in {'model','max_tokens','system','messages','thinking','output_config'}}
             body['tools']=[t.to_dict() for t in self.kwargs['tools']]
             yield fake.beta.messages._post('/v1/messages',body=body)
             yield fake.beta.messages._post('/v1/messages',body=body)

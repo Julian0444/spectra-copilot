@@ -53,7 +53,7 @@ def test_invalid_then_valid_real_worker_keeps_certified_zero_and_continues(tmp_p
     assert ledger['cost_certified'] is True and ledger['calls']==0
     assert ledger['usd']==ledger['known_usd']==ledger['reserved_usd']==0
     assert valid['model_z']==.42 and valid['execution_budget']['calls']==1
-    assert valid['execution_budget']['known_usd']==pytest.approx(.00007)
+    assert valid['execution_budget']['known_usd']==pytest.approx(.000007)
     assert summary['automatic_retries']==0 and summary['cost']['certified'] is True
     assert sum('mock_post' in event for event in calls)==1
 

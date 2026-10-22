@@ -1,6 +1,6 @@
 """Pre-request reservations for a bounded text-only Anthropic run.
 
-No paid request is enabled by default. USD accounting uses integer microdollars.
+No paid request is enabled by default. USD accounting uses integer nanodollars.
 The conservative UTF-8 bound is a declared transport assumption, not a provider
 billing guarantee. Unknown/over-bound usage locks the ledger as uncertified.
 """
@@ -11,8 +11,32 @@ import json
 import math
 import time
 
-PINNED_MODEL = 'claude-haiku-4-5-20251001'
-RATES = {PINNED_MODEL:(1,5), 'claude-haiku-4-5':(1,5), 'claude-opus-4-8':(5,25)}
+PINNED_MODEL = 'claude-haiku-5-5'
+HISTORICAL_MODEL = 'claude-haiku-4-5-20251001'
+NANODOLLARS_PER_USD = 1_000_000_000
+# Integer nanodollars per token; official prices checked 2026-10-22.
+RATES = {PINNED_MODEL:(100,500), HISTORICAL_MODEL:(1000,5000),
+         'claude-haiku-4-5':(1000,5000), 'claude-opus-4-8':(5000,25000)}
+LONG_PROMPT_RATES = {PINNED_MODEL:(500,2500)}
+PROMPT_TIER_LIMIT = 100000
+FRAMING_ALLOWANCE = 4096
+CASE_CEILING_USD = .10
+TOTAL_CEILING_USD = 12.80
+CASE_COUNT = 128
+ANALYSIS_CALLS = 6
+
+
+def request_configuration():
+    """A priori configuration, not calibrated on real Haiku responses."""
+    return {'thinking':{'type':'adaptive'}, 'output_config':{'effort':'low'}}
+
+
+def nanodollars(usd):
+    """Convert an external decimal USD amount exactly, never round a reservation."""
+    amount = Decimal(str(usd)) * NANODOLLARS_PER_USD
+    if not amount.is_finite() or amount < 0 or amount != amount.to_integral_value():
+        raise ValueError('USD must be nonnegative and exact to nanodollars')
+    return int(amount)
 
 
 class BudgetStop(RuntimeError):
@@ -21,13 +45,18 @@ class BudgetStop(RuntimeError):
 
 @dataclass(frozen=True)
 class Limits:
-    input_tokens:int=64000
-    output_tokens:int=4096
+    input_tokens:int=800000
+    output_tokens:int=32768
     calls:int=8
-    max_output_per_call:int=512
+    max_output_per_call:int=4096
     usd:float=0.
     retries:int=0
     seconds:float=120.
+
+
+CASE_MAX_NANODOLLARS = (Limits().input_tokens * RATES[PINNED_MODEL][0]
+                        + Limits().output_tokens * RATES[PINNED_MODEL][1])
+CASE_MAX_USD = CASE_MAX_NANODOLLARS / NANODOLLARS_PER_USD
 
 
 class Budget:
@@ -39,7 +68,7 @@ class Budget:
                 ('input_tokens','output_tokens','calls','max_output_per_call','retries')) or self.limits.retries!=0
                 or not math.isfinite(self.limits.usd) or self.limits.usd<0 or not math.isfinite(self.limits.seconds) or self.limits.seconds<=0):
             raise ValueError('Invalid limits; automatic retries must be zero')
-        self.cap=int(Decimal(str(self.limits.usd))*1000000)
+        self.cap=nanodollars(self.limits.usd)
         self.used_in=self.used_out=self.calls=self.spent=0
         self.reserved_in=self.reserved_out=self.reserved_usd=0
         self.certified=True;self.events=[];self.on_change=None;self.started=time.monotonic();self.used=False
@@ -69,21 +98,22 @@ class Budget:
 
     def reserve(self,n_in,n_out):
         if type(n_in) is not int or type(n_out) is not int or min(n_in,n_out)<0:raise ValueError('Invalid reservation')
+        if self.model==PINNED_MODEL and n_in>PROMPT_TIER_LIMIT:raise BudgetStop('prompt_tier_exceeded')
         if n_out>self.limits.max_output_per_call:raise BudgetStop('per_call_output_exceeded')
         cost=n_in*RATES[self.model][0]+n_out*RATES[self.model][1]
         self._check(n_in,n_out,cost)
-        ticket={'input_bound':n_in,'output_bound':n_out,'microdollars':cost,'status':'reserved'}
+        ticket={'input_bound':n_in,'output_bound':n_out,'nanodollars':cost,'status':'reserved'}
         self._reserve(ticket);self.events.append(ticket)
         try:
             if self.on_change:self.on_change(self.snapshot())
         except BaseException:
             self._settle(ticket,0,0,0)
-            ticket.update(status='not_sent',input_tokens=0,output_tokens=0,actual_microdollars=0)
+            ticket.update(status='not_sent',input_tokens=0,output_tokens=0,actual_nanodollars=0)
             raise
         return ticket
 
     def _reserve(self,ticket):
-        self.calls+=1;self.reserved_in+=ticket['input_bound'];self.reserved_out+=ticket['output_bound'];self.reserved_usd+=ticket['microdollars']
+        self.calls+=1;self.reserved_in+=ticket['input_bound'];self.reserved_out+=ticket['output_bound'];self.reserved_usd+=ticket['nanodollars']
         if self.parent:self.parent._reserve(ticket)
 
     def settle(self,ticket,usage):
@@ -94,7 +124,8 @@ class Budget:
             n_in,n_out=values['input_tokens'],values['output_tokens']
             if type(n_in) is not int or type(n_out) is not int or min(n_in,n_out)<0:
                 raise ValueError('Unknown usage')
-            # This proposal sends no cache controls, server tools or thinking.
+            # Thinking is billed inside output_tokens/max_tokens, even when hidden.
+            # No cache controls or server tools are sent.
             if any(values[k] not in (None,0) for k in ('cache_creation_input_tokens','cache_read_input_tokens')):
                 raise ValueError('Unexpected billing category')
             if n_in>ticket['input_bound'] or n_out>ticket['output_bound']:
@@ -103,11 +134,11 @@ class Budget:
             self.uncertain(ticket);raise BudgetStop('usage_uncertified') from None
         cost=n_in*RATES[self.model][0]+n_out*RATES[self.model][1]
         self._settle(ticket,n_in,n_out,cost)
-        ticket.update(status='settled',input_tokens=n_in,output_tokens=n_out,actual_microdollars=cost)
+        ticket.update(status='settled',input_tokens=n_in,output_tokens=n_out,actual_nanodollars=cost)
         if self.on_change:self.on_change(self.snapshot())
 
     def _settle(self,ticket,n_in,n_out,cost):
-        self.reserved_in-=ticket['input_bound'];self.reserved_out-=ticket['output_bound'];self.reserved_usd-=ticket['microdollars']
+        self.reserved_in-=ticket['input_bound'];self.reserved_out-=ticket['output_bound'];self.reserved_usd-=ticket['nanodollars']
         self.used_in+=n_in;self.used_out+=n_out;self.spent+=cost
         if self.parent:self.parent._settle(ticket,n_in,n_out,cost)
 
@@ -119,9 +150,10 @@ class Budget:
 
     def snapshot(self):
         return {'model':self.model,'calls':self.calls,'retries':0,'input_tokens':self.used_in,'output_tokens':self.used_out,
-                'usd':self.spent/1e6 if self.certified else None,'known_usd':self.spent/1e6,
-                'reserved_usd':self.reserved_usd/1e6,'cost_certified':self.certified,
-                'cap_usd':self.cap/1e6,'events':self.events.copy(),
+                'usd':self.spent/NANODOLLARS_PER_USD if self.certified else None,'known_usd':self.spent/NANODOLLARS_PER_USD,
+                'reserved_usd':self.reserved_usd/NANODOLLARS_PER_USD,'cost_certified':self.certified,
+                'known_nanodollars':self.spent,'reserved_nanodollars':self.reserved_usd,'cap_nanodollars':self.cap,
+                'cap_usd':self.cap/NANODOLLARS_PER_USD,'events':self.events.copy(),
                 'input_bound_policy':'UTF-8 request JSON bytes + 4096 framing/tool allowance; text-only; over-bound usage invalidates certification'}
 
 
@@ -140,7 +172,20 @@ def _clean(value):
 def request_bound(body,model):
     body=_clean(body)
     if body.get('model')!=model:raise BudgetStop('model_budget_mismatch')
-    if body.get('stream') or any(k in body for k in ('thinking','cache_control','mcp_servers','context_management','output_config')):
+    forbidden=('stream','cache_control','mcp_servers','context_management','fallbacks',
+               'fallback_credit_token','temperature','top_p','top_k','speed','inference_geo')
+    if any(k in body for k in forbidden):
+        raise BudgetStop('unbudgeted_request_feature')
+    if model==PINNED_MODEL:
+        if any(body.get(k)!=v for k,v in request_configuration().items()):
+            raise BudgetStop('unbudgeted_request_feature')
+        if set(body)-{'model','max_tokens','system','messages','tools','thinking','output_config','tool_choice'}:
+            raise BudgetStop('unbudgeted_request_feature')
+        if 'tool_choice' in body and body['tool_choice']!={'type':'auto'}:
+            raise BudgetStop('unbudgeted_request_feature')
+        if not body.get('messages') or body['messages'][-1].get('role')!='user':
+            raise BudgetStop('assistant_prefill_forbidden')
+    elif any(k in body for k in ('thinking','output_config')):
         raise BudgetStop('unbudgeted_request_feature')
     def validate(node):
         if isinstance(node,dict):
@@ -154,7 +199,8 @@ def request_bound(body,model):
     if any('type' in t and t['type']!='custom' for t in body.get('tools',[])):
         raise BudgetStop('server_tool_forbidden')
     # 4096 includes the published 496-token Haiku tool prompt plus framing margin.
-    n_in=len(json.dumps(body,ensure_ascii=False,allow_nan=False,separators=(',',':')).encode())+4096
+    n_in=len(json.dumps(body,ensure_ascii=False,allow_nan=False,separators=(',',':')).encode())+FRAMING_ALLOWANCE
+    if model==PINNED_MODEL and n_in>PROMPT_TIER_LIMIT:raise BudgetStop('prompt_tier_exceeded')
     n_out=body.get('max_tokens')
     if type(n_out) is not int or n_out<1:raise BudgetStop('missing_output_limit')
     return n_in,n_out

@@ -29,7 +29,8 @@ import anthropic
 from anthropic import beta_tool
 
 from copilot import rag, tools, explanation
-from copilot.budget import Budget, Limits, BudgetStop, PINNED_MODEL, new_budget, guard_sdk
+from copilot.budget import (Budget, Limits, BudgetStop, PINNED_MODEL, new_budget, guard_sdk,
+                            RATES, LONG_PROMPT_RATES, PROMPT_TIER_LIMIT, request_configuration)
 from copy import deepcopy
 import inspect
 from copilot.report import SYSTEM, system_prompt
@@ -40,11 +41,8 @@ DEFAULT_MODEL = PINNED_MODEL
 
 # USD per million tokens (input, output). Cache writes bill at 1.25x input,
 # cache reads at 0.1x.
-PRICES = {
-    PINNED_MODEL: (1.0, 5.0),
-    "claude-opus-4-8": (5.0, 25.0),
-    "claude-haiku-4-5": (1.0, 5.0),
-}
+PRICES = {model:tuple(rate/1000 for rate in rates) for model,rates in RATES.items()}
+LONG_PROMPT_PRICES = {model:tuple(rate/1000 for rate in rates) for model,rates in LONG_PROMPT_RATES.items()}
 
 USAGE_KEYS = (
     "input_tokens",
@@ -313,23 +311,32 @@ def execute_run(path, model, structured, state=None, budget=None, progress=None)
 
 
 def request_kwargs(model: str) -> dict:
-    """Per-model extras: adaptive thinking where supported (not on Haiku 4.5)."""
+    """Explicit 5B-2.2 settings; retain legacy behavior for historical models."""
+    if model == PINNED_MODEL:
+        return request_configuration()
     if model.startswith("claude-haiku"):
         return {}
     return {"thinking": {"type": "adaptive"}}
 
 
 def estimate_cost_usd(model: str, usage: dict) -> float | None:
-    """Approximate USD cost of the accumulated usage; None for unknown models."""
+    """Per-request estimate; the execution ledger is authoritative across turns.
+
+    For legacy single-tier records accumulated usage is also valid. A Haiku 5.5
+    aggregate without request boundaries uses the high tier conservatively.
+    """
+    from decimal import Decimal
     if model not in PRICES:
         return None
-    rate_in, rate_out = PRICES[model]
-    return (
+    prompt_tokens=sum(usage.get(k,0) for k in ('input_tokens','cache_creation_input_tokens','cache_read_input_tokens'))
+    rates=LONG_PROMPT_PRICES[model] if model in LONG_PROMPT_PRICES and prompt_tokens>PROMPT_TIER_LIMIT else PRICES[model]
+    rate_in, rate_out = map(lambda n:Decimal(str(n)),rates)
+    return float((
         usage.get("input_tokens", 0) * rate_in
-        + usage.get("cache_creation_input_tokens", 0) * rate_in * 1.25
-        + usage.get("cache_read_input_tokens", 0) * rate_in * 0.1
+        + usage.get("cache_creation_input_tokens", 0) * rate_in * Decimal('1.25')
+        + usage.get("cache_read_input_tokens", 0) * rate_in * Decimal('0.1')
         + usage.get("output_tokens", 0) * rate_out
-    ) / 1e6
+    ) / Decimal(1000000))
 
 
 def _jsonable(obj):
