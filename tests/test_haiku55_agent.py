@@ -11,6 +11,7 @@ from copilot import agent
 from copilot.acceptance_io import sanitize
 from copilot.budget import Budget, BudgetStop, Limits, guard_sdk
 from test_evals import _source
+from test_evals import _install_fake_runner
 from test_explanatory_policy import PREDICTION, setup_run
 from test_haiku55_budget import request
 
@@ -83,3 +84,22 @@ def test_modified_conversation_rejected_before_post(mutation):
         with pytest.raises(BudgetStop,match='conversation_changed'):
             client.beta.messages._post('/v1/messages',body=body)
     assert len(sent)==1
+
+
+def test_caller_budget_cannot_expand_authorized_turn_or_output_limits(monkeypatch,tmp_path):
+    captured={}
+    _install_fake_runner(monkeypatch,submit_args={'observation_ids':['obs-1']},captured=captured)
+    result=agent.run_structured(str(_source(tmp_path)),budget=Budget(limits=Limits(usd=.1,calls=20,max_output_per_call=8192)))
+    assert result['status']=='complete'
+    assert captured['max_iterations']==8 and captured['max_tokens']==4096
+
+
+def test_custom_budget_cannot_extend_the_case_post_deadline(monkeypatch):
+    budget=Budget(limits=Limits(usd=.1,seconds=999))
+    sent=[]
+    client=SimpleNamespace(max_retries=0,beta=SimpleNamespace(messages=SimpleNamespace(
+        _post=lambda *a,**k:sent.append(True) or SimpleNamespace(usage={'input_tokens':1,'output_tokens':1}))))
+    monkeypatch.setattr('copilot.budget.time.monotonic',lambda:budget.started+121)
+    with guard_sdk(client,budget),pytest.raises(BudgetStop,match='case_timeout'):
+        client.beta.messages._post('/v1/messages',body=request())
+    assert sent==[] and budget.calls==0
