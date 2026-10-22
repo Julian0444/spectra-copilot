@@ -24,7 +24,7 @@ def test_readme_separates_current_policy_budget_and_historical_id_checks():
                      'Matcher controls and acceptance are pending in 5B',
                      'Mini-RAG with verified citations','6/6 backed'):
         assert obsolete not in text
-    assert '--budget-usd 0.10' in text and '--model claude-haiku-4-5-20251001' in text
+    assert '--budget-usd 0.10' in text and '--model claude-haiku-5-5' in text
     assert 'zero by default' in text and '6/6 ID' in text
     assert 'Historical transcript' in text and 'textual support' in text
 

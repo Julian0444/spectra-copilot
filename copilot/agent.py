@@ -282,11 +282,11 @@ def execute_run(path, model, structured, state=None, budget=None, progress=None)
         budget.on_change = lambda snapshot: progress(state.finish(), snapshot)
         progress(state.finish(), budget.snapshot())
     budget.begin()
-    client = anthropic.Anthropic(max_retries=0, timeout=budget.limits.seconds)
+    client = anthropic.Anthropic(max_retries=0, timeout=min(Limits().seconds,budget.limits.seconds))
     with guard_sdk(client, budget):
         runner = client.beta.messages.tool_runner(
-            model=model, max_tokens=budget.limits.max_output_per_call,
-            max_iterations=budget.limits.calls,
+            model=model, max_tokens=min(Limits().max_output_per_call,budget.limits.max_output_per_call),
+            max_iterations=min(Limits().calls,budget.limits.calls),
             system=system_prompt(state.prediction["model_identity"]) + STRUCTURED_RULE,
             tools=state.tools,
             messages=[{"role": "user", "content": f"Analyze the spectrum in {path} and " +
@@ -373,7 +373,7 @@ def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None, pr
             state = RunTools(path, True)
             state, final, usage, history = execute_run(path, model, True, state=state, budget=budget, progress=progress)
         report = state.finish(status=state.terminal_status or 'explanation_incomplete')
-        report['completion_code'] = state.terminal_status or ('iteration_limit' if len([m for m in history if m['role']=='assistant']) >= budget.limits.calls
+        report['completion_code'] = state.terminal_status or ('iteration_limit' if len([m for m in history if m['role']=='assistant']) >= min(Limits().calls,budget.limits.calls)
                                      and state.result is None else 'invalid_or_missing_report' if report['status']=='explanation_incomplete' else None)
     except BudgetStop as exc:
         report = state.finish(status='explanation_incomplete') if state else explanation.result(status='explanation_incomplete')

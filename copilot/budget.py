@@ -217,6 +217,8 @@ def guard_sdk(client,budget):
     def guarded(path,*args,**kwargs):
         nonlocal previous
         if path.split('?')[0]!='/v1/messages':raise BudgetStop('unbudgeted_endpoint')
+        remaining=min(budget.remaining_seconds(),Limits().seconds-(time.monotonic()-budget.started))
+        if remaining<=0:raise BudgetStop('case_timeout')
         n_in,n_out=request_bound(kwargs['body'],budget.model)
         if budget.model==PINNED_MODEL:
             current=_clean(kwargs['body'])
@@ -226,7 +228,7 @@ def guard_sdk(client,budget):
             previous=deepcopy(current)
         ticket=budget.reserve(n_in,n_out)
         options=dict(kwargs.get('options') or {})
-        options['timeout']=max(.001,budget.remaining_seconds())
+        options['timeout']=max(.001,min(remaining,budget.remaining_seconds()))
         kwargs['options']=options
         try:
             message=original(path,*args,**kwargs)
