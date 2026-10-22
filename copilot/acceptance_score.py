@@ -61,7 +61,7 @@ def mechanical(report):
         selected=[e['observation_id'] for e in report.get('explanation',[])]
         expected=explanation.result(predictions[0] if predictions else None,observations,selected,status=report['status'],
             violations=report.get('policy_violations',[]),reference_ids=[c['id'] for c in citations])
-        faithful=bool(selected) and all(report.get(k)==expected[k] for k in ('explanation','alternatives','citations'))
+        faithful=bool(selected) and all(report.get(k)==expected[k] for k in ('status','explanation','alternatives','citations'))
         for alternative in report.get('alternatives',[]):
             value=alternative['lambda_observed']/alternative['lambda_rest']-1
             arithmetic &= value>=0 and math.isfinite(value) and math.isclose(alternative['z'],value,abs_tol=1e-6,rel_tol=1e-6)
