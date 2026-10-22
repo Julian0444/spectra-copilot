@@ -907,3 +907,40 @@ US$0,08448/caso y US$10,81344 total. No se ha elegido ni implementado una opció
 v2.1 sigue por defecto; CNN no desplegada. Sin llamadas pagas, descargas,
 entrenamiento científico, test 4B nuevo, aceptación, publicación, despliegue,
 push ni merge. La sesión se detiene aquí, sin iniciar 5C.
+
+
+## 5B-2.2 — cierre de implementación y capacidad de entrada, 2026-10-22
+
+5B-2.1 queda cerrado; **5C no iniciada**. Rama nueva `codex/lote-5b-2-2`
+en ambos originales. Modelo fijo `claude-haiku-5-5`, configuración explícita
+thinking adaptive / effort low y presupuesto en nanodólares implementados.
+O-5B21-01 corregido. La adenda autorizada conserva byte a byte el protocolo previo:
+800.000 entrada acumulada, 32.768 salida, 4.096 por llamada; los techos
+US$0,10/caso y US$12,80 total, 8 turnos, 6 tools, 1 intento, 0 retries y 120 s
+no cambian, ni selección/rúbrica/umbrales.
+
+Capacidad medida sobre 48 reales + 48 sintéticos de desarrollo: seis inválidos,
+90 válidos, 540 recorridos y **2.970 llamadas al conteo gratuito**, cero reintentos,
+**US$0**. Cota cubre conteo + margen en 100%; máximo contado 27.165, cota máxima
+65.863, ambos bajo 100.000. Caben 90/90 recorridos de cada largo 3–8 con reservas
+completas. Máximo teórico US$0,096384/caso y US$12,337152/128.
+
+**Comportamiento real de Haiku 5.5 NO validado:** solo entrada contada y respuestas
+simuladas; no hubo generación. Esto no demuestra calidad, finalización ni tiempo.
+**Piloto pago de desarrollo pendiente de decisión de Julian, no ejecutado.**
+
+317 pruebas Copilot en 3.12; 189 FM en 3.9 y 189 en 3.12, aprobadas con red
+bloqueada. Siete mutaciones detectadas con baseline verde. 1.174 archivos
+históricos y CSV preservados; aceptación solo hash/custodia. Candidata nueva
+`738649a1dc416f5f228564971f90b05ee50d3118858d094f086becf03320b471`, verificada contra código y ambos protocolos;
+las anteriores se conservan. No es identidad final instalada de 5C ni revisión
+independiente. SDK 0.120.2 y entorno sin cambios.
+
+[Informe, fuentes, regresiones e incidencias](evidence/batch5b22.md),
+[conteo agregado](evidence/batch5b22-tokens.json),
+[candidata](evidence/batch5b22-candidate.json) y
+[diff por componente](evidence/batch5b22-candidate-differences.json).
+Handoff y comprobador final en `/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-2-20261022-recvy0zo`.
+Respaldo independiente, rotación de claves y H-18 mantienen sus estados.
+Sigue verificación independiente de 5B-2.2, decisión sobre piloto pago y luego
+autorización de gasto de 5C. Sin push, merge ni publicación.

@@ -1,0 +1,149 @@
+{
+  "previous_file_sha256": "6fd41be3cfd00c2e60aebcead5339ad616984bb4ef4093f3dd46d53cf68cfcdc",
+  "candidate_file_sha256": "738649a1dc416f5f228564971f90b05ee50d3118858d094f086becf03320b471",
+  "previous_behavior_sha256": "adb740ecd37305aa68af8bc58080b8529876514522754c488888dc7738adee4f",
+  "candidate_behavior_sha256": "136a1b1228f0635c207546d29710bc752f6a1c8aa6b2cdb62e44901ccc13326f",
+  "changes": [
+    {
+      "component": "auxiliary_code_sha256.legacy_evaluator",
+      "previous": "47a08ac32ae54baf84ff6eb20eddbf5a46a113011c67c4718097890a09f472fc",
+      "candidate": "168ead008fe52bbea3b18fdc5bc0716f430bbe555ac3d788ff69bf519a1eec23"
+    },
+    {
+      "component": "code_sha256.copilot/acceptance.py",
+      "previous": "dd2c72719055536dbe79e6f429d41eb62147dfc6b31d75a907fa306ac775296e",
+      "candidate": "ae26440da6c44aa57ef2a1799587a367f1019b26a1aeb7492f361e2301a0678f"
+    },
+    {
+      "component": "code_sha256.copilot/acceptance_score.py",
+      "previous": "baa45f04d825761ff70b1224ffd8858313a3f6a05b1c4952a254890833b840da",
+      "candidate": "df13616e3981f0797123e34ed410c6da529aef6179d7248f8abeb5d2d4935f39"
+    },
+    {
+      "component": "code_sha256.copilot/acceptance_worker.py",
+      "previous": "57dd998c6afdc483ee16fe63c347a3629f7f893a014fcdfecfd37a1340cc400a",
+      "candidate": "7a71fc9ab13d49d75a1302ee1a69b83d7b76ee6e71374b9a58ebd41c314cd1aa"
+    },
+    {
+      "component": "code_sha256.copilot/agent.py",
+      "previous": "6d13a73b4a3874909711739785d9c37f52e0be5247df769f802078aee36c540e",
+      "candidate": "c6641e27307372962f4d24e56e2e7a8031387ec5d2abc1ad52e2608000c79a0e"
+    },
+    {
+      "component": "code_sha256.copilot/budget.py",
+      "previous": "e96341088df51cf7c948afb72501baa04dd446acff5176875f3ab515bd636595",
+      "candidate": "4f54a16209711bcc392f71d59494993efe8f47ddd87df84081fc1214cc9b22e6"
+    },
+    {
+      "component": "code_sha256.copilot/candidate_identity.py",
+      "previous": "fed056612ee2d972448cd869ba95ddf5c33f3b6cb73faf7eef9f2ea2c8add07f",
+      "candidate": "b6047950bece5d715baf6c2dcb7d63912b39f8a66e4aa4f5de95c1fba96f2927"
+    },
+    {
+      "component": "code_sha256.copilot/explanation.py",
+      "previous": "2744559d03ff31c3c9efe33e585946f983161cd7a7cd753af384397031e349db",
+      "candidate": "24a621d3fad7f59effc506cbecfce0c28bdd538e72c244e0e3decd397d02cba6"
+    },
+    {
+      "component": "llm_proposal.analysis_calls",
+      "previous": null,
+      "candidate": 6
+    },
+    {
+      "component": "llm_proposal.case_max_nanodollars",
+      "previous": null,
+      "candidate": 96384000
+    },
+    {
+      "component": "llm_proposal.internal_money_unit",
+      "previous": null,
+      "candidate": "nanodollars"
+    },
+    {
+      "component": "llm_proposal.limits.input_tokens",
+      "previous": 64000,
+      "candidate": 800000
+    },
+    {
+      "component": "llm_proposal.limits.max_output_per_call",
+      "previous": 512,
+      "candidate": 4096
+    },
+    {
+      "component": "llm_proposal.limits.output_tokens",
+      "previous": 4096,
+      "candidate": 32768
+    },
+    {
+      "component": "llm_proposal.long_prompt_rates_usd_per_million",
+      "previous": null,
+      "candidate": [
+        0.5,
+        2.5
+      ]
+    },
+    {
+      "component": "llm_proposal.model",
+      "previous": "claude-haiku-4-5-20251001",
+      "candidate": "claude-haiku-5-5"
+    },
+    {
+      "component": "llm_proposal.over_limit_policy",
+      "previous": null,
+      "candidate": "reject_before_post"
+    },
+    {
+      "component": "llm_proposal.prices_verified_on",
+      "previous": null,
+      "candidate": "2026-10-22"
+    },
+    {
+      "component": "llm_proposal.prompt_bound_limit",
+      "previous": null,
+      "candidate": 100000
+    },
+    {
+      "component": "llm_proposal.rates_usd_per_million",
+      "previous": [
+        1,
+        5
+      ],
+      "candidate": [
+        0.1,
+        0.5
+      ]
+    },
+    {
+      "component": "llm_proposal.request_configuration",
+      "previous": null,
+      "candidate": {
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "low"
+        }
+      }
+    },
+    {
+      "component": "protocol.BATCH_5B_PROTOCOL.md",
+      "previous": "7d418d12d11d2406a30f94dc64a8f91d6462a1c364ddaac48e2d14bf37b98dc3",
+      "candidate": "e44360082a0f236ff57ab2db4f5993d5c7a9ee0e5e24fb668bd28369fd421b2b"
+    },
+    {
+      "component": "runtime.anthropic_source_sha256",
+      "previous": null,
+      "candidate": {
+        "lib/tools/_beta_runner.py": "3184cf524c67857ed1e63a13e78ff126782b00dbb9f1321a2db9867805772ec7",
+        "resources/messages/messages.py": "c0b07f6f23df15b0da19ef8d4482f85315fc74b3e0f0ff6d0849b32391a15bd0"
+      }
+    },
+    {
+      "component": "source_content_sha256",
+      "previous": "c34512104620779f6097c760c381a0ebd8d79868f2b60af6149cf2626f157ff6",
+      "candidate": "135c5c82eb840f67282580643cddbd548cf86f41cd3680f816943551ef082317"
+    }
+  ],
+  "sdk_version_changed": false,
+  "note": "New SDK source fingerprints describe the unchanged installed SDK; this is not a 5C installed identity."
+}
