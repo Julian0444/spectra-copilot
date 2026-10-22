@@ -30,7 +30,8 @@ from anthropic import beta_tool
 
 from copilot import rag, tools, explanation
 from copilot.budget import (Budget, Limits, BudgetStop, PINNED_MODEL, new_budget, guard_sdk,
-                            RATES, LONG_PROMPT_RATES, PROMPT_TIER_LIMIT, request_configuration)
+                            RATES, LONG_PROMPT_RATES, PROMPT_TIER_LIMIT, request_configuration,
+                            CASE_CEILING_USD, ANALYSIS_CALLS)
 from copy import deepcopy
 import inspect
 from copilot.report import SYSTEM, system_prompt
@@ -247,7 +248,7 @@ class RunTools:
                     self.violations.append('invalid_report')
                     raise SpectrumInputError('Invalid report evidence or missing prediction') from None
                 return 'recorded'
-            if self.calls >= 6:
+            if self.calls >= ANALYSIS_CALLS:
                 self.violations.append('analysis_budget_exhausted')
                 raise SpectrumInputError("Tool budget exhausted: at most 6 analysis calls")
             self.calls += 1
@@ -285,7 +286,7 @@ def execute_run(path, model, structured, state=None, budget=None, progress=None)
     with guard_sdk(client, budget):
         runner = client.beta.messages.tool_runner(
             model=model, max_tokens=budget.limits.max_output_per_call,
-            max_iterations=8,
+            max_iterations=budget.limits.calls,
             system=system_prompt(state.prediction["model_identity"]) + STRUCTURED_RULE,
             tools=state.tools,
             messages=[{"role": "user", "content": f"Analyze the spectrum in {path} and " +
@@ -372,7 +373,7 @@ def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None, pr
             state = RunTools(path, True)
             state, final, usage, history = execute_run(path, model, True, state=state, budget=budget, progress=progress)
         report = state.finish(status=state.terminal_status or 'explanation_incomplete')
-        report['completion_code'] = state.terminal_status or ('iteration_limit' if len([m for m in history if m['role']=='assistant']) >= 8
+        report['completion_code'] = state.terminal_status or ('iteration_limit' if len([m for m in history if m['role']=='assistant']) >= budget.limits.calls
                                      and state.result is None else 'invalid_or_missing_report' if report['status']=='explanation_incomplete' else None)
     except BudgetStop as exc:
         report = state.finish(status='explanation_incomplete') if state else explanation.result(status='explanation_incomplete')
@@ -420,7 +421,7 @@ def main() -> int:
     p.add_argument("--budget-usd", type=float, default=0., help="Explicit paid ceiling; default zero. 5C requires prior authorization.")
     p.add_argument("--save-transcript", default=None, metavar="PATH")
     args = p.parse_args()
-    if not 0 <= args.budget_usd <= .10 or (args.budget_usd and args.model != PINNED_MODEL):
+    if not 0 <= args.budget_usd <= CASE_CEILING_USD or (args.budget_usd and args.model != PINNED_MODEL):
         p.error('Paid proposal requires the pinned model and USD ceiling at most 0.10')
     budget = Budget(args.model, Limits(usd=args.budget_usd)) if args.budget_usd else None
     try:

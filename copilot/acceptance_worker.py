@@ -7,7 +7,7 @@ import argparse
 from pathlib import Path
 
 from copilot import agent
-from copilot.budget import Budget,Limits,PINNED_MODEL
+from copilot.budget import Budget,Limits,PINNED_MODEL,CASE_CEILING_USD
 from copilot.acceptance_io import write_json,sanitize
 
 
@@ -19,9 +19,9 @@ def main():
     p.add_argument('--progress',type=Path,required=True)
     p.add_argument('--result',type=Path,required=True)
     p.add_argument('--budget-usd',type=float,default=0.)
-    p.add_argument('--seconds',type=float,default=120.)
+    p.add_argument('--seconds',type=float,default=Limits().seconds)
     args=p.parse_args()
-    if not 0<=args.budget_usd<=.1 or not 0<args.seconds<=120:
+    if not 0<=args.budget_usd<=CASE_CEILING_USD or not 0<args.seconds<=Limits().seconds:
         p.error('Outside frozen per-case limits')
     if args.budget_usd and (args.candidate is None or args.protocol_dir is None):
         p.error('Paid execution requires the registered installed identity and protocol')

@@ -15,12 +15,12 @@ import time
 import numpy as np
 
 from copilot import explanation
-from copilot.budget import PINNED_MODEL
+from copilot.budget import (PINNED_MODEL, Limits, CASE_MAX_USD, CASE_MAX_NANODOLLARS,
+                            TOTAL_CEILING_USD, CASE_COUNT, NANODOLLARS_PER_USD, nanodollars)
 from copilot.acceptance_io import sha256,write_json,sanitize,seal_record_path,register_seal
 
 SCHEMA='batch5c-inputs-v1'
 TERMINAL=explanation.STATES | {'timeout'}
-CASE_MAX_USD=(64000+4096*5)/1e6
 
 
 def read_input_plan(path):
@@ -28,7 +28,7 @@ def read_input_plan(path):
     if set(plan)!={'schema','mode','inputs'} or plan['schema']!=SCHEMA or plan['mode'] not in {'proposal','simulation'}:
         raise ValueError('Only the label-free input schema is allowed')
     items=plan['inputs']
-    if not items or (plan['mode']=='proposal' and len(items)!=128):raise ValueError('Frozen requested population is 128')
+    if not items or (plan['mode']=='proposal' and len(items)!=CASE_COUNT):raise ValueError('Frozen requested population is 128')
     aliases=[]
     for item in items:
         if set(item)!={'alias','input_path','input_sha256'}:raise ValueError('Input plan cannot carry labels or expected answers')
@@ -53,7 +53,7 @@ def _failed(code,progress=None,paid_ceiling=0):
     return report
 
 
-def run_worker(item,directory,usd,seconds=120.,command=None,candidate=None,protocol_dir=None):
+def run_worker(item,directory,usd,seconds=Limits().seconds,command=None,candidate=None,protocol_dir=None):
     directory=Path(directory);progress=directory/(item['alias']+'.progress.json');result=directory/(item['alias']+'.result.json')
     args=command or [sys.executable,'-m','copilot.acceptance_worker','--input',item['input_path'],
         '--progress',str(progress),'--result',str(result),'--budget-usd',str(usd),'--seconds',str(seconds)]
@@ -71,26 +71,40 @@ def run_worker(item,directory,usd,seconds=120.,command=None,candidate=None,proto
 def summarize(rows):
     times=[r['latency_seconds'] for r in rows if r['status']!='pending']
     ledgers=[r['result'].get('execution_budget') for r in rows if r.get('result') is not None]
-    certified=all(l is not None and l.get('cost_certified') is True and l.get('usd') is not None for l in ledgers)
-    known=sum((l or {}).get('known_usd',0) for l in ledgers)
+    certified=True;known_nano=0
+    for ledger in ledgers:
+        if ledger is None:
+            certified=False;continue
+        try:
+            value=nanodollars(ledger.get('known_usd',0))
+            reserved=nanodollars(ledger.get('reserved_usd',0))
+            known_nano+=value
+            certified &= (ledger.get('cost_certified') is True and ledger.get('usd') is not None
+                          and nanodollars(ledger['usd'])==value and reserved==0
+                          and ledger.get('known_nanodollars',value)==value
+                          and ledger.get('reserved_nanodollars',reserved)==reserved)
+        except (ValueError,TypeError,ArithmeticError):
+            certified=False
+    known=known_nano/NANODOLLARS_PER_USD
     return {'requested':len(rows),'status_counts':{s:sum(r['status']==s for r in rows) for s in sorted(TERMINAL|{'pending'})},
         'attempted':sum(r['attempts'] for r in rows),'attempts_per_case_max':max(r['attempts'] for r in rows),
         'llm_calls':sum((l or {}).get('calls',0) for l in ledgers),'automatic_retries':0,
-        'cost':{'certified':certified,'total_usd':known if certified else None,'known_usd':known,
+        'cost':{'certified':certified,'total_usd':known if certified else None,'known_usd':known,'known_nanodollars':known_nano,
                 'mean_per_requested':known/len(rows) if certified else None},
         'latency':{'n':len(times),'p50':float(np.quantile(times,.5)) if times else None,
                    'p95':float(np.quantile(times,.95)) if times else None,'maximum':max(times) if times else None},
         'scientific_accuracy':'pending_independent_review','labels_loaded':False}
 
 
-def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=120.,protocol_dir=None):
+def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=Limits().seconds,protocol_dir=None):
     """Persist every requested row first, then execute once and seal all outputs.
 
     `runner` is only accepted for explicit simulations. Production uses a fresh
     subprocess per case and kills it at the wall deadline, preserving progress.
     """
     plan=read_input_plan(plan_path);output=Path(output)
-    if not math.isfinite(usd) or not 0<=usd<=12.8 or not 0<seconds<=120:raise ValueError('Outside frozen execution limits')
+    if not math.isfinite(usd) or not 0<=usd<=TOTAL_CEILING_USD or not 0<seconds<=Limits().seconds:raise ValueError('Outside frozen execution limits')
+    authorized_nanodollars=nanodollars(usd)
     if plan['mode']=='simulation' and usd:raise ValueError('Simulation cannot authorize paid calls')
     if plan['mode']=='proposal' and (runner is not None or candidate is None):raise ValueError('Proposal requires fixed identity and real isolated worker')
     protocol_dir=Path(protocol_dir or Path(__file__).resolve().parent.parent/'docs')
@@ -119,8 +133,8 @@ def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=12
             summary=summarize(rows)
             if not summary['cost']['certified']:
                 stop_reason='usage_uncertified';break
-            remaining=usd-summary['cost']['known_usd']
-            if usd and remaining<CASE_MAX_USD:
+            remaining=authorized_nanodollars-summary['cost']['known_nanodollars']
+            if usd and remaining<CASE_MAX_NANODOLLARS:
                 stop_reason='aggregate_budget_exhausted';break
             row['attempts']=1;start=time.monotonic();persist()
             try:

@@ -31,8 +31,8 @@ def worker_plan(tmp_path, monkeypatch, *, invalid_first=False, scenario='complet
         command=[sys.executable,str(Path(__file__).with_name('offline_worker.py')),
                  '--input',item['input_path'],'--progress',str(directory/(item['alias']+'.progress.json')),
                  '--result',str(directory/(item['alias']+'.result.json')),
-                 '--budget-usd','0.08448','--candidate','invented.json','--protocol-dir','invented']
-        return real_worker(item,directory,.08448,seconds=5 if scenario=='inflight' else 20,command=command)
+                 '--budget-usd',str(acceptance.CASE_MAX_USD),'--candidate','invented.json','--protocol-dir','invented']
+        return real_worker(item,directory,acceptance.CASE_MAX_USD,seconds=5 if scenario=='inflight' else 20,command=command)
 
     monkeypatch.setattr(acceptance,'run_worker',offline_worker)
     out=tmp_path/'run'
