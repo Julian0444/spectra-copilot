@@ -1,4 +1,6 @@
-"""Evaluate into a new, mode-specific run directory; preserve historical CSVs.
+"""Historical evaluator (Haiku 4.5); separate from the Haiku 5.5 bounded executor.
+
+Evaluate into a new, mode-specific run directory; preserve historical CSVs.
 
 Each run owns results.csv and an immutable manifest.json. Resume requires the
 same selected cases, input bytes, checkpoint, code, assets and LLM model. Every

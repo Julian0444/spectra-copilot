@@ -19,6 +19,12 @@ def test_candidate_identity_detects_asset_change_and_internal_tampering(tmp_path
     assert identity.verify(p,docs)==result['behavior_sha256']
     assert 'copilot/acceptance_score.py' in result['behavior']['code_sha256']
     assert result['behavior']['llm_proposal']['paid_default_usd']==0
+    proposal=result['behavior']['llm_proposal']
+    assert result['kind']=='candidate-5b22' and proposal['model']=='claude-haiku-5-5'
+    assert proposal['rates_usd_per_million']==[.1,.5]
+    assert proposal['long_prompt_rates_usd_per_million']==[.5,2.5]
+    assert proposal['request_configuration']=={'thinking':{'type':'adaptive'},'output_config':{'effort':'low'}}
+    assert proposal['case_max_nanodollars']==96384000
     checkpoint.write_bytes(b'changed checkpoint')
     with pytest.raises(ValueError,match='differs'):identity.verify(p,docs)
     result['behavior']['policy']='tampered';write_json(p,result)

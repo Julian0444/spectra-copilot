@@ -199,7 +199,8 @@ def request_bound(body,model):
     validate(body)
     if any('type' in t and t['type']!='custom' for t in body.get('tools',[])):
         raise BudgetStop('server_tool_forbidden')
-    # 4096 includes the published 496-token Haiku tool prompt plus framing margin.
+    # Retain the historical byte/framing margin; 5B-2.2 checks its coverage
+    # against Haiku 5.5 count_tokens estimates on development only.
     n_in=len(json.dumps(body,ensure_ascii=False,allow_nan=False,separators=(',',':')).encode())+FRAMING_ALLOWANCE
     if model==PINNED_MODEL and n_in>PROMPT_TIER_LIMIT:raise BudgetStop('prompt_tier_exceeded')
     n_out=body.get('max_tokens')

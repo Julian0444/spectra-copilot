@@ -7,9 +7,11 @@ import os
 from pathlib import Path
 import platform
 import subprocess
+import anthropic
 
 from copilot import agent,rag,tools,explanation
-from copilot.budget import PINNED_MODEL,Limits,RATES
+from copilot.budget import (PINNED_MODEL,Limits,RATES,LONG_PROMPT_RATES,request_configuration,
+                            PROMPT_TIER_LIMIT,CASE_MAX_NANODOLLARS,ANALYSIS_CALLS)
 from copilot.acceptance_io import sha256,write_json
 from desi_fm.predict import model_identity
 import desi_fm
@@ -44,18 +46,26 @@ def capture(protocol_dir):
         except importlib.metadata.PackageNotFoundError:versions[name]=None
     protocol={name:sha256(protocol_dir/name) for name in
               ('BATCH_5B_PROTOCOL.md','protocol/batch5b-development.json','evidence/batch5b-commitment.json')}
+    sdk_root=Path(anthropic.__file__).resolve().parent
+    sdk_sources={name:sha256(sdk_root/name) for name in
+                 ('lib/tools/_beta_runner.py','resources/messages/messages.py')}
     behavior={'code_sha256':code,'auxiliary_code_sha256':auxiliary,'source_content_sha256':digest(code),'prompt_sha256':digest({'system':agent.SYSTEM,'structured_rule':agent.STRUCTURED_RULE}),
               'corpus_revision':rag.corpus_revision(),'corpus_files':rag.corpus_hashes(),'tool_schemas_sha256':digest(schemas),
               'policy':explanation.POLICY_VERSION,'assets':assets,'predictor':model_identity(tools._model()),
               'input_contract':'spectra-input-v3','index_compatibility':'historical encoder/index compatibility remains unverified',
-              'llm_proposal':{'model':PINNED_MODEL,'rates_usd_per_million':RATES[PINNED_MODEL],
-                              'limits':vars(Limits()),'paid_default_usd':0},
-              'protocol':protocol,'runtime':{'python':platform.python_version(),'platform':platform.platform(),'packages':versions}}
+              'llm_proposal':{'model':PINNED_MODEL,'rates_usd_per_million':[n/1000 for n in RATES[PINNED_MODEL]],
+                              'long_prompt_rates_usd_per_million':[n/1000 for n in LONG_PROMPT_RATES[PINNED_MODEL]],
+                              'prices_verified_on':'2026-10-22','internal_money_unit':'nanodollars',
+                              'prompt_bound_limit':PROMPT_TIER_LIMIT,'over_limit_policy':'reject_before_post',
+                              'request_configuration':request_configuration(),'analysis_calls':ANALYSIS_CALLS,
+                              'case_max_nanodollars':CASE_MAX_NANODOLLARS,'limits':vars(Limits()),'paid_default_usd':0},
+              'protocol':protocol,'runtime':{'python':platform.python_version(),'platform':platform.platform(),
+                                             'packages':versions,'anthropic_source_sha256':sdk_sources}}
     heads={}
     for name,directory in locations.items():
         try:heads[name]=subprocess.check_output(['git','-C',directory,'rev-parse','HEAD'],text=True,stderr=subprocess.DEVNULL).strip()
         except subprocess.CalledProcessError:heads[name]=None
-    return {'schema':'spectra-system-identity-v1','kind':'candidate-5b2','behavior':behavior,'behavior_sha256':digest(behavior),
+    return {'schema':'spectra-system-identity-v1','kind':'candidate-5b22','behavior':behavior,'behavior_sha256':digest(behavior),
             'source_locations':locations,'source_heads':heads,
             'closure':'Candidate only. 5C must record the final installed identity and justify every behavioral difference before real acceptance.'}
 

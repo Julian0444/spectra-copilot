@@ -327,3 +327,70 @@ El detector actualizado reconoce IDs completos delimitados por puntuación sin
 aceptar subcadenas alfanuméricas, redacta IDs/etiquetas en rutas y lee metadata
 NPZ de árbol, índice y blobs añadidos/modificados en el rango. Incluye mensajes
 de commit y falla con código 2 ante entradas o blobs ilegibles.
+
+
+## Adenda 5B-2.2 (2026-10-22): modelo, configuración y recursos autorizados
+
+Julian autorizó para 5B-2.2 migrar el ejecutor a `claude-haiku-5-5` y actualizar
+los límites de tokens. Esta adenda se añade conservando el documento anterior
+byte a byte. Selección, manifiestos, rúbrica, criterios y umbrales de calidad
+permanecen intactos. No inicia 5C ni autoriza gasto.
+
+La [guía oficial de migración](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide)
+identifica `claude-haiku-5-5` como ID fijo, sin sufijo de fecha ni alias separado.
+Satisface el requisito de modelo fijado. La [política de versiones](https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions)
+distingue pesos/configuración fijos del modelo de infraestructura de servicio
+que puede cambiar. No se confunde este ID con el alias histórico de Haiku 4.5.
+
+[Tarifas oficiales](https://platform.claude.com/docs/en/about-claude/pricing),
+comprobadas el **2026-10-22**, por millón de tokens, entrada/salida:
+
+| Largo del prompt por solicitud | Entrada USD/M | Salida USD/M |
+|---|---:|---:|
+| Hasta 100.000 tokens inclusive | 0,10 | 0,50 |
+| Más de 100.000 tokens | 0,50 | 2,50 |
+
+El ejecutor rechaza antes del POST toda solicitud cuya cota exceda 100.000.
+La tarifa alta queda registrada, pero no se utiliza para admitir prompts mayores.
+Se conserva la cota de bytes UTF-8 del JSON más **4.096** de framing. El conteo
+de desarrollo y su margen se registran en `evidence/batch5b22-tokens.json`;
+la cota sigue siendo una hipótesis conservadora de transporte, no una garantía
+del proveedor. Un uso liquidado fuera de las cotas queda sin certificar y detiene
+la ejecución. No se envía `cache_control`; las categorías de caché deben ser cero.
+
+Configuración fijada **a priori**: `thinking={"type":"adaptive"}` y
+`output_config={"effort":"low"}`. Es una elección de recursos para un agente
+limitado a herramientas, sin resultados reales del modelo para calibrarla.
+Según la [documentación de thinking](https://platform.claude.com/docs/en/build-with-claude/thinking),
+el razonamiento, incluso oculto, se factura como salida y consume `max_tokens`.
+Por eso se amplía la salida por llamada de 512 a 4.096; no garantiza que alcance
+para una respuesta concreta. Se preservan íntegros los bloques de thinking,
+incluso vacíos, y el historial enviado solo admite adiciones. Las trazas saneadas
+son copias. No se envían sampling, prefill, fallbacks, streaming, herramientas
+de servidor, MCP ni edición de contexto. Refusal y max_tokens son terminales
+sin reintento y conservan cualquier model_z disponible.
+
+| Recurso por caso | Límite 5B-2.2 |
+|---|---:|
+| Entrada acumulada | 800.000 tokens |
+| Salida acumulada, incluido razonamiento | 32.768 tokens |
+| Salida por llamada | 4.096 tokens |
+| Turnos / herramientas de análisis | 8 / 6 |
+| Intentos / reintentos automáticos | 1 / 0 |
+| Tiempo máximo | 120 s |
+| Techo monetario por caso / total de 128 | US$0,10 / US$12,80 |
+
+Ocho solicitudes limitadas a 100.000 suman 800.000 de entrada; ocho salidas de
+4.096 suman 32.768. Con reservas completas: `800000 × 0.10/10^6 +
+32768 × 0.50/10^6 = US$0,096384/caso`; para 128, **US$12,337152**.
+Reservas, liquidaciones y suma del ejecutor usan nanodólares enteros, sin
+redondear a microdólares. Presupuesto autorizado por defecto: **US$0**.
+
+SDK `anthropic==0.120.2`, dentro de `>=0.120.2,<0.121`, compatible con los campos
+elegidos en tool_runner y count_tokens; no cambia el entorno histórico.
+En esta sesión solo se permite el [conteo gratuito](https://platform.claude.com/docs/en/build-with-claude/token-counting)
+sobre el replay congelado de desarrollo: 48 reales y 48 sintéticos, nunca
+aceptación. Es una estimación de entrada con respuestas simuladas; no valida
+finalización, herramientas, latencia ni comportamiento real de Haiku 5.5.
+El piloto pago sobre desarrollo sigue pendiente de Julian. La candidata nueva
+requiere verificación independiente; no es la identidad final instalada de 5C.

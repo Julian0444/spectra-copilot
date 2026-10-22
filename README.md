@@ -138,16 +138,17 @@ exercise the historical five-tool set and predate the protected explanatory poli
 The paid budget is **zero by default**. An API key alone does not authorize a
 request: the CLI returns an incomplete result and exit code 2. The examples below
 require separate approval of model, rates and limits before use; they were not
-executed in 5B-2 or 5B-2.1. The maximum is eight SDK turns and six analysis tools,
-but the byte-based input reservation can stop earlier. Feasibility and options
-are recorded in [BATCH_5.md](docs/BATCH_5.md) for Julian's decision before 5C.
+executed in 5B-2, 5B-2.1 or 5B-2.2. The maximum is eight SDK turns and six analysis tools,
+but the byte-based input reservation can stop earlier. Haiku 5.5 uses adaptive thinking at low effort and 4,096 output tokens per call.
+Input capacity is assessed with free token counts on scripted development replays;
+real model behavior is unvalidated. See [BATCH_5.md](docs/BATCH_5.md).
 
 ```bash
 # Only after separate authorization; keep ANTHROPIC_API_KEY out of files and logs.
 python -m copilot.agent eval/inputs-v2/spectrum_0001.npz \
-    --model claude-haiku-4-5-20251001 --budget-usd 0.10
+    --model claude-haiku-5-5 --budget-usd 0.10
 python -m copilot.agent eval/inputs-v2/spectrum_0004.npz \
-    --model claude-haiku-4-5-20251001 --budget-usd 0.10 \
+    --model claude-haiku-5-5 --budget-usd 0.10 \
     --save-transcript eval/runs/new-trap.json
 ```
 

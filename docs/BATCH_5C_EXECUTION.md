@@ -9,7 +9,7 @@ a ese acto de registro final. v2.1 sigue por defecto; CNN-17 no se despliega.
 
 Antes de cualquier corrida real Julian debe autorizar proveedor/modelo fijado,
 tarifas fechadas, política de reserva, 128 casos, límites de tokens/llamadas y
-coste. La propuesta usa claude-haiku-4-5-20251001; ocho turnos, seis tools contando
+coste. La propuesta histórica de 5B-2 usaba claude-haiku-4-5-20251001; ocho turnos, seis tools contando
 predict, un intento, cero retries, 64.000 input/4.096 output acumulados y 512 output
 por turno. US$0,10/caso, US$12,80 global; límite estimado por tokens US$10,81344.
 El presupuesto por defecto permanece cero. No usar claves en argumentos, logs
@@ -19,8 +19,24 @@ ni manifiestos. El código no solicita claves ni descarga activos.
 el desarrollo. La cota por bytes puede detener recorridos antes de ocho turnos;
 no se ha demostrado factibilidad para el LLM real. Las dos opciones, costes
 máximos condicionados a las tarifas registradas y limitaciones están en
-[batch5b21-budget.md](evidence/batch5b21-budget.md). Primero se requiere revisión
-independiente de 5B-2.1; después Julian decide presupuesto y modelo.
+[batch5b21-budget.md](evidence/batch5b21-budget.md). 5B-2.1 ya tiene revisión
+independiente. La actualización posterior se registra abajo.
+
+## Actualización 5B-2.2 — 2026-10-22, todavía sin ejecutar 5C
+
+La adenda autorizada en BATCH_5B_PROTOCOL fija `claude-haiku-5-5`, thinking
+adaptativo y esfuerzo low, 800.000 tokens de entrada acumulada, 32.768 de salida
+y 4.096 por llamada. La cota por solicitud no puede superar 100.000. El máximo
+teórico es US$0,096384/caso y US$12,337152/128 casos; los techos absolutos
+US$0,10/US$12,80 y todos los límites de calidad, turnos, tools y tiempo se conservan.
+
+La capacidad se comprueba únicamente con count_tokens gratuito y el replay
+simulado de desarrollo; véase `evidence/batch5b22-tokens.json` y su explicación.
+Eso no valida comportamiento real, finalización ni latencia del modelo.
+Presupuesto por defecto cero. La nueva candidata es de 5B-2.2, no una identidad
+final instalada. Siguiente orden: verificación independiente de 5B-2.2,
+decisión de Julian sobre piloto pago en desarrollo y, por último, autorización
+de gasto para 5C. Nada de ello se ejecuta en esta sesión.
 
 ## Custodia de entradas y etiquetas
 

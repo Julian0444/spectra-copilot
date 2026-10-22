@@ -1,0 +1,120 @@
+{
+  "schema": "batch5b22-count-summary-v1",
+  "date": "2026-10-22",
+  "model": "claude-haiku-5-5",
+  "development_sha256": "60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4",
+  "requests_index_sha256": "b0a45960b74f2b2b585fc0a20697ba7ac9e80b8872275d1671449f3c21aed6c6",
+  "count_rows_sha256": "c898aa39d9aef548c516b7ea87b604bb7f22cb2cbed55e60bf83ef987b0bcfaa",
+  "prepared_sha256": "4b0d4a930786ae85fa884e4d5a7531a375bf61688a5430bda98cac361ebb955f",
+  "script_sha256": "f692c5d6a416818e7cc41bf7ee869a386095527f4dd76180d803fccaac5acaed",
+  "sdk_version": "0.120.2",
+  "requested_cases": 96,
+  "real_cases": 48,
+  "synthetic_cases": 48,
+  "valid_cases": 90,
+  "invalid_cases": 6,
+  "conversations": 540,
+  "requests_counted": 2970,
+  "http_requests_made": 2970,
+  "rate_policy": {
+    "maximum_rpm": 3000,
+    "max_attempts_per_body": 3,
+    "retry_only_status": 429,
+    "respects_retry_after": true
+  },
+  "input_tokens": {
+    "minimum": 3935,
+    "maximum": 27165,
+    "total_across_replays": 23681730
+  },
+  "count_to_bound_ratio": {
+    "maximum": 0.41293456111051524,
+    "mean": 0.34359248102654627
+  },
+  "count_to_wire_bytes_ratio_maximum": 0.4419246656578463,
+  "bound_coverage": {
+    "framing_allowance": 4096,
+    "covered_including_margin": 2970,
+    "total": 2970,
+    "minimum_remaining_margin": 5053
+  },
+  "largest_prompt": {
+    "counted_tokens": 27165,
+    "byte_bound": 65863,
+    "tier_limit": 100000
+  },
+  "by_turns": {
+    "3": {
+      "valid_cases": 90,
+      "complete": {
+        "full_reservation": 90,
+        "counted_input_full_output": 90
+      }
+    },
+    "4": {
+      "valid_cases": 90,
+      "complete": {
+        "full_reservation": 90,
+        "counted_input_full_output": 90
+      }
+    },
+    "5": {
+      "valid_cases": 90,
+      "complete": {
+        "full_reservation": 90,
+        "counted_input_full_output": 90
+      }
+    },
+    "6": {
+      "valid_cases": 90,
+      "complete": {
+        "full_reservation": 90,
+        "counted_input_full_output": 90
+      }
+    },
+    "7": {
+      "valid_cases": 90,
+      "complete": {
+        "full_reservation": 90,
+        "counted_input_full_output": 90
+      }
+    },
+    "8": {
+      "valid_cases": 90,
+      "complete": {
+        "full_reservation": 90,
+        "counted_input_full_output": 90
+      }
+    }
+  },
+  "limits": {
+    "input_tokens": 800000,
+    "output_tokens": 32768,
+    "calls": 8,
+    "max_output_per_call": 4096,
+    "usd": 0.0,
+    "retries": 0,
+    "seconds": 120.0
+  },
+  "configuration": {
+    "thinking": {
+      "type": "adaptive"
+    },
+    "output_config": {
+      "effort": "low"
+    }
+  },
+  "worst_scripted_reserved_cost_usd": 0.0452148,
+  "theoretical_cost_usd": {
+    "per_case": 0.096384,
+    "all_128": 12.337152
+  },
+  "generation_calls": 0,
+  "spent_usd": 0,
+  "limitations": [
+    "count_tokens estimates input; it is not generated-response usage.",
+    "Histories use simulated responses without real Haiku thinking blocks; actual histories may grow differently.",
+    "Fitting 90/90 eight-turn replays proves neither completion, time compliance nor correct tool use by Haiku.",
+    "No paid development pilot or 5C execution; independent verification remains pending."
+  ]
+}
