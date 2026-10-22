@@ -10,7 +10,7 @@ from copilot import rag
 
 POLICY_VERSION = 'explanatory-model-z-v2'
 STATES = {'complete', 'invalid_input', 'insufficient_data', 'ambiguous',
-          'explanation_incomplete', 'technical_error'}
+          'explanation_incomplete', 'technical_error', 'refusal', 'max_tokens'}
 LIMITS = [
     'Posterior concentration is not a calibrated probability of correctness.',
     'Stability under masking does not establish redshift correctness.',

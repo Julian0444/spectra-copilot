@@ -19,7 +19,7 @@ from copilot.budget import PINNED_MODEL
 from copilot.acceptance_io import sha256,write_json,sanitize,seal_record_path,register_seal
 
 SCHEMA='batch5c-inputs-v1'
-TERMINAL={'complete','ambiguous','insufficient_data','invalid_input','explanation_incomplete','technical_error','timeout'}
+TERMINAL=explanation.STATES | {'timeout'}
 CASE_MAX_USD=(64000+4096*5)/1e6
 
 

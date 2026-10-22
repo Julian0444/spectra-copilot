@@ -5,6 +5,7 @@ The conservative UTF-8 bound is a declared transport assumption, not a provider
 billing guarantee. Unknown/over-bound usage locks the ledger as uncertified.
 """
 from contextlib import contextmanager
+from copy import deepcopy
 from dataclasses import dataclass
 from decimal import Decimal
 import json
@@ -211,9 +212,17 @@ def guard_sdk(client,budget):
     """Guard the SDK's actual POST boundary, including tool_runner.parse requests."""
     if client.max_retries!=0:raise BudgetStop('sdk_retries_forbidden')
     resource=client.beta.messages;original=resource._post
+    previous=None
     def guarded(path,*args,**kwargs):
+        nonlocal previous
         if path.split('?')[0]!='/v1/messages':raise BudgetStop('unbudgeted_endpoint')
         n_in,n_out=request_bound(kwargs['body'],budget.model)
+        if budget.model==PINNED_MODEL:
+            current=_clean(kwargs['body'])
+            if previous is not None and (any(current.get(k)!=previous.get(k) for k in ('system','tools'))
+                    or current['messages'][:len(previous['messages'])]!=previous['messages']):
+                raise BudgetStop('conversation_changed')
+            previous=deepcopy(current)
         ticket=budget.reserve(n_in,n_out)
         options=dict(kwargs.get('options') or {})
         options['timeout']=max(.001,budget.remaining_seconds())

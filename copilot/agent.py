@@ -186,6 +186,7 @@ class RunTools:
     def __init__(self, path, structured=True):
         self.calls, self.result, self.path = 0, None, path
         self.prediction = None
+        self.terminal_status = None
         self.observations, self.violations = [], []
         self.history, self.usage = [], dict.fromkeys(USAGE_KEYS, 0)
         self.tools = [self.guard(t) for t in (predict_redshift, identify_spectral_lines,
@@ -294,13 +295,19 @@ def execute_run(path, model, structured, state=None, budget=None, progress=None)
         usage = state.usage
         for message in runner:
             final = message
-            history.append({"role": "assistant", "content": message.to_dict()["content"]})
+            # Traces are separate copies; sanitation never edits the SDK history.
+            history.append({"role": "assistant", "content": deepcopy(message.to_dict()["content"])})
             if any(b.type == 'text' and b.text.strip() for b in message.content):
                 state.violations.append('unvalidated_generated_text')
             if any(b.type == 'tool_use' and b.name not in {t.name for t in state.tools} for b in message.content):
                 state.violations.append('unknown_tool')
             for key in USAGE_KEYS:
                 usage[key] += getattr(message.usage, key, None) or 0
+            stop_reason=getattr(message,'stop_reason',None)
+            if stop_reason in {'refusal','max_tokens'}:
+                state.terminal_status=stop_reason
+                if progress:progress(state.finish(status=stop_reason),budget.snapshot())
+                break
             response = runner.generate_tool_call_response()
             if response is not None:
                 history.append(_jsonable(response))
@@ -364,8 +371,8 @@ def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None, pr
         with agent_input(npz_path) as (path, provenance):
             state = RunTools(path, True)
             state, final, usage, history = execute_run(path, model, True, state=state, budget=budget, progress=progress)
-        report = state.finish()
-        report['completion_code'] = ('iteration_limit' if len([m for m in history if m['role']=='assistant']) >= 8
+        report = state.finish(status=state.terminal_status or 'explanation_incomplete')
+        report['completion_code'] = state.terminal_status or ('iteration_limit' if len([m for m in history if m['role']=='assistant']) >= 8
                                      and state.result is None else 'invalid_or_missing_report' if report['status']=='explanation_incomplete' else None)
     except BudgetStop as exc:
         report = state.finish(status='explanation_incomplete') if state else explanation.result(status='explanation_incomplete')
