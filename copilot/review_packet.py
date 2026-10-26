@@ -37,12 +37,19 @@ def case_packet(row,seal_hash):
         if duplicate is not None:key=duplicate
         if key not in groups:groups[key]={'id':review_id+':'+key,'equivalence_key':key,'text':text,
             'reference_ids':list(refs),'occurrences':[]}
-        groups[key]['occurrences'].append({'pointer':pointer,'text':text})
+        groups[key]['occurrences'].append({'pointer':pointer,'text':text,
+            'text_sha256':hashlib.sha256(text.encode()).hexdigest()})
     add('status','Status: '+source['status'],'/report/status')
     add('official_model_z','Official model_z: '+('unavailable' if source['model_z'] is None else repr(source['model_z'])),'/report/model_z')
     add('predictor','Predictor: '+str(source['predictor']),'/report/predictor')
     add('input_contract','Input contract: '+str(source['input_contract']),'/report/input_contract')
-    for i,text in enumerate(source.get('limitations',[])):add('lim:'+str(i+1),text,f'/report/limitations/{i}')
+    for i,text in enumerate(source.get('limitations',[])):
+        pointer=f'/report/limitations/{i}'
+        if text==explanation.LIMITS[3]:
+            descriptive,_,absence=text.partition('; ')
+            add('matcher_descriptive',descriptive,pointer)
+            add('absence_not_refutation',absence,pointer)
+        else:add('lim:'+str(i+1),text,pointer)
     by_id={o['id']:o for o in source.get('observations',[])}
     for i,item in enumerate(source.get('explanation',[])):
         obs=by_id[item['observation_id']];tool=obs['tool'];text=item['text'];pointer=f'/report/explanation/{i}/text'
@@ -65,9 +72,10 @@ def case_packet(row,seal_hash):
                 if compatibility:add('index_compatibility',compatibility,pointer)
         elif tool=='identify_spectral_lines':
             value,_,qualifier=text.partition(' These are ');add(obs['id']+':value',value,pointer)
-            # Not physical confirmation and absence not refutation are different
-            # propositions; retain both instead of merging by topical similarity.
-            if qualifier:add('matcher_not_confirmation','These are '+qualifier,pointer)
+            if qualifier:
+                descriptive,sep,confirmation=qualifier.partition(', ')
+                add('matcher_descriptive','These are '+descriptive,pointer)
+                if sep:add('matcher_not_confirmation',confirmation,pointer)
         elif tool=='lookup_reference':
             value,_,qualifier=text.partition(' Existence alone ');add(obs['id']+':value',value,pointer)
             if qualifier:add('existence_not_support','Existence alone '+qualifier,pointer)
