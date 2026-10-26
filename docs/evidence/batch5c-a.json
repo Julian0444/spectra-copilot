@@ -1,0 +1,31 @@
+{
+  "schema": "batch5c-a-evidence-v1",
+  "source_tests_only": true,
+  "clean_installation": false,
+  "full_suite": {
+    "passed": 338,
+    "failed": 2,
+    "reason": "Two historical expectations omitted the new bootstrap matcher",
+    "targeted_after_correction": 2
+  },
+  "logs": {
+    "A4-red": "303f139f553113725109f25012dcbda4d8b165837d0f669adace97bbdb0f1b4e",
+    "A4-green": "036bb9390fb408c39eb19a61d865bc4044aa29eeea8139e62a988a5a83930a4d",
+    "A5-related-corrected": "b181391d4bf2a96978994478dc5618acdca02cd1cdc35e307136f452a13e8604",
+    "A7-green-corrected": "0edfee7bc0f6b977d209fad02cd3326587f6bac722f03d18b5e171d6f49b399d",
+    "A6-boundary-red": "e34696107089d5e9d6c61ccbbc57e6cdd14cc8a2bca592cd41e0eb315461659d",
+    "A6-boundary-green": "c0d090f6dddd582274878492c6477cffe0ce3e63635dd75611e1f1d0840e8073",
+    "A6-development-red": "62669d613898847c72b8a9c95650ce64904ff95f82bbc615bd5d1fc80ffc9520",
+    "A6-related-green": "4cde2b01a5c6c4e16fd2c0977c76c107d73df026ac3ad00e9bbb5ec3ecb25cf5",
+    "A-full": "1e095278ae371e862f02f54c7863294e84926541ee893502aa61502e083a6838",
+    "A-full-targeted-fix": "ff0d64018d4f20821fa9d75c5589fc805c02d9aee571dd6c1f859cbfd93325bf"
+  },
+  "paid_calls": 0,
+  "acceptance_opened": false,
+  "development_registry_sha256": "60251d98247192c7089fdd954f43212f86b885b44bbbd927e934e655cf9e696f",
+  "independent_design_reports": {
+    "A6-independent": "12c4549cd78131ac015e0519986eaee807cf535ab279efed3fc4653480583858",
+    "A6-cross": "fdbca52b0a63836eaab4750d3e67085de05932b45fa940e00b195b8317e4a5a1"
+  },
+  "implementation_review": "pending"
+}
