@@ -1,0 +1,54 @@
+{
+  "schema": "batch5c-preregistered-variants-v1",
+  "build": {
+    "desi-fm": {
+      "source_commit": "930c803c9451ae8c3f9250cda0522d55381dc0cc",
+      "version": "0.3.0",
+      "wheel_sha256": "03f607e3bd9987315b79a402ff5172ca46b1f0b9ff5e09316023241aaf789629"
+    },
+    "spectra-copilot": {
+      "source_commit": "ae3ce5f8a26c60519bbfe669fc4632229be70110",
+      "version": "0.3.0",
+      "wheel_sha256": "5e96caa80c6bebadd19712071c086cb472ed50c361a10bd200c81ce07acab435"
+    }
+  },
+  "variants": {
+    "low": {
+      "registration_id": "5c-1-low",
+      "request_configuration": {
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "low"
+        }
+      },
+      "configuration_sha256": "ac66f03afe97e6d41c9bc3aaf6cec02b80d341d3cc84cc6d07533857217226d0",
+      "llm_path_sha256": "3aa4871d0064afb86d7532f763b799c7a915ac072065a47a0842dfb1f4378c72",
+      "prior_installed_identity_sha256": "58281fd32fb7daaf67232118ccc5846b4d799e9f3bfc37add42fba997f72dafa",
+      "source_heads": {
+        "copilot": "ae3ce5f8a26c60519bbfe669fc4632229be70110",
+        "desi_fm": "930c803c9451ae8c3f9250cda0522d55381dc0cc"
+      }
+    },
+    "medium": {
+      "registration_id": "5c-1-medium",
+      "request_configuration": {
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "medium"
+        }
+      },
+      "configuration_sha256": "d08bd9bfaa2a6051d08190cd103e7fd76ba40cf77610ab1826d4ae1266f1f39a",
+      "llm_path_sha256": "719fbb20ad6c4571e5233e5fce2ff2f2c2872e5c97e5144bc7d2a382a3843d14",
+      "prior_installed_identity_sha256": "87563c8f4d6ffead274c7a81cace25105c2f5463f6f3a732ab12367215e4f7f5",
+      "source_heads": {
+        "copilot": "ae3ce5f8a26c60519bbfe669fc4632229be70110",
+        "desi_fm": "930c803c9451ae8c3f9250cda0522d55381dc0cc"
+      }
+    }
+  },
+  "final_identity_registration": "After protocol commit, recapture installed identities; require unchanged llm_path_sha256. Register exact identity hashes privately before any POST."
+}

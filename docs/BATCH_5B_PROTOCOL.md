@@ -394,3 +394,111 @@ aceptación. Es una estimación de entrada con respuestas simuladas; no valida
 finalización, herramientas, latencia ni comportamiento real de Haiku 5.5.
 El piloto pago sobre desarrollo sigue pendiente de Julian. La candidata nueva
 requiere verificación independiente; no es la identidad final instalada de 5C.
+
+
+---
+
+## Adenda 5C-1 — prerregistro operativo de desarrollo, 2026-10-25
+
+Autorización de Julian: piloto 12 casos × 2 esfuerzos, US$2,40; confirmación
+condicionada de los mismos12, una sola vez, US$1,20; aceptación128 una sola vez,
+US$12,80. Cada fase conserva su techo, intento y ledger; no hay transferencias.
+Esta adenda agrega el piloto y medium; todo el documento anterior se conserva
+íntegro como prefijo. No cambia la rúbrica §4, umbrales, selección de aceptación,
+splits, modelo predictor, checkpoints ni prompt. v2.1 sigue por defecto,
+CNN-17 experimental y model_z es la predicción oficial.
+
+### Variantes, identidades y condiciones previas
+
+Modelo único claude-haiku-5-5, thinking adaptive, esfuerzos low y medium. Son el
+único cambio entre variantes: max_tokens4096, prompt, herramientas, tarifas y
+límites iguales. Configuraciones e identidades de camino ejecutado están en
+`evidence/batch5c-variants.json` (IDs 5c-1-low / 5c-1-medium, config y llm_path SHA).
+Ese registro contiene commits y wheels instalados0.3.0. La identidad completa
+incluye el hash de este protocolo; para evitar una referencia circular, se
+recaptura después de este commit y se registra externamente antes del primer
+POST, comprobando que llm_path no cambió. El registro previo queda preservado.
+Cada worker verifica la identidad instalada, fuentes, wheels/RECORD y activos.
+
+Tarifas oficiales verificadas 2026-10-25: US$0,10/M entrada y US$0,50/M salida.
+Prompt con cota>100.000 se rechaza antes del POST; thinking reenviado entra en la
+cota de la solicitud. Límites por caso:8 turnos,6 análisis,800.000 input,
+32.768 output incluido thinking,4096 por llamada,120s,US$0,10; sin fallback,
+un intento, cero retries automáticos. Cota por caso US$0,096384; por piloto24
+US$2,313216, confirmación12 US$1,156608, aceptación128 US$12,337152. Antes de
+reclamar fase debe estar financiada toda su cota, dentro del techo autorizado.
+Predict+identify iniciales cuentan2/6; quedan4 análisis. submit_report no cuenta.
+
+El reloj120s incluye arranque/imports/verificación. No se inventa un margen
+mínimo nuevo antes del POST: puede comenzar cerca del límite. Si el padre lo
+interrumpe con reserva en vuelo, el gasto queda no certificado y se bloquea toda
+nueva llamada paga de la campaña. Un resultado negativo así es válido; no se
+repite ni sustituye. La clave está no rotada, por decisión de Julian; vence
+2026-11-20. Solo el proceso autorizado la carga del Llavero anthropic-api-key.
+
+### Selección fija y orden
+
+Manifiesto desarrollo SHA-256
+60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4.
+Dos reales CNN train y dos validation: en cada grupo los dos case_id con menor
+SHA-256 de los bytes UTF-8 literales del case_id, desempate case_id literal.
+Primero train, después validation. Luego familias sintéticas en orden alfabético:
+una receta SNR10 de cada una de las8 familias; si no existiera, menor hash según
+la misma regla. Las8 tienen exactamente una SNR10. Selección de12,11 válidos y
+un soporte inválido. Registro de inputs SHA
+60251d98247192c7089fdd954f43212f86b885b44bbbd927e934e655cf9e696f,
+selección SHA c8b6c1a15554713fded199277f136f3e583448af9dc65601a7e3d9de2f0ae6c8.
+
+Una corrida de24 filas: por slot desde0, pares low/medium en slots pares y
+medium/low en impares. Mismos bytes científicos, inputs hasheados y alias opacos
+por fila; etiquetas separadas. `copilot.development` rederiva y valida registro
+positivo de pertenencia antes de crear salidas; worker analiza los mismos bytes
+verificados. No abre aceptación. Campaña comprometida por id/ruta en
+`protocol/batch5c-campaign.json`; no puede sustituirse al recapturar identidad.
+
+### Métricas y elección: primero elegir, después puerta
+
+`copilot.pilot_score` registra por fila estado/completion_code/stop_reason,
+turnos/análisis/tools, obligaciones cumplidas/omitidas, tokens reales frente a
+cota por POST (thinking incluido), cabecera beta enviada con respuesta aceptada,
+latencia, coste/certificación/reservas y conservación de model_z. Obligaciones:
+fidelidad de plantilla a todas las observaciones, model_z oficial conservado,
+IDs válidos y recuperados/seleccionados, aritmética de alternativas, cautela no
+menor que la recomputada con todas las observaciones y abstención requerida por
+el oráculo sintético. Son comprobaciones mecánicas; no certifican ciencia.
+
+Gana más informes complete/ambiguous/insufficient_data con todas las obligaciones;
+empate → menos max_tokens o refusal; empate → menor coste certificado en
+nanodólares; empate → low. Nunca usa exactitud de z ni filtra variantes por pasar
+la puerta. No se elige con gasto desconocido. Comparación operativa pequeña, sin
+conclusiones generales. `pilot_decision` registra una sola vez elección/sello/
+identidad, y el ejecutor exige ese esfuerzo para confirmación y aceptación.
+
+Puerta sobre última corrida con código y esfuerzo finales,11 válidos:≥10 informes
+válidos con obligaciones,≤1 max_tokens/refusal, cero explanation_incomplete,
+timeout,technical_error,usage_uncertified,reservas o prompt_tier_exceeded. Un
+pending o invalid_input sobre input válido falla la puerta. Inválido rechazado
+con cero llamadas; model_z conservado donde hay predicción válida; coste
+certificado y dentro de techos. Además Opus0 P1/P2 abiertos sobre estado final.
+Si falla: no materializar ni abrir aceptación; documentar causa/pregunta y seguirF.
+La puerta del piloto no modifica la rúbrica de aceptación.
+
+### Confirmación y congelación del camino LLM
+
+Solo se corrigen defectos demostrados del arnés/integración; no se optimiza prompt
+para estos12 ni se trata abstención correcta como bug. Si cambia camino LLM tras
+piloto, una confirmación de12 con esfuerzo ya elegido, mismo registro y techo
+US$1,20; no tercer piloto. Se registra defecto/reproducción/commits/huellas antes
+de reclamar confirmación. La puerta se aplica entonces a esa confirmación.
+
+`llm_path_digest` fija antes del piloto: todas las fuentes desi_fm y, de Copilot,
+__init__,acceptance,acceptance_io,acceptance_worker,agent,budget,campaign,
+candidate_identity,explanation,rag,report,spectral,tools; además prompt,schemas,
+corpus,activos,predictor,contrato,runtime/SDK,configuración,tarifas/límites y endpoint.
+Se excluyen solo hashes del protocolo, instalación/commits/wheels, auxiliares y
+fuentes de preparación/puntuación/revisión/MCP que no ejecutan la llamada LLM.
+La identidad completa sigue registrando TODAS las fuentes: cambios externos a
+esa proyección deben declararse y revisarse, aunque no exijan confirmación.
+Cambiar solo adenda/commit de documentación no fuerza una llamada innecesaria.
+Cualquier otro cambio de configuración necesita decisión de Julian antes de
+aceptación. No hay ajustes después de abrirla.
