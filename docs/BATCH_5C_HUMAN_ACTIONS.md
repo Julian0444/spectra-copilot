@@ -17,8 +17,7 @@ registro H-18, no de una evaluación generada de su autoría:
 «credencial inválida; clave reemplazada por Julian», según su declaración a las
 21:14. Consulta anterior401; consulta nueva200. No compartir la clave.
 Intento original sellado, consumo real desconocido, reservaUS$0,0035706 debitada.
-Repetición terminada con coste certificado en BATCH_5C_REPORT.md. No más llamadas
-ni nuevo piloto. Puerta operativa superada; aceptación sin abrir hasta revisión final. Conciliar el
+Repetición terminada con coste certificado en BATCH_5C_REPORT.md. No más llamadas de desarrollo ni nuevo piloto. Puerta operativa superada; aceptación sin abrir hasta revisión final. Conciliar el
 consumo original no equivale a modificar sus registros históricos.
 
 ## Adjudicación

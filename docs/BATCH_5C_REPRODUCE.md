@@ -9,9 +9,8 @@ La instalación actual de diagnóstico y repetición es build-07/diagnostic-env.
 Frente a build-06 cambia solo budget.py para registrar fallos SDK. Build-05 y
 build-06 se conservan congelados. La demo/CLI/API/MCP/Gradio se comprobaron antes
 en build-05/06; no se atribuye una nueva prueba de interfaces a build-07. Esta
-última verificó fuentes instaladas, RECORD, identidades y13 pruebas diagnósticas;
-el piloto repetido se ejecutó desde ella. No hay reconstrucción final posterior
-porque la variante elegida no pasó la puerta. Nunca ejecutar nuevamente los
+última verificó fuentes instaladas, RECORD, identidades y 13 pruebas diagnósticas;
+el piloto repetido se ejecutó desde ella. Se prepara una reconstrucción final porque low pasó la puerta operativa. Nunca ejecutar nuevamente los
 lanzadores privados de pago: sus autorizaciones únicas están consumidas.
 
 ## Entorno y activos

@@ -41,10 +41,10 @@ no produjo respuesta: low1/12 intentado, medium0/12, 23 pendientes. Fuente
 [primer intento](evidence/batch5c-pilot.json); outputs y sellos originales intactos.
 Su uso real sigue sin certificar; US$0 conocido no significa gasto total cero.
 
-Una consulta gratuita posterior dio401/AuthenticationError/authentication_error,
+Una consulta gratuita posterior dio 401/AuthenticationError/authentication_error,
 con request-id privado. Julian identificó **«credencial inválida; clave
-reemplazada por Julian»**, guardada en Llavero anthropic-api-key a las21:14 según
-su declaración. La consulta gratuita única con clave nueva dio200 y4.805 tokens.
+reemplazada por Julian»**, guardada en Llavero anthropic-api-key a las 21:14 según
+su declaración. La consulta gratuita única con clave nueva dio 200 y 4.805 tokens.
 No se hizo generación diagnóstica. Se reconstruyó la entrada del primer caso
 con sus observaciones, prompt y schemas; difiere la ruta temporal opaca que no
 se había conservado. No se afirma igualdad byte a byte del request histórico.
@@ -56,8 +56,8 @@ de Julian: US$0,0035706. Cap efectivo de la repetición: US$2,3964294.
 Repetición: **US$0.0280614 certificado**, 29 llamadas, cero retries.
 Contabilidad conjunta (repetición + reserva debitada): **US$0.031632**;
 saldo sin gastar **US$2.368368**. Esa suma contable no certifica la factura
-original. Consultas gratuitas:2 total (401 y200), generación diagnóstica:0.
-Confirmación0; aceptación0. No se transfiere saldo entre fases ni se reutiliza
+original. Consultas gratuitas: 2 total (401 y200), generación diagnóstica: 0.
+Confirmación: 0; aceptación: 0. No se transfiere saldo entre fases ni se reutiliza
 el directorio original. Auditorías privadas separadas campaign y campaign-repeat.
 
 ## Implementado e instalado
@@ -65,23 +65,23 @@ el directorio original. Auditorías privadas separadas campaign y campaign-repea
 A incorporó bootstrap predict+identify (2/6 análisis), esfuerzo low/medium
 registrado, piloto limitado al manifiesto de desarrollo, presupuesto entero,
 guardas de worker, campaña, identidad instalada y registro durable de llamadas.
-B verificó wheels0.3.0 nuevos, CLI/API, cinco herramientas MCP, recursos y Gradio.
+B verificó wheels 0.3.0 nuevos, CLI/API, cinco herramientas MCP, recursos y Gradio.
 FM v2.1 sigue predeterminado; CNN-17 experimental. No entrenamiento, splits,
 selección de checkpoints ni inferencia sobre batch4a-v1/test.
 
 El diagnóstico SDK registra tipo de excepción, HTTP, request-id y tipo de error
-del proveedor, sin mensajes/cuerpos/secretos. Rojo a3f4bcc → verde42b8f3c:
+del proveedor, sin mensajes/cuerpos/secretos. Rojo a3f4bcc → verde 42b8f3c:
 59 pruebas dirigidas pasan; 13 también desde instalación nueva. 400/401/403/429,
-500/503/504/529 y timeout simulados. Dos expectativas SDK503/504 incorrectas de
+500/503/504/529 y timeout simulados. Dos expectativas SDK 503/504 incorrectas de
 la primera preparación verde se corrigieron; los logs se conservaron.
 
 Instalaciones preservadas y distintas:
 - build-05/installed-env: primer intento interrumpido.
 - build-06/release-env: entrega anterior, cuatro módulos de revisión/puntuación
-  posteriores, demo comprobada sin API; D bloqueado con dosP2.
-- **build-07/diagnostic-env**: diagnóstico y piloto repetido. Fuentes CP7a260de,
-  FMe5ae6cf; misma versión0.3.0, hashes de wheels distintos. Se verificaron22
-  módulos Python por paquete, RECORD45/29 archivos y ausencia de bytecode local.
+  posteriores, demo comprobada sin API; D bloqueado con dos P2.
+- **build-07/diagnostic-env**: diagnóstico y piloto repetido. Fuentes CP 7a260de,
+  FM e5ae6cf; misma versión0.3.0, hashes de wheels distintos. Se verificaron 22
+  módulos Python por paquete, RECORD 45/29 archivos y ausencia de bytecode local.
   Único módulo adicional cambiado frente a build-06: copilot/budget.py.
 
 [Manifiesto actual](evidence/batch5c-delivery.json), [guía](BATCH_5C_REPRODUCE.md).
@@ -94,19 +94,19 @@ en batch5c-final-verification.json cuando esté disponible.
 ## Revisiones y límites
 
 Astra fue el único escritor; runtime declaró xhigh en etapas previas y high en
-el cierre económico. Opus5.5 revisó clones propios, sin clave ni llamadas pagas;
+el cierre económico. Opus 5.5 revisó clones propios, sin clave ni llamadas pagas;
 effort xhigh/fastMode=false solicitados, sin atestación del routing del proveedor.
 A quedó aprobado tras dos rondas y una verificación puntual extra autorizada;
 B aprobado en dos rondas. Se cerraron financiación insuficiente, fixture del
 worker, rutas relativas, proyección llm_path y protocolo mutable.
 
-D-r1 encontró1P1/3P2, corregidos y verificados enR2. D-r2 dejó2P2: adjudicación
+D-r1 encontró 1 P1/3 P2, corregidos y verificados en R2. D-r2 dejó 2 P2: adjudicación
 puede borrar acuerdos y referencias de extractos ambiguas. Reproducidos contra
 build-06, siguen abiertos y no se amplió el alcance para corregirlos. Véase
 [BATCH_5C_REMAINING.md](BATCH_5C_REMAINING.md). La revisión de cierre previa y
 la revisión puntual de diagnóstico quedaron interrumpidas al cambiar la orden;
-no se les atribuye aprobación. **No hubo revisión Opus fuera del punto3 tras
-la instrucción económica**, La única revisión final autorizada está pendiente; la ausencia de P1/P2 no
+no se les atribuye aprobación. **No hubo revisión Opus fuera del punto 3 tras
+la instrucción económica**. La única revisión final autorizada está pendiente; la ausencia de P1/P2 no
 se presupone. La anotación semántica se aplaza, sin borrar los defectos conocidos.
 Haiku fue solo el sistema evaluado, nunca un revisor ni escritor del proyecto.
 
@@ -115,11 +115,11 @@ Haiku fue solo el sistema evaluado, nunca un revisor ni escritor del proyecto.
 Demo instalada previa: input válido model_z1.0745, inválido rechazado, caso de
 línea única ambiguo y llamada MCP. A/B proviene de seis NPZ ya persistidos,
 10.000 casos por seed17/42/101: diferencias de outliers A−B −1,21/−7,32/−3,05pp,
-con MAE normalizado peor para A en17/101. No demuestra mejora uniforme.
+con MAE normalizado peor para A en 17/101. No demuestra mejora uniforme.
 139/150→119/150 sigue visible como resultado histórico de otra política.
 No se afirma foundation model, independencia física ni superioridad CNN/v2.1.
 
-Preservación comprobada:1.174 archivos,11.748.875.685 bytes, cero diferencias;
+Preservación comprobada: 1.174 archivos, 11.748.875.685 bytes, cero diferencias;
 CSV previo FM sigue sin versionar, candidatas previas intactas. No es respaldo
 independiente. [Acciones humanas](BATCH_5C_HUMAN_ACTIONS.md): H-18 con seis
 preguntas sin respuestas atribuidas, respaldo independiente y publicación
