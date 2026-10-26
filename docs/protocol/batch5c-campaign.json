@@ -1,7 +1,7 @@
 {
   "schema": "batch5c-campaign-v1",
-  "campaign_id": "5c-20261025-f50jj9q",
-  "directory_sha256": "f76ecdba224ed34f792425da7b80765d321117172130706970a50f06b1fcde3b",
+  "campaign_id": "5c-20261025-f50jj9q-repeat-authorized",
+  "directory_sha256": "f8cb20e1aa15419dd0bc893b07ce38dd8f7818a1ca8cc4d3135369b428017f48",
   "registry_sha256": "60251d98247192c7089fdd954f43212f86b885b44bbbd927e934e655cf9e696f",
   "phase_caps_nanodollars": {
     "pilot": 2400000000,

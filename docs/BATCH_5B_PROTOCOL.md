@@ -544,3 +544,30 @@ contra ese directorio después de este commit y se registran externamente en
 archivo nuevo antes del primer POST, exigiendo exactamente los valores de esta
 tabla. Toda diferencia ulterior se explica antes de ejecutar. No se actualiza
 Python, macOS, dependencias ni activos durante la campaña.
+
+
+### Adenda 5C-1c — repetición única tras reemplazo de credencial
+
+Julian identifica «credencial inválida; clave reemplazada por Julian»; servicio
+anthropic-api-key, reemplazo declarado a las 21:14. La consulta count_tokens
+única con clave nueva devuelve HTTP200, 4.805 tokens de entrada. La previa
+devolvió401. No se hizo generación diagnóstica. El primer piloto permanece
+sellado: interrumpido por fallo de integración en primera llamada, sin evidencia
+de comportamiento; reserva US$0,0035706 debitada como gastada sin certificar uso.
+
+Se autoriza UNA repetición: pilot-repeat-run y campaign-repeat, selección y
+plan idénticos (24 filas,12 casos,low/medium), misma regla5C-1, prompt, límites y
+tarifas. Saldo duro para execute_plan: US$2,3964294. El cap nominal histórico
+de fase US$2,40 se mantiene; la autorización efectiva es el saldo menor,
+registrado en manifest y launcher. Nunca reiniciar directorios anteriores.
+
+Se usa instalación build-07/diagnostic-env: diagnóstico SDK42b8f3c; no cambio
+de credencial en código. llm_path low985e74a43f8be5e6cb82bacb40d0ea82681af065dfd02390f7f1f49b0401158d
+y medium0a99d9eb135b2f5d3dda23d81b909199233d62e78805a06a5c1e51e43c13aa07.
+Las identidades completas se capturan contra esta adenda congelada antes de POST.
+La revisión diagnóstica Opus fue interrumpida por la instrucción de cierre
+económico; no se atribuye aprobación. Si variante elegida pasa puerta: una sola
+reconstrucción final, una sola verificación final Opus y, sinP1/P2, aceptación
+única HitoD. Si falla, aceptación cerrada. Los dosP2 deD siguen declarados.
+Solo puntuación mecánica: anotación semántica IA queda para otra sesión;
+exactitud científica y aceptación global pendientes. Sin otras revisiones Opus.

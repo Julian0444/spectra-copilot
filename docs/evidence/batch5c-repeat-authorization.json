@@ -1,0 +1,16 @@
+{
+  "schema": "batch5c-economic-repeat-authorization-v1",
+  "prior_attempt_preserved": true,
+  "prior_debit_nanodollars": 3570600,
+  "remaining_nanodollars": 2396429400,
+  "count_new_http": 200,
+  "count_new_input_tokens": 4805,
+  "credential_status": "credencial inv\u00e1lida; clave reemplazada por Julian",
+  "original_plan_sha256": "0dc1c1132ce0c023acb44afea3d8f25d355ee789980fd47913ea603e8aaf314f",
+  "expected_llm_paths": {
+    "low": "985e74a43f8be5e6cb82bacb40d0ea82681af065dfd02390f7f1f49b0401158d",
+    "medium": "0a99d9eb135b2f5d3dda23d81b909199233d62e78805a06a5c1e51e43c13aa07"
+  },
+  "build_manifest_sha256": "7926bd21c1cfd2ab8129dbfb3fc8eeb87c8e465803e88849838b3fbbce5526c6",
+  "semantic_review_deferred": true
+}
