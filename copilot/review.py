@@ -91,7 +91,7 @@ def score_claim_review(claims, first=None, second=None, adjudication=None):
     return result
 
 
-def score_annotation_pair(claims,first=None,second=None,adjudication=None):
+def score_annotation_pair(claims,first=None,second=None,adjudication=None,*,blindness_intact=True):
     """5C AI annotations: inventory/classification and omissions are also reviewed.
 
     Preparatory flags never determine denominators. Disputed classifications use
@@ -114,6 +114,17 @@ def score_annotation_pair(claims,first=None,second=None,adjudication=None):
             if not c['text'].strip() or key in ids:raise ValueError('Invalid added claim')
             if key in catalog and catalog[key]['text']!=c['text']:raise ValueError('Conflicting claim identity')
             catalog[key]=deepcopy(c)
+    original_catalog=deepcopy(catalog)
+    resolution=(adjudication or {}).get('inventory_resolution')
+    resolved=resolution is not None
+    if resolved:
+        from copilot.review_annotations import inventory_digest
+        if (resolution.get('input_sha256')!=inventory_digest(claims,first,second)
+            or not resolution.get('reason') or not isinstance(resolution.get('claims'),list)):
+            raise ValueError('Invalid or stale inventory resolution')
+        final=resolution['claims'];catalog={c['id']:deepcopy(c) for c in final}
+        if len(catalog)!=len(final) or any(not c['text'].strip() for c in final):raise ValueError('Distinct final inventory required')
+    forced=not blindness_intact or any((b or {}).get('identity_incident',False) for b in (first,second))
     categorical=(*JUDGMENTS,'critical_error','reference_support','factual','scientific','external_scientific','reference_ids')
     def judgment(bundle,key):
         if not bundle or key not in bundle['judgments']:return None
@@ -127,24 +138,35 @@ def score_annotation_pair(claims,first=None,second=None,adjudication=None):
             raise ValueError('Judge every reference pair')
         if j['scientific'] and j['scientific_accuracy']=='not_applicable':raise ValueError('Scientific assertion needs scientific judgment')
         if j['factual'] and j['textual_support']=='not_applicable':raise ValueError('Factual assertion needs evidence judgment')
-        return {k:deepcopy(j[k]) for k in categorical}
+        if j['external_scientific'] and not (j['scientific'] and j['factual']):raise ValueError('External science must be scientific and factual')
+        value={k:deepcopy(j[k]) for k in categorical}
+        value['reference_ids']=sorted(refs)
+        value['observation_ids']=sorted(j.get('observation_ids',[]))
+        return value
     for bundle in bundles:
-        if set(bundle['judgments'])-set(catalog):raise ValueError('Unknown claim')
-        if set(bundle.get('case_obligations',{}))!=set(OBLIGATIONS) or any(v not in {'met','unmet','not_applicable'} for v in bundle['case_obligations'].values()):
+        allowed=set(catalog) if bundle is adjudication else set(original_catalog)
+        if set(bundle['judgments'])-allowed:raise ValueError('Unknown claim')
+        obligations=bundle.get('case_obligations',{})
+        if (not isinstance(obligations,dict) or set(obligations)-set(OBLIGATIONS)
+            or (bundle is not adjudication and set(obligations)!=set(OBLIGATIONS))
+            or any(not isinstance(v,str) or v not in {'met','unmet','not_applicable'} for v in obligations.values())):
             raise ValueError('All case obligations require explicit annotation')
         for key in bundle['judgments']:judgment(bundle,key)
     result={'claims':len(catalog),'citation_mentions':0,'valid_citation_mentions':0,'textual_pairs':0,'textual_supported':0,
             'scientific_claims':0,'scientific_correct':0,'factual_claims':0,'unsupported_claims':0,
             'missing_required_citations':0,'critical_errors':0,'pending_claims':0,'disagreements':[], 'rows':[]}
-    inventory_pending=not (first and second and first.get('inventory_complete') is True and second.get('inventory_complete') is True)
+    inventory_pending=not (first and second) or (not resolved and not
+        (first.get('inventory_complete') is True and second.get('inventory_complete') is True
+         and not first.get('inventory_disputes') and not second.get('inventory_disputes')))
     valid=rag.valid_ids()
     for key,c in catalog.items():
         a,b=judgment(first,key),judgment(second,key)
         added=key not in ids
         existence_agreed=not added or (first and second and any(x['id']==key for x in first.get('added_claims',[])) and any(x['id']==key for x in second.get('added_claims',[])))
-        agreed=a if a is not None and a==b and existence_agreed else None
+        changed=resolved and (key not in original_catalog or c['text']!=original_catalog[key]['text'])
+        agreed=a if a is not None and a==b and existence_agreed and not forced and not changed else None
         disputed=(a is not None and b is not None and a!=b) or (added and not existence_agreed)
-        if disputed:
+        if disputed or forced or changed or (resolved and agreed is None):
             result['disagreements'].append(key)
             agreed=judgment(adjudication,key)
         # Provisional inclusive counts are explicitly pending, never a pass.
@@ -163,13 +185,18 @@ def score_annotation_pair(claims,first=None,second=None,adjudication=None):
         result['rows'].append({'claim_id':key,'text':c['text'],'classification':flags,'judgment':agreed,'added':added})
     obligations={};disputes=[]
     for key in OBLIGATIONS:
-        a=first['case_obligations'][key] if first else None;b=second['case_obligations'][key] if second else None
-        value=a if a is not None and a==b else None
+        a=first['case_obligations'].get(key) if first else None;b=second['case_obligations'].get(key) if second else None
+        value=a if a is not None and a==b and not forced else None
         if a is not None and b is not None and a!=b:
-            disputes.append(key);value=adjudication['case_obligations'][key] if adjudication else None
+            disputes.append(key);value=adjudication.get('case_obligations',{}).get(key) if adjudication else None
+        if forced:value=adjudication.get('case_obligations',{}).get(key) if adjudication else None
         obligations[key]=value
     pending=inventory_pending or result['pending_claims'] or any(v is None for v in obligations.values())
     result.update(inventory_pending=bool(inventory_pending),case_obligations=obligations,
+        identity_adjudication_required=forced,
+        inventory_counts={'initial':len(claims),'first':len(claims)+len((first or {}).get('added_claims',[])),
+                          'second':len(claims)+len((second or {}).get('added_claims',[])),
+                          'final':len(catalog) if not inventory_pending and not result['pending_claims'] else None},
         obligation_disagreements=disputes,omitted_obligations=[k for k,v in obligations.items() if v=='unmet'],
         semantic_status='pending_independent_review' if pending else 'reviewed',
         review_type='AI semantic review with human adjudication of disagreements',rates={})

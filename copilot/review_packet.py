@@ -19,7 +19,7 @@ CHUNK_BYTES=200000
 def canonical(value):return json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()
 
 
-def case_packet(row,seal_hash):
+def case_packet(row,seal_hash,aliases=()):
     review_id=hashlib.sha256(('batch5c-review-v1\0'+seal_hash+'\0'+row['alias']).encode()).hexdigest()[:16]
     source=row.get('result')
     packet={'schema':'batch5c-ai-packet-v1','review_id':review_id,'published_report':source is not None,
@@ -29,7 +29,7 @@ def case_packet(row,seal_hash):
     packet.update(report={k:deepcopy(source[k]) for k in FIELDS if k in source},
                   observations=deepcopy(source.get('observations',[])),prediction=deepcopy(source.get('prediction')),
                   rendered_report=explanation.render(source),
-                  selection_provenance='llm_selected' if row['status'] in {'complete','ambiguous','insufficient_data'} and not source.get('policy_violations') else 'executor_fallback')
+                  selection_provenance='llm_selected' if row['status'] in {'complete','ambiguous','insufficient_data'} and not source.get('policy_violations') else 'undetermined_after_failure')
     groups={}
     def add(key,text,pointer,refs=()):
         # Equivalence is explicit for template facts, never a text similarity score.
@@ -94,19 +94,23 @@ def case_packet(row,seal_hash):
             for k,v in value.items():inspect(v,pointer+'/'+k)
         elif isinstance(value,list):
             for i,v in enumerate(value):inspect(v,pointer+'/'+str(i))
-        elif isinstance(value,str) and (IDENTITY_WORDS.search(value) or value==row['alias'] or '/Users/' in value):
+        elif isinstance(value,str) and (IDENTITY_WORDS.search(value) or any(a in value for a in (*aliases,row['alias']))
+                or any(p in value for p in ('/Users/','/private/','/home/','/tmp/'))):
             packet['identity_exposures'].append(pointer)
     for key in ('report','observations','prediction','rendered_report'):inspect(packet[key],'/'+key)
     packet['blindness_intact']=not packet['identity_exposures']
     return packet
 
 
-def prepare(run,output,private_map,instructions):
-    rows,_,_,seal_hash,_=validate_seal(run)
+def prepare(run,output,private_map,instructions,seal_record=None):
+    rows,_,seal,seal_hash,_=validate_seal(run,seal_record)
     output,private_map=Path(output),Path(private_map)
+    if any(p.resolve().is_relative_to(Path(run).resolve()) for p in (output,private_map)):
+        raise ValueError('Review artifacts must be outside the sealed directory')
     if private_map.resolve().is_relative_to(output.resolve()):raise ValueError('Alias map must be outside annotator packages')
     if output.exists() or private_map.exists():raise FileExistsError('Preserve earlier review package')
-    packets=sorted((case_packet(r,seal_hash) for r in rows),key=lambda x:x['review_id'])
+    aliases=tuple(r['alias'] for r in rows)
+    packets=sorted((case_packet(r,seal_hash,aliases) for r in rows),key=lambda x:x['review_id'])
     output.mkdir(mode=0o700,parents=True)
     mapping={case_packet(r,seal_hash)['review_id']:r['alias'] for r in rows}
     if len(mapping)!=len(rows):raise ValueError('Review ID collision')
@@ -123,9 +127,10 @@ def prepare(run,output,private_map,instructions):
         name=f'chunk-{i:03d}.json';exclusive_json(output/name,{'schema':'batch5c-ai-chunk-v1','cases':chunk});files[name]=sha256(output/name)
     files['INSTRUCTIONS.md']=sha256(output/'INSTRUCTIONS.md')
     manifest={'schema':'batch5c-ai-packet-manifest-v1','requested':len(rows),'files':files,
+        'seal_sha256':seal_hash,'outputs_sha256':seal['outputs_sha256'],
         'identity_exposed_cases':sum(not p['blindness_intact'] for p in packets),
         'seed_claims':sum(len(p['claims']) for p in packets),'chunk_bytes_target':CHUNK_BYTES,
-        'claim_definitions_sha256':sha256(__file__),'labels_read':False}
+        'claim_definitions_sha256':sha256(__file__),'render_definitions_sha256':sha256(explanation.__file__),'labels_read':False}
     exclusive_json(output/'manifest.json',manifest)
     return manifest
 
@@ -133,7 +138,8 @@ def prepare(run,output,private_map,instructions):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('run','output','private-map','instructions'):p.add_argument('--'+name,type=Path,required=True)
-    a=p.parse_args();print(json.dumps(prepare(a.run,a.output,a.private_map,a.instructions)))
+    p.add_argument('--seal-record',type=Path)
+    a=p.parse_args();print(json.dumps(prepare(a.run,a.output,a.private_map,a.instructions,a.seal_record)))
 
 
 if __name__=='__main__':main()

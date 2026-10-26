@@ -33,6 +33,16 @@ def test_identity_exposure_requires_human_judgments_even_for_agreements():
     assert review.score_annotation_pair(claims,a,b)['semantic_status']!='reviewed'
 
 
+def test_human_can_reject_a_proposed_claim_but_cannot_replace_missing_annotation():
+    from copilot.review_annotations import inventory_digest
+    claims,a,b=fixture();a['added_claims']=[{'id':'proposed','text':'Invented omission','reference_ids':[]}]
+    j={'reviewer':'Julian','independent':True,'judgments':{},'case_obligations':{},
+       'inventory_resolution':{'input_sha256':inventory_digest(claims,a,b),'claims':claims,'reason':'Reject spurious proposal'}}
+    assert review.score_annotation_pair(claims,a,b,j)['semantic_status']=='reviewed'
+    j['inventory_resolution']['input_sha256']=inventory_digest(claims,a,None)
+    assert review.score_annotation_pair(claims,a,None,j)['semantic_status']!='reviewed'
+
+
 def test_validator_rejects_duplicate_added_text_and_ambiguous_obligation_shape():
     from copilot.review_annotations import validate_case,added_id
     claims,a,b=fixture();packet={'review_id':'r','claims':claims,'observations':[]}

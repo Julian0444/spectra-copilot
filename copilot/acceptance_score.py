@@ -88,6 +88,15 @@ def score_sealed(directory,labels_path,*,review_path=None,seal_record=None,outpu
     if manifest['mode']=='proposal' and (sum(c['kind']=='real' for c in indexed.values())!=80 or sum(c['kind']=='synthetic' for c in indexed.values())!=48):
         raise ValueError('Frozen real/synthetic denominators changed')
     reviews=json.loads(Path(review_path).read_text()) if review_path else {}
+    if reviews.get('schema')=='batch5c-ai-reviews-v1':
+        if reviews['seal_sha256']!=seal_hash or reviews['outputs_sha256']!=seal['outputs_sha256']:
+            raise ValueError('Review join differs from sealed outputs')
+        reviews=reviews['cases']
+        if set(reviews)!=set(indexed):raise ValueError('Review join must cover every case')
+    elif reviews and manifest['mode']=='proposal':raise ValueError('Proposal requires the validated AI review join schema')
+    for bundle in reviews.values():
+        if bundle.get('schema') not in (None,'batch5c-ai-case-review-v1'):
+            raise ValueError('Unknown case review schema; validate and join annotations first')
     scored=[]
     for row in rows:
         label=indexed[row['alias']];report=row.get('result');checks=mechanical(report)
@@ -109,7 +118,8 @@ def score_sealed(directory,labels_path,*,review_path=None,seal_record=None,outpu
             recipe_arithmetic=(len(expected)==len(oracle['admissible_z']) and
                 all(math.isclose(a,b,abs_tol=1e-6,rel_tol=1e-6) for a,b in zip(expected,oracle['admissible_z'])))
         scorer=review.score_annotation_pair if bundle.get('schema')=='batch5c-ai-case-review-v1' else review.score_claim_review
-        semantic=scorer(bundle.get('claims',[]),bundle.get('first'),bundle.get('second'),bundle.get('adjudication'))
+        kwargs={'blindness_intact':bundle.get('blindness_intact',True)} if scorer is review.score_annotation_pair else {}
+        semantic=scorer(bundle.get('claims',[]),bundle.get('first'),bundle.get('second'),bundle.get('adjudication'),**kwargs)
         scored.append({'alias':row['alias'],'kind':label['kind'],'family':label.get('family','real'),
             'cnn_exposure':label.get('cnn_exposure','unspecified'),'status':state,'checks':checks,
             'completion':bool(completion),'recipe_arithmetic_integrity':recipe_arithmetic,'abstention_required':abstention_required,'abstention':bool(abstention),
@@ -125,7 +135,18 @@ def score_sealed(directory,labels_path,*,review_path=None,seal_record=None,outpu
                 ('unsupported_claims','unsupported_claims','factual_claims')]:
             n=sum(r['semantic'][numerator] for r in group);d=sum(r['semantic'][denominator] for r in group)
             semantic_metrics[name]={'numerator':n,'denominator':d,'rate':n/d if d and not semantic_pending else None}
-        return {'requested':len(group),'semantic_metrics':semantic_metrics,'completion':wilson(sum(r['completion'] for r in group),len(group)),
+        semantic_cases={}
+        for name in ('textual_support','scientific_accuracy','unsupported_claims'):
+            applicable=[r['semantic']['rates'][name] for r in group
+                        if r['semantic']['semantic_status']=='reviewed' and r['semantic']['rates'][name]['denominator']]
+            # Descriptive all-correct/all-supported/no-unsupported cases; this does
+            # not replace the frozen pooled claim thresholds with a new criterion.
+            passed=sum(x['numerator']==(0 if name=='unsupported_claims' else x['denominator']) for x in applicable)
+            semantic_cases[name]=wilson(passed,len(applicable))
+        return {'requested':len(group),'semantic_metrics':semantic_metrics,'semantic_by_case':semantic_cases,
+            'omitted_obligations':{k:sum(k in r['semantic'].get('omitted_obligations',[]) for r in group) for k in review.OBLIGATIONS},
+            'pending_obligations':{k:sum(r['semantic'].get('case_obligations',{}).get(k) is None for r in group) for k in review.OBLIGATIONS},
+            'completion':wilson(sum(r['completion'] for r in group),len(group)),
             'model_z':wilson(sum(r['checks']['model_z_preserved'] for r in m),len(m)),
             'prediction_coverage':wilson(len(m),len(valid_inputs)),
             'template_evidence_units':sum(r['checks'].get('template_evidence_units',0) for r in group),
