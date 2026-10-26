@@ -1,0 +1,7 @@
+# Release local 0.3.0 — borrador, sin publicar
+
+Ambos paquetes pasan de 0.2.0 a 0.3.0 porque los wheels 0.2.0 archivados solo representaban el lote 2. Esta entrega incorpora el contrato de entrada v3 y las correcciones posteriores ya presentes en las fuentes, junto con las herramientas/ejecutor de 5C. Copilot requiere desi-fm >=0.3.0,<0.4 para evitar mezclar contratos. No cambia el checkpoint predeterminado v2.1; CNN-17 sigue experimental. No hay entrenamiento ni selección nueva.
+
+FM agrega un demo Gradio local instalable y opcional (extra ui), sin depender del hosting ZeroGPU. Copilot agrega desarrollo exclusivo de manifiesto, esfuerzo autorizado y contabilidad sellada por fase, bootstrap predict+identify, huella SDK beta y verificación de wheels instalados. La CLI individual no habilita gasto; la evaluación paga usa la campaña registrada.
+
+La versión del paquete identifica software, no una aprobación científica. Piloto, aceptación, revisión semántica y publicación tienen estados separados en BATCH_5C_REPORT.md. Publicación no autorizada.
