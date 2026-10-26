@@ -32,7 +32,8 @@ def test_bootstrap_predict_then_matcher_counts_two_of_six(monkeypatch):
     with pytest.raises(ValueError,match='budget'):state.tools[0].call({'npz_path':state.path})
     assert state.calls==6
     state.tools[-1].call({'observation_ids':['obs-1']})
-    assert state.finish()['status']=='insufficient_data'
+    assert state.result['status']=='insufficient_data'
+    assert state.finish()['status']=='explanation_incomplete'  # exceeded analysis cap above
     assert state.finish()['observations'][1]['result']==MATCH
 
 

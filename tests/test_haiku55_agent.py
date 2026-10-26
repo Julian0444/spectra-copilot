@@ -90,7 +90,7 @@ def test_caller_budget_cannot_expand_authorized_turn_or_output_limits(monkeypatc
     captured={}
     _install_fake_runner(monkeypatch,submit_args={'observation_ids':['obs-1']},captured=captured)
     result=agent.run_structured(str(_source(tmp_path)),budget=Budget(limits=Limits(usd=.1,calls=20,max_output_per_call=8192)))
-    assert result['status']=='complete'
+    assert result['status']=='insufficient_data'  # initial matcher caution survives immediate submit
     assert captured['max_iterations']==8 and captured['max_tokens']==4096
 
 

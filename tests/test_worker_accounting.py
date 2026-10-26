@@ -46,7 +46,7 @@ def worker_plan(tmp_path, monkeypatch, *, invalid_first=False, scenario='complet
 def test_invalid_then_valid_real_worker_keeps_certified_zero_and_continues(tmp_path,monkeypatch):
     summary,rows,calls,_=worker_plan(tmp_path,monkeypatch,invalid_first=True)
     assert summary['attempted']==2 and [r['attempts'] for r in rows]==[1,1]
-    assert [r['status'] for r in rows]==['invalid_input','complete']
+    assert [r['status'] for r in rows]==['invalid_input','insufficient_data']
     invalid,valid=[r['result'] for r in rows]
     assert invalid['model_z'] is None
     ledger=invalid['execution_budget']

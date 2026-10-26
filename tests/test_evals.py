@@ -80,7 +80,7 @@ def test_run_structured_returns_payload_with_token_accounting(monkeypatch,tmp_pa
     source=_source(tmp_path);before=source.read_bytes()
     r=agent.run_structured(str(source),model='claude-haiku-4-5')
     assert r['model_z']==agent.tools.official_z(r['prediction']) and r['tokens_in']==100 and r['tokens_out']==20
-    assert r['status']=='ambiguous'
+    assert r['status']=='insufficient_data'  # initial matcher sees no line evidence
     assert captured['max_iterations']==8
     assert 'submit_report exactly once' in captured['system']
     assert 'thinking' not in captured
@@ -91,7 +91,7 @@ def test_run_structured_returns_payload_with_token_accounting(monkeypatch,tmp_pa
 def test_successive_runs_have_no_stale_report(monkeypatch,tmp_path):
     source=_source(tmp_path)
     _install_fake_runner(monkeypatch,submit_args=dict(observation_ids=['obs-1'],assessment='ambiguous'))
-    assert agent.run_structured(str(source))['status']=='ambiguous'
+    assert agent.run_structured(str(source))['status']=='insufficient_data'
     _install_fake_runner(monkeypatch)
     assert agent.run_structured(str(source))['status']=='explanation_incomplete'
 
@@ -195,4 +195,4 @@ def test_runner_multiple_submits_keep_first(monkeypatch,tmp_path):
         with pytest.raises(ValueError,match='already'):
             offered['submit_report'].call(dict(args,assessment='descriptive'))
     _install_fake_runner(monkeypatch,callback=callback)
-    assert agent.run_structured(str(_source(tmp_path)))['status']=='ambiguous'
+    assert agent.run_structured(str(_source(tmp_path)))['status']=='insufficient_data'

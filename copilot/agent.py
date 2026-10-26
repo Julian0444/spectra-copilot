@@ -207,6 +207,9 @@ class RunTools:
         self.prediction = deepcopy(value)
         self.calls += 1
         self.record('predict_redshift', {'npz_path': 'spectrum.npz'}, value)
+        # Both executor-owned analyses count within the unchanged six-call cap.
+        # Use the same guard/ledger as later LLM-selected analyses.
+        self.tools[1].call({'npz_path':self.path, 'z':explanation.canonical_z(value)})
 
     def finish(self, status='explanation_incomplete'):
         # Revalidate even cached reports: the corpus can change during a run.
@@ -290,7 +293,8 @@ def execute_run(path, model, structured, state=None, budget=None, progress=None)
             system=system_prompt(state.prediction["model_identity"]) + STRUCTURED_RULE,
             tools=state.tools,
             messages=[{"role": "user", "content": f"Analyze the spectrum in {path} and " +
-                       "submit the result via submit_report. Initial executor observation: " + json.dumps(state.observations[0])}],
+                       "submit the result via submit_report. Initial executor observations: " +
+                       json.dumps([wire_observation(o) for o in state.observations])}],
             **request_kwargs(model))
         history, final = state.history, None
         usage = state.usage

@@ -22,6 +22,7 @@ def setup_run(monkeypatch, **kwargs):
 @pytest.mark.parametrize('field,value', [('model_z', 9.), ('z_final', 9.),
                                        ('lines_matched', 999), ('summary', 'The correct redshift is 9')])
 def test_cannot_submit_overrides_or_invented_measurements(monkeypatch, field, value):
+    monkeypatch.setattr(agent.tools, 'identify_spectral_lines_impl', lambda path,z: {'z_tested':z,'n_matched':2,'n_expected_in_coverage':2})
     state = agent.RunTools('/opaque.npz')
     monkeypatch.setattr(agent.tools, 'predict_redshift_impl', lambda path: PREDICTION.copy())
     state.bootstrap()
@@ -34,6 +35,7 @@ def test_cannot_submit_overrides_or_invented_measurements(monkeypatch, field, va
 
 def test_unknown_observation_cannot_fabricate_a_tool(monkeypatch):
     monkeypatch.setattr(agent.tools, 'predict_redshift_impl', lambda path: PREDICTION.copy())
+    monkeypatch.setattr(agent.tools, 'identify_spectral_lines_impl', lambda path,z: {'z_tested':z,'n_matched':2,'n_expected_in_coverage':2})
     state = agent.RunTools('/opaque.npz'); state.bootstrap()
     with pytest.raises(ValueError, match='evidence'):
         state.tools[-1].call({'observation_ids': ['invented-tool-result']})
@@ -51,7 +53,7 @@ def test_contradictory_prose_is_quarantined_not_rendered(monkeypatch, tmp_path):
     assert '9.99' not in explanation.render(report)
 
 
-@pytest.mark.parametrize('assessment,status', [('descriptive','complete'), ('ambiguous','ambiguous'),
+@pytest.mark.parametrize('assessment,status', [('descriptive','insufficient_data'), ('ambiguous','insufficient_data'),
                                               ('insufficient_data','insufficient_data')])
 def test_valid_report_and_abstention_keep_executor_prediction(monkeypatch, tmp_path, assessment, status):
     setup_run(monkeypatch, submit_args={'observation_ids': ['obs-1'], 'assessment': assessment})
@@ -89,9 +91,10 @@ def test_no_report_is_explicit_and_does_not_erase_prediction(monkeypatch, tmp_pa
 
 def test_budget_and_result_copies_cannot_replace_canonical_prediction(monkeypatch):
     monkeypatch.setattr(agent.tools, 'predict_redshift_impl', lambda path: PREDICTION.copy())
+    monkeypatch.setattr(agent.tools, 'identify_spectral_lines_impl', lambda path,z: {'z_tested':z,'n_matched':2,'n_expected_in_coverage':2})
     state = agent.RunTools('/opaque.npz'); state.bootstrap()
     tool = state.tools[0]
-    for _ in range(5):
+    for _ in range(4):
         observed = json.loads(tool.call({'npz_path': state.path}))
         observed['result']['z_pred_map'] = 99.
     with pytest.raises(ValueError, match='budget'):
@@ -127,4 +130,4 @@ def test_unknown_tool_sdk_attempt_is_recorded_without_inventing_results(monkeypa
     assert len(requests) == 2
     assert report['model_z'] == .42 and report['status'] == 'explanation_incomplete'
     assert report['policy_violations'] == ['unknown_tool']
-    assert [o['tool'] for o in report['observations']] == ['predict_redshift']
+    assert [o['tool'] for o in report['observations']] == ['predict_redshift','identify_spectral_lines']

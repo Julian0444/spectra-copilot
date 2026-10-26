@@ -86,5 +86,6 @@ def test_public_heldout_sdk_cannot_hide_ambiguity(monkeypatch,selected):
     measurement=report['observations'][1]['result']
     assert len(requests)==2 and measurement['ambiguous'] and measurement['candidates']
     assert report['status']=='ambiguous' and report['model_z']==PREDICTION['z_pred_map']
-    assert report['alternatives']==[dict(c,observation_id='obs-2') for c in measurement['candidates']]
+    assert report['alternatives']==[dict(c,observation_id=o['id']) for o in report['observations']
+                                    if o['tool']=='identify_spectral_lines' for c in o['result']['candidates']]
     assert report['execution_budget']['retries']==0

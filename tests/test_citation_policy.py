@@ -48,6 +48,7 @@ def test_citation_cannot_attribute_invented_content(field,value):
 
 def test_submit_only_selects_retrieved_ids_and_never_accepts_claim_text(monkeypatch):
     monkeypatch.setattr(agent.tools,'predict_redshift_impl',lambda path:PREDICTION)
+    monkeypatch.setattr(agent.tools,'identify_spectral_lines_impl',lambda path,z:{'z_tested':z,'n_matched':2,'n_expected_in_coverage':2})
     state=agent.RunTools('/opaque.npz');state.bootstrap()
     lookup={t.name:t for t in state.tools}['lookup_reference']
     got=json.loads(lookup.call({'query':'Halpha OII confusion'}))
