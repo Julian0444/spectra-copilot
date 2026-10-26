@@ -39,3 +39,16 @@ def test_candidate_identity_detects_asset_change_and_internal_tampering(tmp_path
     with pytest.raises(ValueError,match='differs'):identity.verify(p,docs)
     result['behavior']['policy']='tampered';write_json(p,result)
     with pytest.raises(ValueError,match='Invalid'):identity.verify(p,docs)
+
+
+def test_verify_rejects_forged_execution_path_even_when_behavior_is_valid(tmp_path,monkeypatch):
+    behavior={'code_sha256':{'copilot/agent.py':'a'*64},'configuration':'frozen'}
+    saved={'schema':'spectra-system-identity-v1','kind':'installed-5c',
+           'behavior':behavior,'behavior_sha256':identity.digest(behavior),
+           'llm_path_sha256':identity.llm_path_digest(behavior)}
+    monkeypatch.setattr(identity,'capture',lambda *a,**kw:saved)
+    path=tmp_path/'identity.json';write_json(path,saved)
+    assert identity.verify(path,tmp_path,require_installed=True)==saved['behavior_sha256']
+    edited={**saved,'llm_path_sha256':'f'*64};write_json(path,edited)
+    with pytest.raises(ValueError,match='execution path'):
+        identity.verify(path,tmp_path,require_installed=True)
