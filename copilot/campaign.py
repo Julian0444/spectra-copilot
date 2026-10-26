@@ -81,6 +81,38 @@ def close(directory,protocol_dir,phase,output):
             'outputs_sha256':seal['outputs_sha256'],'calls':summary['llm_calls'],'closed_ns':time.time_ns()})
 
 
+def authorize_worker(args):
+    """Bind one worker attempt to its parent's open, committed campaign."""
+    from copilot.budget import CASE_MAX_NANODOLLARS,nanodollars
+    import re
+    if args.campaign_dir is None or args.phase not in CAPS or not re.fullmatch('[0-9a-f]{24}',args.alias or ''):
+        raise ValueError('Registered campaign row required')
+    directory=Path(args.campaign_dir)
+    with locked(directory,args.protocol_dir):
+        claimed=json.loads((directory/(args.phase+'.claim.json')).read_text())
+        if (directory/(args.phase+'.close.json')).exists():raise ValueError('Phase already closed')
+        output=Path(claimed['output'])
+        identity_hash=sha256(args.candidate)
+        if claimed['identities'].get(args.effort)!=identity_hash:raise ValueError('Different worker identity')
+        manifest=json.loads((output/'manifest.json').read_text())
+        if manifest['phase']!=args.phase or manifest['variant_identities'].get(args.effort)!=identity_hash:
+            raise ValueError('Different manifest')
+        items=[i for i in manifest['input_identities'] if i['alias']==args.alias]
+        if len(items)!=1 or items[0].get('effort',manifest['effort'])!=args.effort:
+            raise ValueError('Different worker row')
+        if items[0]['input_sha256']!=args.expected_sha256:raise ValueError('Different worker bytes')
+        required={args.input:output/'inputs'/(args.alias+'.npz'),
+                  args.progress:output/'traces'/(args.alias+'.progress.json'),
+                  args.result:output/'traces'/(args.alias+'.result.json'),
+                  args.audit_path:directory/'paid-calls.jsonl'}
+        if any(actual is None or Path(actual).resolve()!=expected.resolve() for actual,expected in required.items()):
+            raise ValueError('Worker paths escape claimed run')
+        if nanodollars(args.budget_usd)!=CASE_MAX_NANODOLLARS or args.deadline_monotonic is None:
+            raise ValueError('Worker ceiling or deadline differs')
+        exclusive_json(directory/(args.phase+'.'+args.alias+'.worker.json'),
+                       {'identity_sha256':identity_hash,'input_sha256':args.expected_sha256,'created_ns':time.time_ns()})
+
+
 def main():
     import argparse
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=['init'])

@@ -29,11 +29,16 @@ def main():
     p.add_argument('--expected-sha256')
     p.add_argument('--deadline-monotonic',type=float)
     p.add_argument('--audit-path',type=Path);p.add_argument('--alias');p.add_argument('--phase')
+    p.add_argument('--campaign-dir',type=Path)
     args=p.parse_args()
     if not 0<=args.budget_usd<=CASE_CEILING_USD or not 0<args.seconds<=Limits().seconds:
         p.error('Outside frozen per-case limits')
     if args.budget_usd and (args.candidate is None or args.protocol_dir is None):
         p.error('Paid execution requires the registered installed identity and protocol')
+    if args.budget_usd:
+        from copilot.campaign import authorize_worker
+        try:authorize_worker(args)
+        except (ValueError,OSError,KeyError,TypeError):p.error('Paid worker requires an open campaign claim and a unique registered row')
     budget=Budget(PINNED_MODEL,Limits(usd=args.budget_usd,seconds=args.seconds),effort=args.effort)
     if args.deadline_monotonic is not None:
         if not math.isfinite(args.deadline_monotonic):p.error('Invalid deadline')

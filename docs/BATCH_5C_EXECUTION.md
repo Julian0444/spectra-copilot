@@ -31,6 +31,41 @@ puerta D, sin modificar rúbrica/selección. Clave: **no rotada, por decisión d
 Julian; vence 2026-11-20**. Solo se carga dentro del proceso autorizado, jamás
 en argumentos, archivos o sesiones de revisión.
 
+## Desarrollo y campaña 5C
+
+El materializador empaquetado `python -m copilot.development --manifest <desarrollo>
+--output <nuevo> --raw-root <datos-locales> --index <sqlite>` solo abre el manifiesto
+con SHA-256 `60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4`.
+Recalcula los 12 casos y produce por separado NPZ, registro, plan y etiquetas de
+desarrollo. No requiere ni lee aceptación. El registro comprometido vive en
+`docs/protocol/batch5c-development-registry.json`; todo input debe coincidir por
+hash de bytes y arrays. El soporte inválido pertenece al registro y el worker lo
+rechaza antes del LLM.
+
+`python -m copilot.campaign init --directory <campaña> --protocol-dir <docs>`
+crea una sola vez la campaña cuyo ID y hash de ruta están comprometidos en
+`docs/protocol/batch5c-campaign.json`. Cada fase reclama un único intento; una
+fase abierta o cerrada con gasto no certificado bloquea las siguientes. No se
+reutilizan directorios, reclamos ni sellos. Antes del reclamo se exige presupuesto
+suficiente para todas las filas: mínimos US$2,313216 / US$1,156608 / US$12,337152
+para piloto / confirmación / aceptación, dentro de sus techos autorizados.
+
+El plan `mode: development` incluye `phase`, `registry_sha256` y esfuerzo por fila.
+Piloto: 24 filas, pares low/medium para slots pares desde cero, medium/low para
+impares. Se ejecuta con `python -m copilot.acceptance --inputs <pilot-inputs.json>
+--output <nuevo> --candidate <identidad-low> --candidate-medium <identidad-medium>
+--effort low --campaign-dir <campaña> --protocol-dir <docs> --budget-usd 2.40`.
+Cada identidad debe corresponder a los wheels instalados. El worker recaptura la
+identidad y exige reclamo abierto, rutas, input, esfuerzo y alias coincidentes;
+un marcador exclusivo impide un segundo worker para la misma fila. Ni
+`copilot.agent` ni el worker aislado autorizan gasto fuera de ese circuito.
+La clave se carga solo dentro del proceso autorizado, nunca en esta línea de
+comandos. El ledger y `paid-calls.jsonl` se sincronizan antes/después de cada POST.
+
+Confirmación: los mismos 12 slots, solo el esfuerzo elegido, máximo US$1,20,
+una vez y únicamente tras corregir un defecto demostrado del camino LLM. La
+adenda 5C-1 fija elección y puerta antes del piloto; esta guía no las sustituye.
+
 ## Custodia de entradas y etiquetas
 
 Un custodio de 5C materializa los inputs científicos desde la selección sellada,

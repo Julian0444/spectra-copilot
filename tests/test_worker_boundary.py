@@ -47,6 +47,8 @@ def test_worker_rejects_changed_bytes_with_certified_zero(tmp_path,monkeypatch):
 
 
 def test_identity_time_counts_inside_parent_deadline(tmp_path,monkeypatch):
+    from copilot import campaign
+    monkeypatch.setattr(campaign,'authorize_worker',lambda args:None)  # tested at campaign boundary separately
     path=tmp_path/'input.npz';path.write_bytes(spectrum())
     result=tmp_path/'result.json';progress=tmp_path/'progress.json'
     monkeypatch.setattr(sys,'argv',['worker','--input',str(path),'--result',str(result),

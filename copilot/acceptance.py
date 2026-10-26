@@ -59,13 +59,14 @@ def _failed(code,progress=None,paid_ceiling=0):
     return report
 
 
-def run_worker(item,directory,usd,seconds=Limits().seconds,command=None,candidate=None,protocol_dir=None,effort='low',audit_path=None,phase=None):
+def run_worker(item,directory,usd,seconds=Limits().seconds,command=None,candidate=None,protocol_dir=None,effort='low',audit_path=None,phase=None,campaign_dir=None):
     directory=Path(directory);progress=directory/(item['alias']+'.progress.json');result=directory/(item['alias']+'.result.json')
     args=command or [sys.executable,*(['-I','-B'] if usd else []),'-m','copilot.acceptance_worker','--input',item['input_path'],
         '--progress',str(progress),'--result',str(result),'--budget-usd',str(usd),'--seconds',str(seconds),'--effort',effort,
         '--expected-sha256',item['input_sha256'],'--deadline-monotonic',str(time.monotonic()+seconds)]
     if candidate and command is None:args+=['--candidate',str(candidate),'--protocol-dir',str(protocol_dir)]
     if audit_path and command is None:args+=['--audit-path',str(audit_path),'--alias',item['alias'],'--phase',phase]
+    if campaign_dir and command is None:args+=['--campaign-dir',str(campaign_dir)]
     if command is None:
         from copilot.budget import Budget
         # No POST can precede a durable reservation. A killed import/preflight
@@ -117,6 +118,8 @@ def authorize_run(plan,candidates,protocol_dir,campaign_dir,effort,usd):
     if campaign_dir is None:raise ValueError('Registered campaign required')
     spec=campaign.specification(campaign_dir,protocol_dir)
     phase=plan.get('phase','proposal')
+    if nanodollars(usd)<len(plan['inputs'])*CASE_MAX_NANODOLLARS:
+        raise ValueError('Insufficient funding for every requested case ceiling')
     if nanodollars(usd)>campaign.CAPS[phase]:raise ValueError('Phase ceiling exceeded')
     variants={'low','medium'} if phase=='pilot' else {effort}
     for variant in variants:
@@ -201,7 +204,7 @@ def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=Li
                     result=runner(item['input_path']);timed_out=False
                 else:
                     variant=item.get('effort',effort)
-                    audit={'audit_path':Path(campaign_dir)/'paid-calls.jsonl','phase':phase} if campaign_dir else {}
+                    audit={'audit_path':Path(campaign_dir)/'paid-calls.jsonl','phase':phase,'campaign_dir':campaign_dir} if campaign_dir else {}
                     result,timed_out=run_worker(item,traces,CASE_MAX_USD if usd else 0.,seconds,candidate=candidates.get(variant),protocol_dir=protocol_dir,effort=variant,**audit)
                 if result.get('status') not in TERMINAL:raise ValueError('Invalid result state')
                 row['result']=sanitize(result)

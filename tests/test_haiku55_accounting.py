@@ -53,6 +53,9 @@ def test_all_128_invented_cases_receive_new_worker_budget_without_float_drift(tm
 def test_exact_remaining_case_budget_does_not_stop_at_float_boundary(tmp_path,monkeypatch):
     """0.125014 - 0.028630 rounds below 0.096384 in binary floating point."""
     from copilot import candidate_identity
+    # Exercise the defensive loop at its historical exact boundary. Production
+    # phase funding is tested separately and requires the full population cap.
+    monkeypatch.setattr(acceptance,'authorize_run',lambda *a,**k:None)
     from test_development_execution import campaign
     _,campaign_dir,docs=campaign(tmp_path)
     write_json(campaign_dir/'pilot.claim.json',{})
@@ -95,6 +98,8 @@ def test_cli_and_worker_use_the_same_authorized_limits(tmp_path,monkeypatch,entr
         assert exc.value.code==2 and not captured
         return
     else:
+        from copilot import campaign
+        monkeypatch.setattr(campaign,'authorize_worker',lambda args:None)  # budget propagation only
         monkeypatch.setattr(agent,'run_structured',check_budget)
         monkeypatch.setattr(candidate_identity,'verify',lambda *a,**k:None)
         source=tmp_path/'scientific-input';source.write_bytes(b'invented fixture bytes; agent is replaced')
