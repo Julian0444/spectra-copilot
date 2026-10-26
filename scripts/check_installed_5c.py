@@ -29,11 +29,12 @@ def main():
     assert not os.environ.get('PYTHONPATH') and not os.environ.get('ANTHROPIC_API_KEY')
     imports={name:module.__file__ for name,module in [('copilot',copilot),('desi_fm',desi_fm),('tools',tools),('rag',rag)]}
     assert all('site-packages' in path for path in imports.values())
+    write_json(a.output/'imports.json',{'imports':imports,'cwd':str(Path.cwd()),'PYTHONPATH':None,'script_sha256':sha256(__file__)})
     build=installed_evidence(a.build_manifest)
     selection=json.loads((a.development/'development-scoring.json').read_text())['cases']
     inputs=json.loads((a.development/'pilot-inputs.json').read_text())['inputs']
     valid=Path(inputs[0]['input_path'])
-    invalid=Path(next(i['input_path'] for i,c in zip(inputs,selection) if c['expected_answer']['must_reject_input']))
+    invalid=Path(next(i['input_path'] for i,c in zip(inputs,selection) if c['expected_answer'].get('must_reject_input',False)))
     single=Path(next(i['input_path'] for i,c in zip(inputs,selection) if c.get('family')=='single_line'))
     resources=rag.corpus_hashes();assert len(resources)==16
     prediction=tools.predict_redshift_impl(str(valid));z=tools.official_z(prediction)
