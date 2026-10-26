@@ -39,6 +39,7 @@ def main():
     assert not (root/'paid-calls.jsonl').exists()
     assert (root/('pilot.'+alias+'.worker.json')).is_file()
     record={'installed_module':acceptance.__file__,'python':sys.executable,'invalid_input_sha256':sha256(source),
+            'installation':candidate_identity.installed_evidence(a.build_manifest),'identity_sha256':sha256(identity),
             'worker_substituted':False,'timeout':False,'result':'invalid_input','paid_calls':0,
             'known_usd':0,'cost_certified':True,'real_campaign_used':False,'acceptance_opened':False}
     write_json(a.output/'verification.json',record);print(json.dumps(record))

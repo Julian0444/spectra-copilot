@@ -13,7 +13,10 @@ from gradio_client.exceptions import AppError
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--valid',required=True);p.add_argument('--invalid',required=True)
-    p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+    p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--build-manifest',type=Path,required=True);a=p.parse_args()
+    from copilot.candidate_identity import installed_evidence
+    installation=installed_evidence(a.build_manifest)
     assert 'site-packages' in desi_fm.__file__
     with socket.socket() as reservation:
         reservation.bind(('127.0.0.1',0));port=reservation.getsockname()[1]
@@ -29,7 +32,7 @@ def main():
         assert 'model_z' in masked_text and masked_plot
         try:client.predict(handle_file(a.invalid),0.,api_name=endpoint);raise AssertionError('Invalid accepted')
         except AppError:pass
-        a.output.write_text(json.dumps({'module_file':desi_fm.__file__,'api_name':endpoint,
+        a.output.write_text(json.dumps({'module_file':desi_fm.__file__,'api_name':endpoint,'installation':installation,
             'upload_and_predict':True,'masked_reconstruction':True,'invalid_rejected':True,
             'local_only':True,'share':False,'text':text},indent=2)+'\n')
         print(json.dumps({'passed':True,'module_file':desi_fm.__file__,'api_name':endpoint}))
