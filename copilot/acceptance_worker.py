@@ -7,7 +7,7 @@ import argparse
 from pathlib import Path
 
 from copilot import agent
-from copilot.budget import Budget,Limits,PINNED_MODEL,CASE_CEILING_USD
+from copilot.budget import Budget,Limits,PINNED_MODEL,CASE_CEILING_USD,AUTHORIZED_EFFORTS
 from copilot.acceptance_io import write_json,sanitize
 
 
@@ -20,6 +20,7 @@ def main():
     p.add_argument('--result',type=Path,required=True)
     p.add_argument('--budget-usd',type=float,default=0.)
     p.add_argument('--seconds',type=float,default=Limits().seconds)
+    p.add_argument('--effort',choices=AUTHORIZED_EFFORTS,default='low')
     args=p.parse_args()
     if not 0<=args.budget_usd<=CASE_CEILING_USD or not 0<args.seconds<=Limits().seconds:
         p.error('Outside frozen per-case limits')
@@ -27,11 +28,11 @@ def main():
         p.error('Paid execution requires the registered installed identity and protocol')
     if args.candidate:
         from copilot.candidate_identity import verify
-        verify(args.candidate,args.protocol_dir)
-    budget=Budget(PINNED_MODEL,Limits(usd=args.budget_usd,seconds=args.seconds))
+        verify(args.candidate,args.protocol_dir,effort=args.effort)
+    budget=Budget(PINNED_MODEL,Limits(usd=args.budget_usd,seconds=args.seconds),effort=args.effort)
     def progress(report,ledger):
         write_json(args.progress,sanitize({'report':report,'execution_budget':ledger}))
-    result=agent.run_structured(args.input,model=PINNED_MODEL,budget=budget,progress=progress)
+    result=agent.run_structured(args.input,model=PINNED_MODEL,budget=budget,progress=progress,effort=args.effort)
     write_json(args.result,sanitize(result))
     return 0
 

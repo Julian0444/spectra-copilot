@@ -29,7 +29,7 @@ def test_all_128_invented_cases_receive_new_worker_budget_without_float_drift(tm
     plan=tmp_path/'plan.json'
     write_json(plan,{'schema':acceptance.SCHEMA,'mode':'proposal','inputs':[
         {'alias':f'{i:023x}a','input_path':str(source),'input_sha256':sha256(source)} for i in range(128)]})
-    monkeypatch.setattr(candidate_identity,'verify',lambda *a:None)
+    monkeypatch.setattr(candidate_identity,'verify',lambda *a,**k:None)
     dispatched=[]
     def worker(item,directory,usd,seconds,**kwargs):
         dispatched.append(usd)
@@ -72,21 +72,23 @@ def test_exact_remaining_case_budget_does_not_stop_at_float_boundary(tmp_path,mo
 
 
 @pytest.mark.parametrize('entry',['agent','worker'])
-def test_cli_and_worker_use_the_same_authorized_limits(tmp_path,monkeypatch,entry,capsys):
+@pytest.mark.parametrize('effort',['low','medium'])
+def test_cli_and_worker_use_the_same_authorized_limits(tmp_path,monkeypatch,entry,capsys,effort):
     from copilot import candidate_identity
     captured=[]
     def check_budget(*args,**kwargs):
+        assert kwargs['budget'].effort==kwargs['effort']==effort
         captured.append(kwargs['budget'].limits)
         return 'simulated' if entry=='agent' else {'status':'complete'}
     if entry=='agent':
         monkeypatch.setattr(agent,'run',check_budget)
-        monkeypatch.setattr(sys,'argv',['agent','invented','--budget-usd','0.1'])
+        monkeypatch.setattr(sys,'argv',['agent','invented','--budget-usd','0.1','--effort',effort])
         assert agent.main()==0
     else:
         monkeypatch.setattr(agent,'run_structured',check_budget)
-        monkeypatch.setattr(candidate_identity,'verify',lambda *a:None)
+        monkeypatch.setattr(candidate_identity,'verify',lambda *a,**k:None)
         monkeypatch.setattr(sys,'argv',['worker','--input','invented','--progress',str(tmp_path/'progress'),
-            '--result',str(tmp_path/'result'),'--budget-usd','0.1','--candidate','invented','--protocol-dir','invented'])
+            '--result',str(tmp_path/'result'),'--budget-usd','0.1','--candidate','invented','--protocol-dir','invented','--effort',effort])
         assert acceptance_worker.main()==0
     assert vars(captured[0])==dict(input_tokens=800000,output_tokens=32768,max_output_per_call=4096,
                                   calls=8,usd=.1,seconds=120.,retries=0)

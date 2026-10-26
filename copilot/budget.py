@@ -25,11 +25,13 @@ CASE_CEILING_USD = .10
 TOTAL_CEILING_USD = 12.80
 CASE_COUNT = 128
 ANALYSIS_CALLS = 6
+AUTHORIZED_EFFORTS = ('low', 'medium')
 
 
-def request_configuration():
-    """A priori configuration, not calibrated on real Haiku responses."""
-    return {'thinking':{'type':'adaptive'}, 'output_config':{'effort':'low'}}
+def request_configuration(effort='low'):
+    """Only the efforts authorized for the 5C development comparison."""
+    if effort not in AUTHORIZED_EFFORTS:raise ValueError('Unregistered effort')
+    return {'thinking':{'type':'adaptive'}, 'output_config':{'effort':effort}}
 
 
 def nanodollars(usd):
@@ -61,10 +63,13 @@ CASE_MAX_USD = CASE_MAX_NANODOLLARS / NANODOLLARS_PER_USD
 
 
 class Budget:
-    def __init__(self, model=PINNED_MODEL, limits=None, parent=None):
+    def __init__(self, model=PINNED_MODEL, limits=None, parent=None, *, effort='low'):
         self.model,self.limits,self.parent=model,limits or Limits(),parent
+        request_configuration(effort)
+        self.effort=effort
         if model not in RATES:raise BudgetStop('unpriced_model')
         if parent and parent.model!=model:raise ValueError('Aggregate model identity must match')
+        if parent and parent.effort!=effort:raise ValueError('Aggregate effort must match')
         if (any(type(getattr(self.limits,k)) is not int or getattr(self.limits,k)<0 for k in
                 ('input_tokens','output_tokens','calls','max_output_per_call','retries')) or self.limits.retries!=0
                 or not math.isfinite(self.limits.usd) or self.limits.usd<0 or not math.isfinite(self.limits.seconds) or self.limits.seconds<=0):
@@ -150,7 +155,7 @@ class Budget:
         if self.on_change:self.on_change(self.snapshot())
 
     def snapshot(self):
-        return {'model':self.model,'calls':self.calls,'retries':0,'input_tokens':self.used_in,'output_tokens':self.used_out,
+        return {'model':self.model,'effort':self.effort,'calls':self.calls,'retries':0,'input_tokens':self.used_in,'output_tokens':self.used_out,
                 'usd':self.spent/NANODOLLARS_PER_USD if self.certified else None,'known_usd':self.spent/NANODOLLARS_PER_USD,
                 'reserved_usd':self.reserved_usd/NANODOLLARS_PER_USD,'cost_certified':self.certified,
                 'known_nanodollars':self.spent,'reserved_nanodollars':self.reserved_usd,'cap_nanodollars':self.cap,
@@ -158,8 +163,8 @@ class Budget:
                 'input_bound_policy':'UTF-8 request JSON bytes + 4096 framing/tool allowance; text-only; over-bound usage invalidates certification'}
 
 
-def new_budget(model):
-    return Budget(model)  # Zero paid USD without explicit caller-supplied limits.
+def new_budget(model,effort='low'):
+    return Budget(model,effort=effort)  # Zero paid USD without explicit caller-supplied limits.
 
 
 def _clean(value):
@@ -170,7 +175,7 @@ def _clean(value):
     raise BudgetStop('unsupported_request_value')
 
 
-def request_bound(body,model):
+def request_bound(body,model,effort='low'):
     body=_clean(body)
     if body.get('model')!=model:raise BudgetStop('model_budget_mismatch')
     forbidden=('stream','cache_control','mcp_servers','context_management','fallbacks',
@@ -178,7 +183,7 @@ def request_bound(body,model):
     if any(k in body for k in forbidden):
         raise BudgetStop('unbudgeted_request_feature')
     if model==PINNED_MODEL:
-        if any(body.get(k)!=v for k,v in request_configuration().items()):
+        if any(body.get(k)!=v for k,v in request_configuration(effort).items()):
             raise BudgetStop('unbudgeted_request_feature')
         if set(body)-{'model','max_tokens','system','messages','tools','thinking','output_config','tool_choice'}:
             raise BudgetStop('unbudgeted_request_feature')
@@ -219,7 +224,7 @@ def guard_sdk(client,budget):
         if path.split('?')[0]!='/v1/messages':raise BudgetStop('unbudgeted_endpoint')
         remaining=min(budget.remaining_seconds(),Limits().seconds-(time.monotonic()-budget.started))
         if remaining<=0:raise BudgetStop('case_timeout')
-        n_in,n_out=request_bound(kwargs['body'],budget.model)
+        n_in,n_out=request_bound(kwargs['body'],budget.model,effort=budget.effort)
         if budget.model==PINNED_MODEL:
             current=_clean(kwargs['body'])
             if previous is not None and (any(current.get(k)!=previous.get(k) for k in ('system','tools'))

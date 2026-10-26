@@ -28,6 +28,13 @@ def test_candidate_identity_detects_asset_change_and_internal_tampering(tmp_path
     assert proposal['long_prompt_rates_usd_per_million']==[.5,2.5]
     assert proposal['request_configuration']=={'thinking':{'type':'adaptive'},'output_config':{'effort':'low'}}
     assert proposal['case_max_nanodollars']==96384000
+    medium=identity.capture(docs,effort='medium')
+    assert medium['behavior_sha256']!=result['behavior_sha256']
+    from copy import deepcopy
+    medium_behavior=deepcopy(medium['behavior'])
+    medium_behavior['llm_proposal']['request_configuration']=proposal['request_configuration']
+    assert medium_behavior==result['behavior']
+    with pytest.raises(ValueError,match='differs'):identity.verify(p,docs,effort='medium')
     checkpoint.write_bytes(b'changed checkpoint')
     with pytest.raises(ValueError,match='differs'):identity.verify(p,docs)
     result['behavior']['policy']='tampered';write_json(p,result)

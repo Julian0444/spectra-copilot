@@ -16,7 +16,8 @@ import numpy as np
 
 from copilot import explanation
 from copilot.budget import (PINNED_MODEL, Limits, CASE_MAX_USD, CASE_MAX_NANODOLLARS,
-                            TOTAL_CEILING_USD, CASE_COUNT, NANODOLLARS_PER_USD, nanodollars)
+                            TOTAL_CEILING_USD, CASE_COUNT, NANODOLLARS_PER_USD, nanodollars,
+                            AUTHORIZED_EFFORTS, request_configuration)
 from copilot.acceptance_io import sha256,write_json,sanitize,seal_record_path,register_seal
 
 SCHEMA='batch5c-inputs-v1'
@@ -53,10 +54,10 @@ def _failed(code,progress=None,paid_ceiling=0):
     return report
 
 
-def run_worker(item,directory,usd,seconds=Limits().seconds,command=None,candidate=None,protocol_dir=None):
+def run_worker(item,directory,usd,seconds=Limits().seconds,command=None,candidate=None,protocol_dir=None,effort='low'):
     directory=Path(directory);progress=directory/(item['alias']+'.progress.json');result=directory/(item['alias']+'.result.json')
     args=command or [sys.executable,'-m','copilot.acceptance_worker','--input',item['input_path'],
-        '--progress',str(progress),'--result',str(result),'--budget-usd',str(usd),'--seconds',str(seconds)]
+        '--progress',str(progress),'--result',str(result),'--budget-usd',str(usd),'--seconds',str(seconds),'--effort',effort]
     if candidate and command is None:args+=['--candidate',str(candidate),'--protocol-dir',str(protocol_dir)]
     try:
         process=subprocess.run(args,capture_output=True,text=True,timeout=seconds)
@@ -96,12 +97,13 @@ def summarize(rows):
         'scientific_accuracy':'pending_independent_review','labels_loaded':False}
 
 
-def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=Limits().seconds,protocol_dir=None):
+def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=Limits().seconds,protocol_dir=None,effort='low'):
     """Persist every requested row first, then execute once and seal all outputs.
 
     `runner` is only accepted for explicit simulations. Production uses a fresh
     subprocess per case and kills it at the wall deadline, preserving progress.
     """
+    request_configuration(effort)
     plan=read_input_plan(plan_path);output=Path(output)
     if not math.isfinite(usd) or not 0<=usd<=TOTAL_CEILING_USD or not 0<seconds<=Limits().seconds:raise ValueError('Outside frozen execution limits')
     authorized_nanodollars=nanodollars(usd)
@@ -110,12 +112,12 @@ def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=Li
     protocol_dir=Path(protocol_dir or Path(__file__).resolve().parent.parent/'docs')
     if plan['mode']=='proposal':
         from copilot.candidate_identity import verify
-        verify(candidate,protocol_dir)
+        verify(candidate,protocol_dir,effort=effort)
     if seal_record_path(output).exists() or seal_record_path(output).is_symlink():
         raise FileExistsError('Preserve the external seal registration')
     output.mkdir(mode=0o700,parents=True,exist_ok=False)
     traces=output/'traces';traces.mkdir(mode=0o700)
-    identity={'schema':'batch5c-execution-v1','mode':plan['mode'],'model':PINNED_MODEL,
+    identity={'schema':'batch5c-execution-v1','mode':plan['mode'],'model':PINNED_MODEL,'effort':effort,
               'input_plan_sha256':sha256(plan_path),'requested':len(plan['inputs']),
               'input_identities':[{k:v for k,v in item.items() if k!='input_path'} for item in plan['inputs']],
               'candidate_sha256':sha256(candidate) if candidate else None,'authorized_ceiling_usd':usd,
@@ -142,7 +144,7 @@ def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=Li
                 if runner is not None:
                     result=runner(item['input_path']);timed_out=False
                 else:
-                    result,timed_out=run_worker(item,traces,CASE_MAX_USD if usd else 0.,seconds,candidate=candidate,protocol_dir=protocol_dir)
+                    result,timed_out=run_worker(item,traces,CASE_MAX_USD if usd else 0.,seconds,candidate=candidate,protocol_dir=protocol_dir,effort=effort)
                 if result.get('status') not in TERMINAL:raise ValueError('Invalid result state')
                 row['result']=sanitize(result)
                 row['status']='timeout' if timed_out else result['status']
@@ -172,7 +174,8 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--inputs',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
     p.add_argument('--protocol-dir',type=Path);p.add_argument('--candidate',type=Path);p.add_argument('--budget-usd',type=float,default=0.)
-    a=p.parse_args();summary=execute_plan(a.inputs,a.output,usd=a.budget_usd,candidate=a.candidate,protocol_dir=a.protocol_dir)
+    p.add_argument('--effort',choices=AUTHORIZED_EFFORTS,default='low')
+    a=p.parse_args();summary=execute_plan(a.inputs,a.output,usd=a.budget_usd,candidate=a.candidate,protocol_dir=a.protocol_dir,effort=a.effort)
     print(json.dumps(summary));return 0 if summary['status_counts']['pending']==0 else 2
 
 

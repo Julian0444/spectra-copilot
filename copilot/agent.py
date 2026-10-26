@@ -31,7 +31,7 @@ from anthropic import beta_tool
 from copilot import rag, tools, explanation
 from copilot.budget import (Budget, Limits, BudgetStop, PINNED_MODEL, new_budget, guard_sdk,
                             RATES, LONG_PROMPT_RATES, PROMPT_TIER_LIMIT, request_configuration,
-                            CASE_CEILING_USD, ANALYSIS_CALLS)
+                            CASE_CEILING_USD, ANALYSIS_CALLS, AUTHORIZED_EFFORTS)
 from copy import deepcopy
 import inspect
 from copilot.report import SYSTEM, system_prompt
@@ -295,7 +295,7 @@ def execute_run(path, model, structured, state=None, budget=None, progress=None)
             messages=[{"role": "user", "content": f"Analyze the spectrum in {path} and " +
                        "submit the result via submit_report. Initial executor observations: " +
                        json.dumps([wire_observation(o) for o in state.observations])}],
-            **request_kwargs(model))
+            **request_kwargs(model,budget.effort))
         history, final = state.history, None
         usage = state.usage
         for message in runner:
@@ -322,10 +322,10 @@ def execute_run(path, model, structured, state=None, budget=None, progress=None)
     return state, final, usage, history
 
 
-def request_kwargs(model: str) -> dict:
+def request_kwargs(model: str, effort='low') -> dict:
     """Explicit 5B-2.2 settings; retain legacy behavior for historical models."""
     if model == PINNED_MODEL:
-        return request_configuration()
+        return request_configuration(effort)
     if model.startswith("claude-haiku"):
         return {}
     return {"thinking": {"type": "adaptive"}}
@@ -368,11 +368,12 @@ class AgentRunError(RuntimeError):
         self.code, self.history, self.usage = code, history, usage
 
 
-def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None, progress=None) -> dict:
+def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None, progress=None, effort='low') -> dict:
     """Always retain status and any valid official prediction, including failures."""
     usage, history, provenance, state = dict.fromkeys(USAGE_KEYS, 0), [], None, None
     try:
-        budget = budget or new_budget(model)
+        budget = budget or new_budget(model,effort=effort)
+        if budget.effort!=effort:raise BudgetStop('effort_budget_mismatch')
         with agent_input(npz_path) as (path, provenance):
             state = RunTools(path, True)
             state, final, usage, history = execute_run(path, model, True, state=state, budget=budget, progress=progress)
@@ -395,8 +396,8 @@ def run_structured(npz_path: str, model: str = DEFAULT_MODEL, *, budget=None, pr
     return report
 
 
-def run(npz_path: str, model: str = DEFAULT_MODEL, transcript: str | None = None, *, budget=None) -> str:
-    report = run_structured(npz_path, model, budget=budget)
+def run(npz_path: str, model: str = DEFAULT_MODEL, transcript: str | None = None, *, budget=None, effort='low') -> str:
+    report = run_structured(npz_path, model, budget=budget,effort=effort)
     if transcript:
         target = Path(transcript)
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -422,14 +423,15 @@ def main() -> int:
     )
     p.add_argument("npz_path")
     p.add_argument("--model", default=DEFAULT_MODEL)
+    p.add_argument('--effort',choices=AUTHORIZED_EFFORTS,default='low')
     p.add_argument("--budget-usd", type=float, default=0., help="Explicit paid ceiling; default zero. 5C requires prior authorization.")
     p.add_argument("--save-transcript", default=None, metavar="PATH")
     args = p.parse_args()
     if not 0 <= args.budget_usd <= CASE_CEILING_USD or (args.budget_usd and args.model != PINNED_MODEL):
         p.error('Paid proposal requires the pinned model and USD ceiling at most 0.10')
-    budget = Budget(args.model, Limits(usd=args.budget_usd)) if args.budget_usd else None
+    budget = Budget(args.model, Limits(usd=args.budget_usd),effort=args.effort) if args.budget_usd else None
     try:
-        print(run(args.npz_path, args.model, args.save_transcript, budget=budget))
+        print(run(args.npz_path, args.model, args.save_transcript, budget=budget,effort=args.effort))
     except AgentRunError as exc:
         print(explanation.render(exc.result))
         print(json.dumps({'status': 'error', 'code': exc.code}), file=sys.stderr)

@@ -35,7 +35,7 @@ def main():
     model = DESIFoundationModel(DESIFoundationModelConfig(
         n_pixels=64, n_tokens=8, d_model=16, n_layers=1, n_heads=2, n_z_bins=16))
     agent.tools._model = lambda: model
-    candidate_identity.verify = lambda *args: 'invented offline fixture identity'
+    candidate_identity.verify = lambda *args,**kwargs: 'invented offline fixture identity'
 
     def predict(path):
         record({'predict': True})

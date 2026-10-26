@@ -11,7 +11,7 @@ import anthropic
 
 from copilot import agent,rag,tools,explanation
 from copilot.budget import (PINNED_MODEL,Limits,RATES,LONG_PROMPT_RATES,request_configuration,
-                            PROMPT_TIER_LIMIT,CASE_MAX_NANODOLLARS,ANALYSIS_CALLS)
+                            PROMPT_TIER_LIMIT,CASE_MAX_NANODOLLARS,ANALYSIS_CALLS,AUTHORIZED_EFFORTS)
 from copilot.acceptance_io import sha256,write_json
 from desi_fm.predict import model_identity
 import desi_fm
@@ -21,7 +21,8 @@ def digest(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()).hexdigest()
 
 
-def capture(protocol_dir):
+def capture(protocol_dir,effort='low'):
+    request_configuration(effort)
     protocol_dir=Path(protocol_dir)
     code={};locations={}
     for name,module in [('copilot',agent),('desi_fm',desi_fm)]:
@@ -57,7 +58,7 @@ def capture(protocol_dir):
                               'long_prompt_rates_usd_per_million':[n/1000 for n in LONG_PROMPT_RATES[PINNED_MODEL]],
                               'prices_verified_on':'2026-10-22','internal_money_unit':'nanodollars',
                               'prompt_bound_limit':PROMPT_TIER_LIMIT,'over_limit_policy':'reject_before_post',
-                              'request_configuration':request_configuration(),'analysis_calls':ANALYSIS_CALLS,
+                              'request_configuration':request_configuration(effort),'analysis_calls':ANALYSIS_CALLS,
                               'case_max_nanodollars':CASE_MAX_NANODOLLARS,'limits':vars(Limits()),'paid_default_usd':0},
               'protocol':protocol,'runtime':{'python':platform.python_version(),'platform':platform.platform(),
                                              'packages':versions,'anthropic_source_sha256':sdk_sources}}
@@ -70,11 +71,11 @@ def capture(protocol_dir):
             'closure':'Candidate only. 5C must record the final installed identity and justify every behavioral difference before real acceptance.'}
 
 
-def verify(path,protocol_dir):
+def verify(path,protocol_dir,effort='low'):
     saved=json.loads(Path(path).read_text())
     if saved.get('schema')!='spectra-system-identity-v1' or digest(saved['behavior'])!=saved['behavior_sha256']:
         raise ValueError('Invalid candidate identity')
-    current=capture(protocol_dir)
+    current=capture(protocol_dir,effort=effort)
     if current['behavior_sha256']!=saved['behavior_sha256']:
         raise ValueError('Runtime differs from registered identity; register and justify final 5C identity first')
     return saved['behavior_sha256']
@@ -82,9 +83,10 @@ def verify(path,protocol_dir):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--protocol-dir',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--effort',choices=AUTHORIZED_EFFORTS,default='low')
     a=p.parse_args()
     if a.output.exists():raise FileExistsError('Preserve previous identity; use a new path')
-    identity=capture(a.protocol_dir);write_json(a.output,identity)
+    identity=capture(a.protocol_dir,effort=a.effort);write_json(a.output,identity)
     print(json.dumps({'output':str(a.output),'sha256':sha256(a.output),'behavior_sha256':identity['behavior_sha256']}))
 
 

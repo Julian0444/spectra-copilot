@@ -51,7 +51,7 @@ def _install_fake_runner(monkeypatch, submit_args=None, captured=None, callback=
     fake=SimpleNamespace(max_retries=0,beta=SimpleNamespace(messages=SimpleNamespace(tool_runner=tool_runner,_post=lambda *a,**k:_FakeMessage())))
     monkeypatch.setattr(agent.anthropic, 'Anthropic', lambda **kwargs: fake)
     # Positive budgets are confined to simulated clients in these contract tests.
-    monkeypatch.setattr(agent,'new_budget',lambda model:agent.Budget(model,agent.Limits(usd=1.,input_tokens=1000000)))
+    monkeypatch.setattr(agent,'new_budget',lambda model,**kwargs:agent.Budget(model,agent.Limits(usd=1.,input_tokens=1000000),**kwargs))
 
 
 def _source(tmp_path):
