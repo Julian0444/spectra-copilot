@@ -60,6 +60,19 @@ def installed_evidence(build_manifest):
     return result
 
 
+LLM_EXECUTION_MODULES={'__init__.py','acceptance.py','acceptance_io.py','acceptance_worker.py','agent.py',
+    'budget.py','campaign.py','candidate_identity.py','explanation.py','rag.py','report.py','spectral.py','tools.py'}
+
+
+def llm_path_digest(behavior):
+    """Pre-registered execution subset; full identity still hashes every source."""
+    path={k:v for k,v in behavior.items() if k not in
+          {'protocol','auxiliary_code_sha256','installation','source_content_sha256','code_sha256'}}
+    path['code_sha256']={k:v for k,v in behavior['code_sha256'].items()
+                        if k.startswith('desi_fm/') or k.removeprefix('copilot/') in LLM_EXECUTION_MODULES}
+    return digest(path)
+
+
 def capture(protocol_dir,effort='low',*,kind='candidate-5b22',build_manifest=None):
     request_configuration(effort)
     if kind not in {'candidate-5b22','installed-5c'}:raise ValueError('Unknown identity kind')
@@ -116,9 +129,8 @@ def capture(protocol_dir,effort='low',*,kind='candidate-5b22',build_manifest=Non
         try:heads[name]=subprocess.check_output(['git','-C',directory,'rev-parse','HEAD'],text=True,stderr=subprocess.DEVNULL,
                                                env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'}).strip()
         except subprocess.CalledProcessError:heads[name]=None
-    llm_path={k:v for k,v in behavior.items() if k not in {'protocol','auxiliary_code_sha256','installation'}}
     return {'schema':'spectra-system-identity-v1','kind':kind,'behavior':behavior,'behavior_sha256':digest(behavior),
-            'llm_path_sha256':digest(llm_path),'build_manifest':str(Path(build_manifest).resolve()) if build_manifest else None,
+            'llm_path_sha256':llm_path_digest(behavior),'build_manifest':str(Path(build_manifest).resolve()) if build_manifest else None,
             'source_locations':locations,'source_heads':heads,
             'closure':'Installed local identity; scientific acceptance remains separate.' if installation else
                       'Candidate only. 5C must record the final installed identity and justify every behavioral difference before real acceptance.'}

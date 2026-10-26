@@ -166,11 +166,44 @@ def prepare(manifest,output,raw_root,index):
     return registry
 
 
+def prepare_confirmation(source,decision_path,output):
+    """Same registered twelve spectra; no re-selection and no acceptance access."""
+    from copilot.acceptance_io import sha256,write_json
+    from copilot.acceptance import read_input_plan
+    import secrets
+    source,output=Path(source),Path(output)
+    decision=json.loads(Path(decision_path).read_text());effort=decision['chosen_effort']
+    plan=read_input_plan(source/'pilot-inputs.json')
+    validate_plan(plan,source/'registry.json',sha256(source/'registry.json'))
+    labels=json.loads((source/'development-scoring.json').read_text())
+    if labels['schema']!='batch5c-development-scoring-v1':raise ValueError('Development only')
+    indexed={c['alias']:c for c in labels['cases']}
+    selected=[i for i in plan['inputs'] if i['effort']==effort]
+    if len(selected)!=12:raise ValueError('Registered effort required')
+    items=[];scoring=[]
+    for item in selected:
+        alias=secrets.token_hex(12)
+        items.append({**item,'alias':alias});scoring.append({**indexed[item['alias']],'alias':alias})
+    confirmation={'schema':plan['schema'],'mode':'development','phase':'confirmation',
+                  'registry_sha256':plan['registry_sha256'],'inputs':items}
+    validate_plan(confirmation,source/'registry.json',sha256(source/'registry.json'),effort)
+    output.mkdir(mode=0o700,parents=True,exist_ok=False)
+    write_json(output/'confirmation-inputs.json',confirmation)
+    write_json(output/'development-scoring.json',{'schema':labels['schema'],'cases':scoring})
+    return {'inputs':12,'effort':effort}
+
+
 def main():
     import argparse
     p=argparse.ArgumentParser(description=__doc__)
-    for name in ('manifest','output','raw-root','index'):p.add_argument('--'+name,type=Path,required=True)
-    a=p.parse_args();result=prepare(a.manifest,a.output,a.raw_root,a.index)
+    p.add_argument('--output',type=Path,required=True)
+    for name in ('manifest','raw-root','index','confirmation-decision','source'):p.add_argument('--'+name,type=Path)
+    a=p.parse_args()
+    if a.confirmation_decision:
+        if not a.source:p.error('--source required for confirmation')
+        print(json.dumps(prepare_confirmation(a.source,a.confirmation_decision,a.output)));return
+    if not all((a.manifest,a.raw_root,a.index)):p.error('Development manifest, raw-root and index required')
+    result=prepare(a.manifest,a.output,a.raw_root,a.index)
     print(json.dumps({'inputs':len(result['inputs']),'selection_sha256':result['selection_sha256']}))
 
 
