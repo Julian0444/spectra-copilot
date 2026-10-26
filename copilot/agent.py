@@ -290,7 +290,7 @@ def execute_run(path, model, structured, state=None, budget=None, progress=None)
         budget.on_change = lambda snapshot: progress(state.finish(), snapshot)
         progress(state.finish(), budget.snapshot())
     budget.begin()
-    client = anthropic.Anthropic(max_retries=0, timeout=min(Limits().seconds,budget.limits.seconds))
+    client = anthropic.Anthropic(max_retries=0, timeout=min(Limits().seconds,budget.limits.seconds),base_url='https://api.anthropic.com')
     with guard_sdk(client, budget):
         runner = client.beta.messages.tool_runner(
             model=model, max_tokens=min(Limits().max_output_per_call,budget.limits.max_output_per_call),

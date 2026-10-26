@@ -83,7 +83,7 @@ def test_development_reuses_worker_ledger_seal_and_phase_claim(tmp_path,monkeypa
         assert json.loads(Path(path).read_text())['effort']==effort
         verified.append(effort)
     monkeypatch.setattr(candidate_identity,'verify',verify)
-    def worker(item,directory,usd,seconds,*,candidate,protocol_dir,effort):
+    def worker(item,directory,usd,seconds,*,candidate,protocol_dir,effort,**kwargs):
         assert sha256(item['input_path'])==item['input_sha256']
         assert json.loads(Path(candidate).read_text())['effort']==effort
         calls.append(effort)

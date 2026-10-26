@@ -108,7 +108,7 @@ class Budget:
         if n_out>self.limits.max_output_per_call:raise BudgetStop('per_call_output_exceeded')
         cost=n_in*RATES[self.model][0]+n_out*RATES[self.model][1]
         self._check(n_in,n_out,cost)
-        ticket={'input_bound':n_in,'output_bound':n_out,'nanodollars':cost,'status':'reserved'}
+        ticket={'input_bound':n_in,'output_bound':n_out,'nanodollars':cost,'status':'reserved','effort':self.effort,'reserved_ns':time.time_ns()}
         self._reserve(ticket);self.events.append(ticket)
         try:
             if self.on_change:self.on_change(self.snapshot())
@@ -240,6 +240,10 @@ def guard_sdk(client,budget):
         except BaseException:
             budget.uncertain(ticket)
             raise
+        headers=options.get('headers') or {}
+        ticket.update(message_id=getattr(message,'id',None),request_id=getattr(message,'_request_id',None),
+            stop_reason=getattr(message,'stop_reason',None),beta_header=headers.get('anthropic-beta'),
+            response_received=True,response_ns=time.time_ns())
         budget.settle(ticket,getattr(message,'usage',None))
         return message
     resource._post=guarded

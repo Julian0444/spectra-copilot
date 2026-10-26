@@ -6,6 +6,8 @@ family, expected answers or custody IDs are arguments. Budget defaults to zero.
 import argparse
 import hashlib
 import math
+import json
+import os
 from pathlib import Path
 import time
 
@@ -26,6 +28,7 @@ def main():
     p.add_argument('--effort',choices=AUTHORIZED_EFFORTS,default='low')
     p.add_argument('--expected-sha256')
     p.add_argument('--deadline-monotonic',type=float)
+    p.add_argument('--audit-path',type=Path);p.add_argument('--alias');p.add_argument('--phase')
     args=p.parse_args()
     if not 0<=args.budget_usd<=CASE_CEILING_USD or not 0<args.seconds<=Limits().seconds:
         p.error('Outside frozen per-case limits')
@@ -35,14 +38,25 @@ def main():
     if args.deadline_monotonic is not None:
         if not math.isfinite(args.deadline_monotonic):p.error('Invalid deadline')
         budget.started=min(budget.started,args.deadline_monotonic-args.seconds)
+    recorded={}
     def progress(report,ledger):
         write_json(args.progress,sanitize({'report':report,'execution_budget':ledger}))
+        if args.audit_path:
+            for index,event in enumerate(ledger['events']):
+                if recorded.get(index)==event['status']:continue
+                # fsync is inside the guard callback: failure prevents the POST.
+                fd=os.open(args.audit_path,os.O_WRONLY|os.O_APPEND|os.O_CREAT,0o600)
+                with os.fdopen(fd,'a') as stream:
+                    stream.write(json.dumps({'phase':args.phase,'alias':args.alias,'call':index+1,
+                        'event':event,'cost_certified':ledger['cost_certified']},allow_nan=False)+'\n')
+                    stream.flush();os.fsync(stream.fileno())
+                recorded[index]=event['status']
     result=agent.explanation.result(status='technical_error')
     progress(result,budget.snapshot())
     try:
         if args.candidate:
             from copilot.candidate_identity import verify
-            verify(args.candidate,args.protocol_dir,effort=args.effort)
+            verify(args.candidate,args.protocol_dir,effort=args.effort,require_installed=bool(args.budget_usd))
         payload=Path(args.input).read_bytes()
         if args.expected_sha256 and hashlib.sha256(payload).hexdigest()!=args.expected_sha256:
             result['completion_code']='input_identity_mismatch'
