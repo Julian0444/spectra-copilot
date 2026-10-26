@@ -960,3 +960,44 @@ Julian autorizó 5C por fases, manteniendo selección, rúbrica y umbrales. Clav
 la recomendación anterior de rotar; no significa rotación ni revocación.
 Respaldo independiente y H-18 siguen pendientes. Piloto y aceptación todavía
 no ejecutados; no hay aceptación aprobada ni publicación.
+
+
+## 5C — matriz vigente tras el piloto único (2026-10-25/26)
+
+Este registro actualiza los estados históricos anteriores. Fuentes canónicas:
+[BATCH_5C_REPORT.md](BATCH_5C_REPORT.md), [piloto](evidence/batch5c-pilot.json),
+[preservación](evidence/batch5c-preservation.json) y
+[reproducción](BATCH_5C_REPRODUCE.md). La entrega técnica local no equivale a
+aceptación científica ni publicación.
+
+| Hallazgo | Estado 5C y alcance | Evidencia |
+|---|---|---|
+| H-01 conclusión | Conservada acotación a pares/checkpoints seleccionados; resultados mixtos visibles | FM BATCH_5C_AB.md y batch5c-ab-persisted.json; sin inferencia |
+| H-02 superficies | README, model card, demo, API y MCP locales actualizados; hosting/publicación pendientes | BATCH_5C_REPRODUCE.md; RELEASE_0_3_0.md |
+| H-03 concurrencia | Corrección 5A conservada; interfaces instaladas y recuperación verificadas | Evidencia histórica batch5a-E.json; B instalado 5C |
+| H-04 wheels | 0.3.0 construido e instalado en venv nuevo; 0.2.0 sigue solo histórico lote2 | Manifiestos build-05; revisión B aprobada |
+| H-05 localidad | No se establece independencia física; límites previos conservados | batch5a-analysis.json; BATCH_5C_REPORT.md |
+| H-06 cobertura | Regresiones históricas conservadas; 5C añade guardas de esfuerzo, campaña, identidad y worker | batch5c-a.json y revisiones A; rojo→verde en Git |
+| H-07 reproducción | Quick start y demo instalados; 1.174 hashes/tamaños intactos; respaldo independiente pendiente | BATCH_5C_REPRODUCE.md; batch5c-preservation.json |
+| H-08 cronología | Sin nuevos splits/checkpoints ni apertura de test; cronología previa sin reinterpretar | BATCH_4B.md histórico; BATCH_5C_REPORT.md |
+| H-09 solapamientos | Aceptación congelada sin abrir; los 128 casos no tienen resultado 5C | Puerta fallida en batch5c-pilot.json |
+| H-10 selección B-101 | Margen y sensibilidad históricos conservados; no nueva selección | batch5a-analysis.md; STRATA.md |
+| H-11 comparabilidad | No afirmar superioridad CNN/v2.1 ni comparar 12%/9,29% como tal | README/model card; informe 5C |
+| H-12 reproducción lote3 | Se mantiene alcance original por dispositivo; instalación actual no repite lote3 | BATCH_3.md histórico; límites de reproducción 5C |
+| H-13 residuos | Documentos/corpus/contratos locales coherentes; datos históricos rotulados | BATCH_5C_REPRODUCE.md; informe 5C |
+| H-14 evaluador | Intento único persistido y sellado; gasto desconocido detuvo las 23 filas restantes | batch5c-pilot.json y sello externo privado |
+| H-15 huecos | Contrato v3 conservado; rechazo verificado por API/Gradio/MCP instalados | B instalado; demo de desarrollo |
+| H-16 agotamiento | Estados/límites conservados; primer fallo técnico bloqueó gasto; diagnóstico remoto insuficiente | batch5c-pilot.json, causa explícitamente desconocida |
+| H-17 alcance revisión | 5B-2.2 registrada; A/B revisados; D en revisión final; no revisión científica de aceptación | batch5c-prior-review.json; informe 5C |
+| H-18 autoría | Pendiente de respuestas personales de Julian; no atribuidas | BATCH_5C_HUMAN_ACTIONS.md, seis preguntas |
+
+Piloto: low 1 intento/12 solicitados y medium 0/12; total 1 error técnico y 23
+pendientes, cero informes válidos. US$0 liquidado conocido, total desconocido,
+reserva US$0,0035706; cero retries. No hay variante elegida, confirmación,
+aceptación abierta ni adjudicación de casos. Los 128 de aceptación no se suman
+al denominador de 24 del piloto. No se cambió rúbrica para cerrar el resultado.
+
+Clave: **no rotada, por decisión de Julian; vence 2026-11-20**.
+v2.1 sigue por defecto; CNN-17 experimental; model_z oficial.
+Respaldo independiente, H-18 y publicación pendientes. Ramas locales
+codex/lote-5c; sin push, merge o despliegue.

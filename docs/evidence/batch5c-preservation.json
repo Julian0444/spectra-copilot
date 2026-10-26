@@ -1,0 +1,16 @@
+{
+  "schema": "batch5c-preservation-check-v1",
+  "baseline_sha256": "788f8aebe6fccd3eadcc1d3f6b7966284f468643fae9e135443da24d20d4f02b",
+  "expected_files": 1174,
+  "verified_files": 1174,
+  "bytes": 11748875685,
+  "differences": [],
+  "groups": {
+    "lote-4b-01": 658,
+    "preparation": 171,
+    "batch4a-v1": 18,
+    "FINAL PROJECT DEEP LEARNING": 162,
+    "spectra-copilot": 165
+  },
+  "checked_at": "2026-10-26T03:30:11.583964+00:00"
+}

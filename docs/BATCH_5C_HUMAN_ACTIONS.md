@@ -12,6 +12,14 @@ registro H-18, no de una evaluación generada de su autoría:
 5. ¿Qué no permiten concluir CNN/v2.1, tres semillas o un brick compartido?
 6. ¿Qué decisiones y comprobaciones realizaste personalmente?
 
+## Conciliación del piloto
+
+El único intento de generación terminó sin uso certificado. US$0 conocido no
+es gasto total cero; queda una reserva US$0,0035706. El arnés no conservó ID de
+solicitud, HTTP ni clase de excepción. Cualquier conciliación con Anthropic debe
+conservar el intento y su sello, sin reemplazarlo ni autorizar reintentos por
+defecto. No compartir la clave. La puerta falló y aceptación no se abrió.
+
 ## Adjudicación
 
 Todavía no hay anotaciones de aceptación que adjudicar. Si la puerta habilita

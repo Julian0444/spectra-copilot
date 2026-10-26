@@ -1,0 +1,101 @@
+{
+  "schema": "batch5c-negative-pilot-v1",
+  "outcome": "blocked_uncertified_usage",
+  "sealed": true,
+  "seal_sha256": "c2036cdcc7e7830d83fa221e86d74405d7ba6bc22981b9bd90dae9122029d105",
+  "seal_record_sha256": "3cd4d6fd41f755d2446a8b3dee13902bf0be0c528402adf3e5fb7e610dcf8947",
+  "outputs_sha256": "5dc099a2d4bc796c393a0b9c4e24c0d864cdcfd977027a00c27bd6d6b55c56f2",
+  "labels_sha256": "1838aced93a476452e9d574bcc120a42fc977be1b1f9daa1dec9c568b3ef13e3",
+  "seal_verified_before_development_labels": true,
+  "variants": {
+    "low": {
+      "requested": 12,
+      "valid_inputs": 11,
+      "invalid_inputs": 1,
+      "valid_reports": 0,
+      "max_tokens_or_refusal": 0,
+      "status_counts": {
+        "pending": 11,
+        "technical_error": 1
+      },
+      "cost_certified": false,
+      "known_nanodollars": 0,
+      "llm_calls": 1,
+      "gate_checks": {
+        "population": true,
+        "valid_reports": false,
+        "max_tokens_or_refusal": true,
+        "no_other_failures": false,
+        "invalid_zero_calls": false,
+        "certified_cost": false,
+        "no_inflight_or_prompt_tier": false,
+        "model_z_preserved": true
+      },
+      "gate_passed": false,
+      "attempted": 1
+    },
+    "medium": {
+      "requested": 12,
+      "valid_inputs": 11,
+      "invalid_inputs": 1,
+      "valid_reports": 0,
+      "max_tokens_or_refusal": 0,
+      "status_counts": {
+        "pending": 12
+      },
+      "cost_certified": true,
+      "known_nanodollars": 0,
+      "llm_calls": 0,
+      "gate_checks": {
+        "population": true,
+        "valid_reports": false,
+        "max_tokens_or_refusal": true,
+        "no_other_failures": false,
+        "invalid_zero_calls": false,
+        "certified_cost": true,
+        "no_inflight_or_prompt_tier": true,
+        "model_z_preserved": true
+      },
+      "gate_passed": false,
+      "attempted": 0
+    }
+  },
+  "chosen_effort": null,
+  "choice_rejected": true,
+  "gate_passed": false,
+  "requested": 24,
+  "attempted": 1,
+  "pending": 23,
+  "llm_calls": 1,
+  "automatic_retries": 0,
+  "cost_certified": false,
+  "total_usd": null,
+  "known_usd": 0.0,
+  "reserved_usd": 0.0035706,
+  "input_tokens_actual": null,
+  "output_tokens_actual": null,
+  "input_bound": 15226,
+  "output_bound": 4096,
+  "beta_header_acceptance": "unverified_no_response",
+  "response_model": "unverified_no_response",
+  "model_requested": "claude-haiku-5-5",
+  "effort_attempted": "low",
+  "first_case_latency_seconds": 2.783892666000611,
+  "model_z_preserved_available": {
+    "passed": 1,
+    "total": 1
+  },
+  "invalid_input_experimental_check": "not_attempted_in_both_variants",
+  "cause": "Exception at guarded SDK request boundary; error type, HTTP status and provider request ID were not persisted. Remote receipt and billing are unknown.",
+  "confirmation": {
+    "executed": false,
+    "reason": "No variant chosen; uncertified usage blocks further paid phases"
+  },
+  "acceptance": {
+    "opened": false,
+    "executed": false,
+    "reason": "Preparation gate failed"
+  },
+  "private_source": "pilot-negative.json",
+  "private_source_sha256": "0a07e83f00c980f05faedc9a8e830d4ae6fa52adb3b247f742117b6f64236559"
+}

@@ -5,3 +5,10 @@ Ambos paquetes pasan de 0.2.0 a 0.3.0 porque los wheels 0.2.0 archivados solo re
 FM agrega un demo Gradio local instalable y opcional (extra ui), sin depender del hosting ZeroGPU. Copilot agrega desarrollo exclusivo de manifiesto, esfuerzo autorizado y contabilidad sellada por fase, bootstrap predict+identify, huella SDK beta y verificación de wheels instalados. La CLI individual no habilita gasto; la evaluación paga usa la campaña registrada.
 
 La versión del paquete identifica software, no una aprobación científica. Piloto, aceptación, revisión semántica y publicación tienen estados separados en BATCH_5C_REPORT.md. Publicación no autorizada.
+
+Estado del experimento: un intento del piloto falló con consumo desconocido;
+las otras 23 filas quedaron pendientes. No se eligió variante ni se abrió
+aceptación. No hay aprobación científica. Build-05/installed-env conserva el
+paquete evaluado; build-06/release-env entrega los cambios posteriores de revisión
+y puntuación, con llm_path idéntico por variante. Versiones y hashes concretos
+en evidence/batch5c-delivery.json; el número 0.3.0 solo no distingue esos wheels.

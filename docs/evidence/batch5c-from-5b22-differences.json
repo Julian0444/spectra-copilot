@@ -1,0 +1,187 @@
+{
+  "schema": "batch5c-from-5b22-differences-v1",
+  "candidate_file_sha256": "738649a1dc416f5f228564971f90b05ee50d3118858d094f086becf03320b471",
+  "delivery_identity_file_sha256": "8cb09a9f747d05832ba535ffa03d6fbede469f94470a19ad0ee50befe156d189",
+  "comparison_effort": "low",
+  "differences": [
+    {
+      "path": "auxiliary_code_sha256.cnn_development_reader",
+      "before": "6cd7cf5a96473618cd90e2ef2a482c6c7db22e534a5d17f9768e8ae6eb5563f5",
+      "after": null
+    },
+    {
+      "path": "auxiliary_code_sha256.cnn_harness",
+      "before": "ab6da0c429cd090bf124862e07bc8dd4f08e70dc921a86c93aee62f0b0a04375",
+      "after": null
+    },
+    {
+      "path": "auxiliary_code_sha256.legacy_evaluator",
+      "before": "168ead008fe52bbea3b18fdc5bc0716f430bbe555ac3d788ff69bf519a1eec23",
+      "after": null
+    },
+    {
+      "path": "code_sha256.copilot/__init__.py",
+      "before": "7b55669c070dae1e8feb62dcaffe12219e83a5484c0b00422c7436651fa0f053",
+      "after": "eed1b44ccd5774bd1cbc3ffec94cef9dceb090e957ccd4b47c36f692d69beb94"
+    },
+    {
+      "path": "code_sha256.copilot/acceptance.py",
+      "before": "ae26440da6c44aa57ef2a1799587a367f1019b26a1aeb7492f361e2301a0678f",
+      "after": "b87515350ba925d4aea383311f00d9cd5956a88889b72baa432b1b4167751e9d"
+    },
+    {
+      "path": "code_sha256.copilot/acceptance_score.py",
+      "before": "df13616e3981f0797123e34ed410c6da529aef6179d7248f8abeb5d2d4935f39",
+      "after": "397954360618a57c7367c5fc946587495d5af3ac40cafb962ff7c91b9d436bc5"
+    },
+    {
+      "path": "code_sha256.copilot/acceptance_worker.py",
+      "before": "7a71fc9ab13d49d75a1302ee1a69b83d7b76ee6e71374b9a58ebd41c314cd1aa",
+      "after": "c73b0428c6a90250be0292a36bed333cb6e0b94cc128dd0e97f3b1fceb91cb61"
+    },
+    {
+      "path": "code_sha256.copilot/agent.py",
+      "before": "c6641e27307372962f4d24e56e2e7a8031387ec5d2abc1ad52e2608000c79a0e",
+      "after": "9a699e05a4e063e7d6f19d25a56e5dea0f8c0ac4a212f761540cbb4460c3006d"
+    },
+    {
+      "path": "code_sha256.copilot/budget.py",
+      "before": "4f54a16209711bcc392f71d59494993efe8f47ddd87df84081fc1214cc9b22e6",
+      "after": "966328050c8d41509a0026a60d1e5062c03d2d62307a058f7fe035912f208430"
+    },
+    {
+      "path": "code_sha256.copilot/campaign.py",
+      "before": "<absent>",
+      "after": "c8d35ab950e99be133f704841a23226ee9f88b90703531b3a4ba4646ba8b7100"
+    },
+    {
+      "path": "code_sha256.copilot/candidate_identity.py",
+      "before": "b6047950bece5d715baf6c2dcb7d63912b39f8a66e4aa4f5de95c1fba96f2927",
+      "after": "a7b1453a45affccf76989f836081d77eea62c7064467f56b1631029791ffa8ab"
+    },
+    {
+      "path": "code_sha256.copilot/development.py",
+      "before": "<absent>",
+      "after": "de0f22849e95163bc8d21969d7cf4b08b6455684d5fa20b06d3029703fb44560"
+    },
+    {
+      "path": "code_sha256.copilot/pilot_decision.py",
+      "before": "<absent>",
+      "after": "55c80fc267a6105904746adf9f910195e049a8e9e8e15377391fd67b762bc13e"
+    },
+    {
+      "path": "code_sha256.copilot/pilot_score.py",
+      "before": "<absent>",
+      "after": "657c2eaf4b409e009e342502aa0a595ee37fd886425ecd8c7237855fa61bd9f1"
+    },
+    {
+      "path": "code_sha256.copilot/review.py",
+      "before": "e1c94b0d2a83079deff0e8e105ce88a37bfa88512d7d5d73a6f455b67371038e",
+      "after": "32793834c68f35e173f1826eb01c95380e80b7df7419700e82947ccab317eb41"
+    },
+    {
+      "path": "code_sha256.copilot/review_annotations.py",
+      "before": "<absent>",
+      "after": "81d65d45ad3db35dc2b3e93d7e4d1962708446f7620b7cef2966273fd7f97f98"
+    },
+    {
+      "path": "code_sha256.copilot/review_packet.py",
+      "before": "<absent>",
+      "after": "b6cf2cb1bbfd2242c4cc933978c8e2ca2539464fc870d45b3ace2f867ea0bf28"
+    },
+    {
+      "path": "code_sha256.desi_fm/__init__.py",
+      "before": "da64b2dd45657dda388c280af97305459078843266a3abe632d2b47366c57976",
+      "after": "44b06bdcbdea554bf309fe450f4eec27798047b2562bc9de0c2c41d774b9eb07"
+    },
+    {
+      "path": "code_sha256.desi_fm/api.py",
+      "before": "9dbdcf5611218d45ef43c966db196185b6040a0d054d67d4ec295541496d1e6a",
+      "after": "00c32b5827cf24c271ac496c224139be2393ee71d5d62f79513b91f3f795cbad"
+    },
+    {
+      "path": "code_sha256.desi_fm/demo.py",
+      "before": "<absent>",
+      "after": "de0d80930bc7b19ecd7674e6141adaaab7df1259cc2871bf3d9fc8308a60b1c1"
+    },
+    {
+      "path": "endpoint_policy",
+      "before": "<absent>",
+      "after": {
+        "base_url": "https://api.anthropic.com",
+        "automatic_retries": 0
+      }
+    },
+    {
+      "path": "installation",
+      "before": "<absent>",
+      "after": {
+        "desi-fm": {
+          "version": "0.3.0",
+          "source_commit": "f27fb4946d6f2505a922505ed24095c9c0b2df3f",
+          "wheel_sha256": "d0cdfbc068f4d0598929ff2134fbe5b5fe6765a4b6572b4a888b75a866af7e44",
+          "record_sha256": "61313b0ced3a4549231fb93acc1a01ce19b2c4911a38996f44b70adf3ec0ab45",
+          "files_checked": 29
+        },
+        "spectra-copilot": {
+          "version": "0.3.0",
+          "source_commit": "0cdc6ea8e76454dcdc88da1c43893e623eb8d233",
+          "wheel_sha256": "8b86488fb5dc291496f4563e67a85698a7c29ab1ff031e38559d36c130039933",
+          "record_sha256": "5035aec70803aabcd38e1ef298cf5f90378d421cee3e007e43394d2e6948a450",
+          "files_checked": 45
+        }
+      }
+    },
+    {
+      "path": "llm_proposal.prices_verified_on",
+      "before": "2026-10-22",
+      "after": "2026-10-25"
+    },
+    {
+      "path": "protocol.BATCH_5B_PROTOCOL.md",
+      "before": "e44360082a0f236ff57ab2db4f5993d5c7a9ee0e5e24fb668bd28369fd421b2b",
+      "after": "fa8e98ae6f7d77ccd991376614e951a64c9d841eae004fddfc328fd9d6252d74"
+    },
+    {
+      "path": "protocol.protocol/batch5c-campaign.json",
+      "before": "<absent>",
+      "after": "e4cbf956597fcf3889602106e506f0c5fe7490d06c24f296b97f02423b079252"
+    },
+    {
+      "path": "protocol.protocol/batch5c-development-registry.json",
+      "before": "<absent>",
+      "after": "60251d98247192c7089fdd954f43212f86b885b44bbbd927e934e655cf9e696f"
+    },
+    {
+      "path": "runtime.anthropic_source_sha256.resources/beta/messages/messages.py",
+      "before": "<absent>",
+      "after": "abc808d183ea7efad677e8094dae8d7dbd3d4624bd4cd8fbcfcf40c7b134a51d"
+    },
+    {
+      "path": "source_content_sha256",
+      "before": "135c5c82eb840f67282580643cddbd548cf86f41cd3680f816943551ef082317",
+      "after": "bae0fba8234c98dbef9dc6c08b152a6d2ab7a51646e00ce17316139f4c3cc631"
+    }
+  ],
+  "unchanged_components": [
+    "assets",
+    "corpus_files",
+    "corpus_revision",
+    "index_compatibility",
+    "input_contract",
+    "policy",
+    "predictor",
+    "prompt_sha256",
+    "tool_schemas_sha256"
+  ],
+  "explanations": {
+    "code_sha256": "A execution guards/bootstrap/campaign; B versions/local demo/install evidence; C development scoring; D offline annotation/scoring.",
+    "source_content_sha256": "Digest of changed and added source files.",
+    "auxiliary_code_sha256": "Historical checkout scripts are not present inside installed wheels; now null, not claimed as installed or tested.",
+    "llm_proposal": "Only price verification date differs for low; medium additionally changes the authorized output_config.effort.",
+    "runtime": "Same Python/platform/listed package versions; added beta messages source hash without changing SDK version.",
+    "protocol": "Append-only 5C-1 and prepilot amendment; adds development registry/campaign commitments.",
+    "endpoint_policy": "Installed path explicitly records api.anthropic.com and zero automatic retries.",
+    "installation": "New noneditable wheels, source commits, wheel hashes and RECORD evidence."
+  }
+}

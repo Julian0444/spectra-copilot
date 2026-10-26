@@ -1,0 +1,95 @@
+{
+  "schema": "batch5c-local-delivery-v1",
+  "installation": {
+    "desi-fm": {
+      "version": "0.3.0",
+      "source_commit": "f27fb4946d6f2505a922505ed24095c9c0b2df3f",
+      "wheel_sha256": "d0cdfbc068f4d0598929ff2134fbe5b5fe6765a4b6572b4a888b75a866af7e44",
+      "record_sha256": "61313b0ced3a4549231fb93acc1a01ce19b2c4911a38996f44b70adf3ec0ab45",
+      "files_checked": 29
+    },
+    "spectra-copilot": {
+      "version": "0.3.0",
+      "source_commit": "0cdc6ea8e76454dcdc88da1c43893e623eb8d233",
+      "wheel_sha256": "8b86488fb5dc291496f4563e67a85698a7c29ab1ff031e38559d36c130039933",
+      "record_sha256": "5035aec70803aabcd38e1ef298cf5f90378d421cee3e007e43394d2e6948a450",
+      "files_checked": 45
+    }
+  },
+  "content_matches_source": {
+    "copilot": {
+      "files": 22,
+      "equal": true,
+      "project_bytecode_files": 0
+    },
+    "desi_fm": {
+      "files": 22,
+      "equal": true,
+      "project_bytecode_files": 0
+    }
+  },
+  "identities": {
+    "low": {
+      "sha256": "8cb09a9f747d05832ba535ffa03d6fbede469f94470a19ad0ee50befe156d189",
+      "behavior_sha256": "af17aacbb12e974c4b213cd5a7a4a9ae51ffea046cdf972ac093be10f56064fc",
+      "llm_path_sha256": "8d79a71d8152836cc8005e7c16e4d516b00d14978b0b30700efae50e4d501dbb",
+      "llm_path_equal_to_pilot": true,
+      "changed_source_files": [
+        "copilot/acceptance_score.py",
+        "copilot/review.py",
+        "copilot/review_annotations.py",
+        "copilot/review_packet.py"
+      ]
+    },
+    "medium": {
+      "sha256": "992d9749a97950bff9f185bf4f3abb5b2f9d5a016a18ce10e4f249605690a485",
+      "behavior_sha256": "0a3f927e80649b0f53454d3edd47340852b9cecea885b6ceac47fbe6931bd5c6",
+      "llm_path_sha256": "537e07b9e0d9701012f3029305f7519ac563b6c4cec5855fadd86392f29f2235",
+      "llm_path_equal_to_pilot": true,
+      "changed_source_files": [
+        "copilot/acceptance_score.py",
+        "copilot/review.py",
+        "copilot/review_annotations.py",
+        "copilot/review_packet.py"
+      ]
+    }
+  },
+  "paid_calls": 0,
+  "acceptance_opened": false,
+  "installed_review_tests": {
+    "returncode": 0,
+    "files": 3,
+    "expected_tests": 15,
+    "production_imports": "installed wheels",
+    "fixtures": "invented copied tests from committed build06 clone",
+    "network": "blocked"
+  },
+  "build": "build-06",
+  "environment": "release-env",
+  "evaluated_pilot_build": "build-05",
+  "evaluated_environment_preserved": "installed-env",
+  "acceptance_identity_registered": false,
+  "scientific_acceptance": "not_evaluated_gate_failed",
+  "build_manifest_sha256": "b6ba69da73f30160f6cb0d5ab45bf306278ec833796fcc0fee78deece805ce9d",
+  "verification_sha256": "defb558196380e0131ce8b392064f76059239e01c37847272143d612f4b9a754",
+  "demo_sha256": "dd1c5eb5a8d4cf4ba90d7c71b7956aeff3400983d7261b87c79a39b19e78b6c1",
+  "demo": {
+    "valid_model_z": 1.0745,
+    "invalid_rejected": true,
+    "single_line": "ambiguous",
+    "mcp_lookup_reference": true,
+    "paid_calls": 0
+  },
+  "operational_interfaces_evidence": "B build-05; all FM sources and Copilot execution/interface sources identical in build-06",
+  "source_test_collection_incidents": [
+    "G-installed-release: missing fixture helper import; 0 tests executed",
+    "G-installed-release-v2: second missing fixture helper import; 0 tests executed",
+    "G-installed-release-v3: complete fixture dependency copies; 15 tests passed against installed modules"
+  ],
+  "observations": [
+    "No inference over batch4a-v1/test",
+    "No acceptance manifest opened",
+    "Build-06 is not the package used by the pilot",
+    "No selected final effort; low/medium identities are archival software identities, not authorization for another phase"
+  ]
+}
