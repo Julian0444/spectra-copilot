@@ -19,7 +19,7 @@ def test_packet_deduplicates_model_z_and_preserves_predictor_numbers():
     assert packet['report']['predictor']['checkpoint']['step']==30000
     text=json.dumps(packet)
     assert 'claude-haiku' not in text and 'execution_budget' not in text and row['alias'] not in text
-    assert len([c for c in packet['claims'] if c['equivalence_key'].startswith('lim:')])==4
+    assert len([c for c in packet['claims'] if c['equivalence_key'].startswith('lim:')])==3
     assert packet==case_packet(row,'a'*64)
 
 
@@ -35,3 +35,23 @@ def test_no_result_has_no_invented_report_or_claims():
     from copilot.review_packet import case_packet
     packet=case_packet({'alias':'a'*24,'status':'pending','result':None},'b'*64)
     assert packet['report'] is None and packet['claims']==[] and not packet['published_report']
+
+
+def test_matcher_qualifiers_are_atomic_and_grouped_across_template_spans():
+    from copilot.review_packet import case_packet
+    r=report()
+    observation={'id':'obs2','tool':'identify_spectral_lines','arguments':{},
+                 'result':{'z_tested':.3,'n_matched':2,'n_expected_in_coverage':4}}
+    r['observations'].append(observation)
+    r['explanation'].append({'observation_id':'obs2','text':
+        'At hypothesis z=0.3, the matcher counted 2 matches among 4 line positions in coverage. '
+        'These are descriptive measurements, not physical confirmation.'})
+    packet=case_packet({'alias':'f'*24,'status':'complete','result':r},'a'*64)
+    by_key={c['equivalence_key']:c for c in packet['claims']}
+    assert len(by_key['matcher_descriptive']['occurrences'])==2
+    assert len(by_key['absence_not_refutation']['occurrences'])==1
+    assert len(by_key['matcher_not_confirmation']['occurrences'])==1
+    for claim in packet['claims']:
+        for occurrence in claim['occurrences']:
+            import hashlib
+            assert occurrence['text_sha256']==hashlib.sha256(occurrence['text'].encode()).hexdigest()
