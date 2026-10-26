@@ -48,7 +48,7 @@ def capture(protocol_dir):
               ('BATCH_5B_PROTOCOL.md','protocol/batch5b-development.json','evidence/batch5b-commitment.json')}
     sdk_root=Path(anthropic.__file__).resolve().parent
     sdk_sources={name:sha256(sdk_root/name) for name in
-                 ('lib/tools/_beta_runner.py','resources/messages/messages.py')}
+                 ('lib/tools/_beta_runner.py','resources/messages/messages.py','resources/beta/messages/messages.py')}
     behavior={'code_sha256':code,'auxiliary_code_sha256':auxiliary,'source_content_sha256':digest(code),'prompt_sha256':digest({'system':agent.SYSTEM,'structured_rule':agent.STRUCTURED_RULE}),
               'corpus_revision':rag.corpus_revision(),'corpus_files':rag.corpus_hashes(),'tool_schemas_sha256':digest(schemas),
               'policy':explanation.POLICY_VERSION,'assets':assets,'predictor':model_identity(tools._model()),
