@@ -142,12 +142,15 @@ def execute_plan(plan_path,output,*,usd=0.,runner=None,candidate=None,seconds=Li
     subprocess per case and kills it at the wall deadline, preserving progress.
     """
     request_configuration(effort)
-    plan=read_input_plan(plan_path);output=Path(output)
+    plan_path=Path(plan_path).resolve();plan=read_input_plan(plan_path);output=Path(output).resolve()
+    candidate=Path(candidate).resolve() if candidate is not None else None
+    candidate_medium=Path(candidate_medium).resolve() if candidate_medium is not None else None
+    campaign_dir=Path(campaign_dir).resolve() if campaign_dir is not None else None
     if not math.isfinite(usd) or not 0<=usd<=TOTAL_CEILING_USD or not 0<seconds<=Limits().seconds:raise ValueError('Outside frozen execution limits')
     authorized_nanodollars=nanodollars(usd)
     if plan['mode']=='simulation' and usd:raise ValueError('Simulation cannot authorize paid calls')
     if plan['mode']!='simulation' and (runner is not None or candidate is None):raise ValueError('Proposal requires fixed identity and real isolated worker')
-    protocol_dir=Path(protocol_dir or Path(__file__).resolve().parent.parent/'docs')
+    protocol_dir=Path(protocol_dir or Path(__file__).resolve().parent.parent/'docs').resolve()
     candidates={effort:candidate}
     if candidate_medium is not None:candidates['medium']=candidate_medium
     payloads=None;phase=plan.get('phase','proposal')

@@ -15,6 +15,7 @@ import torch
 from desi_fm.model import DESIFoundationModel, DESIFoundationModelConfig
 
 from copilot import agent, acceptance_worker, candidate_identity
+from copilot import campaign
 
 
 def main():
@@ -36,6 +37,9 @@ def main():
         n_pixels=64, n_tokens=8, d_model=16, n_layers=1, n_heads=2, n_z_bins=16))
     agent.tools._model = lambda: model
     candidate_identity.verify = lambda *args,**kwargs: 'invented offline fixture identity'
+    # This fixture isolates the real worker/SDK budget, never authorizes HTTP.
+    # Campaign authorization has its own real parent→worker boundary tests.
+    campaign.authorize_worker = lambda args: None
 
     def predict(path):
         record({'predict': True})
