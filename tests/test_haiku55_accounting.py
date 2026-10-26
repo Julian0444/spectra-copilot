@@ -46,6 +46,31 @@ def test_all_128_invented_cases_receive_new_worker_budget_without_float_drift(tm
     assert acceptance.CASE_MAX_USD==.096384
 
 
+def test_exact_remaining_case_budget_does_not_stop_at_float_boundary(tmp_path,monkeypatch):
+    """0.125014 - 0.028630 rounds below 0.096384 in binary floating point."""
+    from copilot import candidate_identity
+    source=tmp_path/'invented-input';source.write_text('fixture')
+    identity=tmp_path/'invented-identity.json';identity.write_text('{}')
+    plan=tmp_path/'plan.json'
+    write_json(plan,{'schema':acceptance.SCHEMA,'mode':'proposal','inputs':[
+        {'alias':f'{i:023x}a','input_path':str(source),'input_sha256':sha256(source)} for i in range(128)]})
+    monkeypatch.setattr(candidate_identity,'verify',lambda *a,**k:None)
+    dispatched=[]
+    def worker(item,directory,usd,seconds,**kwargs):
+        ledger=Budget(limits=Limits(usd=usd))
+        usage=[(100000,4096)]*8 if dispatched else [(100000,4096)]*2+[(45340,0)]
+        for n_in,n_out in usage:
+            ticket=ledger.reserve(n_in,n_out)
+            ledger.settle(ticket,{'input_tokens':n_in,'output_tokens':n_out})
+        dispatched.append(ledger.snapshot()['known_nanodollars'])
+        return {'status':'complete','model_z':.42,'execution_budget':ledger.snapshot()},False
+    monkeypatch.setattr(acceptance,'run_worker',worker)
+    result=acceptance.execute_plan(plan,tmp_path/'output',usd=.125014,candidate=identity)
+    assert dispatched==[28630000,96384000]
+    assert result['attempted']==2 and result['status_counts']['pending']==126
+    assert result['cost']['known_nanodollars']==125014000 and result['cost']['certified']
+
+
 @pytest.mark.parametrize('entry',['agent','worker'])
 def test_cli_and_worker_use_the_same_authorized_limits(tmp_path,monkeypatch,entry,capsys):
     from copilot import candidate_identity

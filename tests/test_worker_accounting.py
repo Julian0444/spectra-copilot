@@ -66,6 +66,16 @@ def test_bootstrap_failure_keeps_technical_classification_and_known_zero(tmp_pat
     assert summary['cost']['total_usd']==0 and not any('mock_post' in event for event in calls)
 
 
+def test_real_worker_rejects_oversized_prompt_before_post_without_substitute(tmp_path,monkeypatch):
+    summary,rows,calls,_=worker_plan(tmp_path,monkeypatch,scenario='prompt_tier_exceeded')
+    assert summary['attempted']==2
+    assert all(r['result']['completion_code']=='prompt_tier_exceeded' for r in rows)
+    assert all(r['result']['model_z']==.42 for r in rows)
+    assert all(r['result']['execution_budget']['calls']==0 for r in rows)
+    assert summary['cost']['certified'] and summary['cost']['total_usd']==0
+    assert not any('mock_post' in event for event in calls)
+
+
 @pytest.mark.parametrize('scenario',['unknown','inflight'])
 def test_unknown_or_inflight_real_worker_stops_remaining_cases(tmp_path,monkeypatch,scenario):
     summary,rows,calls,out=worker_plan(tmp_path,monkeypatch,scenario=scenario)

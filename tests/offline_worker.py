@@ -46,6 +46,10 @@ def main():
                 'model_identity': {'predictor': 'invented fixture'}}
 
     agent.tools.predict_redshift_impl = predict
+    if scenario == 'prompt_tier_exceeded':
+        # Inflate only invented prompt text. The worker, Budget, SDK guard and
+        # run_structured are the production implementations, not substitutes.
+        agent.system_prompt = lambda _: 'x' * 100001
     constructor = anthropic.Anthropic
     requests = []
 
@@ -67,7 +71,7 @@ def main():
 
     def client(**kwargs):
         assert kwargs['max_retries'] == 0
-        return constructor(api_key='invented-unused-key', max_retries=0,
+        return constructor(api_key='invented-unused-key', base_url='https://api.anthropic.com', max_retries=0,
                            http_client=httpx.Client(transport=httpx.MockTransport(reply)))
 
     agent.anthropic.Anthropic = client
