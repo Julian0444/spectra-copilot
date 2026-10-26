@@ -4,10 +4,13 @@ Receives only a scientific input path and monetary ceiling. No labels, case
 family, expected answers or custody IDs are arguments. Budget defaults to zero.
 """
 import argparse
+import hashlib
+import math
 from pathlib import Path
+import time
 
 from copilot import agent
-from copilot.budget import Budget,Limits,PINNED_MODEL,CASE_CEILING_USD,AUTHORIZED_EFFORTS
+from copilot.budget import Budget,Limits,PINNED_MODEL,CASE_CEILING_USD,AUTHORIZED_EFFORTS,BudgetStop
 from copilot.acceptance_io import write_json,sanitize
 
 
@@ -21,18 +24,35 @@ def main():
     p.add_argument('--budget-usd',type=float,default=0.)
     p.add_argument('--seconds',type=float,default=Limits().seconds)
     p.add_argument('--effort',choices=AUTHORIZED_EFFORTS,default='low')
+    p.add_argument('--expected-sha256')
+    p.add_argument('--deadline-monotonic',type=float)
     args=p.parse_args()
     if not 0<=args.budget_usd<=CASE_CEILING_USD or not 0<args.seconds<=Limits().seconds:
         p.error('Outside frozen per-case limits')
     if args.budget_usd and (args.candidate is None or args.protocol_dir is None):
         p.error('Paid execution requires the registered installed identity and protocol')
-    if args.candidate:
-        from copilot.candidate_identity import verify
-        verify(args.candidate,args.protocol_dir,effort=args.effort)
     budget=Budget(PINNED_MODEL,Limits(usd=args.budget_usd,seconds=args.seconds),effort=args.effort)
+    if args.deadline_monotonic is not None:
+        if not math.isfinite(args.deadline_monotonic):p.error('Invalid deadline')
+        budget.started=min(budget.started,args.deadline_monotonic-args.seconds)
     def progress(report,ledger):
         write_json(args.progress,sanitize({'report':report,'execution_budget':ledger}))
-    result=agent.run_structured(args.input,model=PINNED_MODEL,budget=budget,progress=progress,effort=args.effort)
+    result=agent.explanation.result(status='technical_error')
+    progress(result,budget.snapshot())
+    try:
+        if args.candidate:
+            from copilot.candidate_identity import verify
+            verify(args.candidate,args.protocol_dir,effort=args.effort)
+        payload=Path(args.input).read_bytes()
+        if args.expected_sha256 and hashlib.sha256(payload).hexdigest()!=args.expected_sha256:
+            result['completion_code']='input_identity_mismatch'
+        elif budget.remaining_seconds()<=0:
+            result['completion_code']='case_timeout'
+        else:
+            result=agent.run_structured(payload,model=PINNED_MODEL,budget=budget,progress=progress,effort=args.effort)
+    except Exception:
+        result['completion_code']='worker_preflight_failed'
+    result['execution_budget']=budget.snapshot()
     write_json(args.result,sanitize(result))
     return 0
 

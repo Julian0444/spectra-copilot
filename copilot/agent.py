@@ -148,7 +148,12 @@ def submit_report(
 @contextmanager
 def agent_input(source):
     """Derived protocol v2. Labels, original paths and metadata stay outside LLM messages."""
-    batch = read_npz(source)
+    from io import BytesIO
+    try:
+        payload = source if isinstance(source, bytes) else Path(source).read_bytes()
+    except OSError as exc:
+        raise SpectrumInputError('Scientific input is unreadable') from exc
+    batch = read_npz(BytesIO(payload))
     f, w, v, m = batch.single()
     _prepare_inputs(tools._model(), f, w, v, m)  # reject no coverage before any LLM request
     with TemporaryDirectory(prefix="spectra-input-") as directory:
@@ -156,7 +161,7 @@ def agent_input(source):
         np.savez(target, flux=f, wavelength=w, ivar=v, mask=m,
                  wavelength_unit="angstrom")
         provenance = {"protocol": "opaque-scientific-input-v2",
-                      "source_sha256": hashlib.sha256(Path(source).read_bytes()).hexdigest(),
+                      "source_sha256": hashlib.sha256(payload).hexdigest(),
                       "derived_sha256": hashlib.sha256(target.read_bytes()).hexdigest()}
         yield str(target), provenance
 

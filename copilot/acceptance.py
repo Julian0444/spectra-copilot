@@ -57,8 +57,15 @@ def _failed(code,progress=None,paid_ceiling=0):
 def run_worker(item,directory,usd,seconds=Limits().seconds,command=None,candidate=None,protocol_dir=None,effort='low'):
     directory=Path(directory);progress=directory/(item['alias']+'.progress.json');result=directory/(item['alias']+'.result.json')
     args=command or [sys.executable,'-m','copilot.acceptance_worker','--input',item['input_path'],
-        '--progress',str(progress),'--result',str(result),'--budget-usd',str(usd),'--seconds',str(seconds),'--effort',effort]
+        '--progress',str(progress),'--result',str(result),'--budget-usd',str(usd),'--seconds',str(seconds),'--effort',effort,
+        '--expected-sha256',item['input_sha256'],'--deadline-monotonic',str(time.monotonic()+seconds)]
     if candidate and command is None:args+=['--candidate',str(candidate),'--protocol-dir',str(protocol_dir)]
+    if command is None:
+        from copilot.budget import Budget
+        # No POST can precede a durable reservation. A killed import/preflight
+        # therefore has known zero cost until the worker updates this record.
+        write_json(progress,{'report':explanation.result(status='technical_error'),
+                             'execution_budget':Budget(limits=Limits(usd=usd),effort=effort).snapshot()})
     try:
         process=subprocess.run(args,capture_output=True,text=True,timeout=seconds)
         if process.returncode==0 and result.exists():return json.loads(result.read_text()),False
