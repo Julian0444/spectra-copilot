@@ -1,42 +1,35 @@
-# Preparación de ejecución 5C — no ejecutada en 5B-2
+# Ejecución 5C — configuración vigente
 
-El protocolo y su adenda siguen en BATCH_5B_PROTOCOL.md. Esta guía no autoriza
-pagos ni abre aceptación. La identidad registrada en 5B-2 es candidata. Primero
-5C debe empaquetar, instalar en entorno limpio, verificar imports/activos,
-registrar una identidad **final instalada** y justificar diferencias respecto
-de la candidata. El colector actual rotula su salida como candidata; no equivale
-a ese acto de registro final. v2.1 sigue por defecto; CNN-17 no se despliega.
+Julian autorizó 5C por fases el 2026-10-25. Proveedor Anthropic, modelo fijo
+`claude-haiku-5-5`, thinking adaptive; piloto exclusivamente de desarrollo para
+comparar `low` y `medium`. No hay fallback ni retries automáticos. Antes de
+cualquier gasto se exige la adenda 5C-1 commiteada, instalación limpia e
+identidad registrada por variante. Esta guía no declara el piloto ejecutado.
 
-Antes de cualquier corrida real Julian debe autorizar proveedor/modelo fijado,
-tarifas fechadas, política de reserva, 128 casos, límites de tokens/llamadas y
-coste. La propuesta histórica de 5B-2 usaba claude-haiku-4-5-20251001; ocho turnos, seis tools contando
-predict, un intento, cero retries, 64.000 input/4.096 output acumulados y 512 output
-por turno. US$0,10/caso, US$12,80 global; límite estimado por tokens US$10,81344.
-El presupuesto por defecto permanece cero. No usar claves en argumentos, logs
-ni manifiestos. El código no solicita claves ni descarga activos.
+Los límites permanecen: 8 turnos, **6 llamadas de análisis en total**, 800.000
+tokens de entrada acumulada, 32.768 de salida incluido thinking, 4.096 por
+llamada, 120 s y US$0,10 por caso. El ejecutor hace predict y después
+identify_spectral_lines al arrancar: consumen **2 de 6**, quedan como máximo
+4 análisis solicitados por el LLM. submit_report no es análisis. Ambas
+observaciones quedan en el ledger y se entregan al LLM al inicio; toda evidencia
+recalcula el piso de cautela aunque el LLM no la seleccione. model_z sigue oficial.
 
-5B-2.1 midió las solicitudes reales del SDK con transporte simulado sobre todo
-el desarrollo. La cota por bytes puede detener recorridos antes de ocho turnos;
-no se ha demostrado factibilidad para el LLM real. Las dos opciones, costes
-máximos condicionados a las tarifas registradas y limitaciones están en
-[batch5b21-budget.md](evidence/batch5b21-budget.md). 5B-2.1 ya tiene revisión
-independiente. La actualización posterior se registra abajo.
+Prompt con cota >100.000 se rechaza antes del POST. Tarifas oficiales verificadas
+el 2026-10-25: US$0,10/M entrada y US$0,50/M salida hasta 100.000 inclusive.
+Presupuestos separados: piloto 12 × 2 variantes, US$2,40; confirmación opcional
+una vez 12, US$1,20; aceptación 128 una vez, US$12,80. Sin transferencias.
+Uso desconocido o reserva en vuelo bloquea nuevos pagos y no certifica coste.
+El tope por caso es más estricto que la **media** congelada ≤US$0,10/caso: no
+modifica ese criterio de aceptación ni los denominadores. Presupuesto por defecto 0.
 
-## Actualización 5B-2.2 — 2026-10-22, todavía sin ejecutar 5C
+La medición de conteo anterior tuvo **90 válidos = 48 reales + 42 sintéticos**,
+y seis sintéticos inválidos, sobre 96 de desarrollo. Son respuestas simuladas,
+no evidencia del comportamiento real del LLM. Ver evidence/batch5b22-tokens.json.
 
-La adenda autorizada en BATCH_5B_PROTOCOL fija `claude-haiku-5-5`, thinking
-adaptativo y esfuerzo low, 800.000 tokens de entrada acumulada, 32.768 de salida
-y 4.096 por llamada. La cota por solicitud no puede superar 100.000. El máximo
-teórico es US$0,096384/caso y US$12,337152/128 casos; los techos absolutos
-US$0,10/US$12,80 y todos los límites de calidad, turnos, tools y tiempo se conservan.
-
-La capacidad se comprueba únicamente con count_tokens gratuito y el replay
-simulado de desarrollo; véase `evidence/batch5b22-tokens.json` y su explicación.
-Eso no valida comportamiento real, finalización ni latencia del modelo.
-Presupuesto por defecto cero. La nueva candidata es de 5B-2.2, no una identidad
-final instalada. Siguiente orden: verificación independiente de 5B-2.2,
-decisión de Julian sobre piloto pago en desarrollo y, por último, autorización
-de gasto para 5C. Nada de ello se ejecuta en esta sesión.
+v2.1 permanece por defecto y CNN-17 experimental. Aceptación cerrada hasta la
+puerta D, sin modificar rúbrica/selección. Clave: **no rotada, por decisión de
+Julian; vence 2026-11-20**. Solo se carga dentro del proceso autorizado, jamás
+en argumentos, archivos o sesiones de revisión.
 
 ## Custodia de entradas y etiquetas
 
@@ -116,3 +109,46 @@ y obligaciones omitidas por caso requieren revisión independiente; un resultado
 mecánicamente correcto no acepta ciencia automáticamente. El scorer mantiene el
 estado de aceptación sin aprobar hasta esa revisión y la comprobación de todos
 los criterios congelados. No declara cerrado el proyecto ni publica resultados.
+
+
+---
+
+# Historia de preparación 5B-2 / 5B-2.2
+
+El protocolo y su adenda siguen en BATCH_5B_PROTOCOL.md. Esta guía no autoriza
+pagos ni abre aceptación. La identidad registrada en 5B-2 es candidata. Primero
+5C debe empaquetar, instalar en entorno limpio, verificar imports/activos,
+registrar una identidad **final instalada** y justificar diferencias respecto
+de la candidata. El colector actual rotula su salida como candidata; no equivale
+a ese acto de registro final. v2.1 sigue por defecto; CNN-17 no se despliega.
+
+Antes de cualquier corrida real Julian debe autorizar proveedor/modelo fijado,
+tarifas fechadas, política de reserva, 128 casos, límites de tokens/llamadas y
+coste. La propuesta histórica de 5B-2 usaba claude-haiku-4-5-20251001; ocho turnos, seis tools contando
+predict, un intento, cero retries, 64.000 input/4.096 output acumulados y 512 output
+por turno. US$0,10/caso, US$12,80 global; límite estimado por tokens US$10,81344.
+El presupuesto por defecto permanece cero. No usar claves en argumentos, logs
+ni manifiestos. El código no solicita claves ni descarga activos.
+
+5B-2.1 midió las solicitudes reales del SDK con transporte simulado sobre todo
+el desarrollo. La cota por bytes puede detener recorridos antes de ocho turnos;
+no se ha demostrado factibilidad para el LLM real. Las dos opciones, costes
+máximos condicionados a las tarifas registradas y limitaciones están en
+[batch5b21-budget.md](evidence/batch5b21-budget.md). 5B-2.1 ya tiene revisión
+independiente. La actualización posterior se registra abajo.
+
+## Registro histórico 5B-2.2 — 2026-10-22
+
+La adenda autorizada en BATCH_5B_PROTOCOL fija `claude-haiku-5-5`, thinking
+adaptativo y esfuerzo low, 800.000 tokens de entrada acumulada, 32.768 de salida
+y 4.096 por llamada. La cota por solicitud no puede superar 100.000. El máximo
+teórico es US$0,096384/caso y US$12,337152/128 casos; los techos absolutos
+US$0,10/US$12,80 y todos los límites de calidad, turnos, tools y tiempo se conservan.
+
+La capacidad se comprueba únicamente con count_tokens gratuito y el replay
+simulado de desarrollo; véase `evidence/batch5b22-tokens.json` y su explicación.
+Eso no valida comportamiento real, finalización ni latencia del modelo.
+Presupuesto por defecto cero. La nueva candidata es de 5B-2.2, no una identidad
+final instalada. Siguiente orden: verificación independiente de 5B-2.2,
+decisión de Julian sobre piloto pago en desarrollo y, por último, autorización
+de gasto para 5C. Nada de ello se ejecuta en esta sesión.

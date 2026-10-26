@@ -26,14 +26,15 @@ def test_only_free_count_endpoint_can_reach_transport():
     assert sent==['/v1/messages/count_tokens'] and transport.requests_made==1
 
 
-def test_count_sdk_preserves_selected_configuration_and_has_no_output_limit():
+def test_count_sdk_preserves_selected_configuration_and_has_no_output_limit(monkeypatch):
     import anthropic
     from test_haiku55_budget import request
     module=load();body=request();before=deepcopy(body);sent=[]
+    monkeypatch.setenv('ANTHROPIC_BASE_URL','http://127.0.0.1:1')
     def reply(req):
         import json
         sent.append(json.loads(req.content));return httpx.Response(200,json={'input_tokens':30})
-    with anthropic.Anthropic(api_key='invented-unused',max_retries=0,
+    with anthropic.Anthropic(api_key='invented-unused',base_url='https://api.anthropic.com',max_retries=0,
             http_client=httpx.Client(transport=module.CountOnlyTransport(httpx.MockTransport(reply)))) as client:
         assert client.messages.count_tokens(**module.count_parameters(body)).input_tokens==30
     assert body==before
