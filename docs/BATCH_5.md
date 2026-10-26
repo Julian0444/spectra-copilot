@@ -944,3 +944,19 @@ Handoff y comprobador final en `/Users/jirustaroure/.local/state/spectra-consoli
 Respaldo independiente, rotación de claves y H-18 mantienen sus estados.
 Sigue verificación independiente de 5B-2.2, decisión sobre piloto pago y luego
 autorización de gasto de 5C. Sin push, merge ni publicación.
+
+
+## 5C A-1 — registro de verificación independiente de 5B-2.2 (2026-10-25)
+
+Se registra la revisión de Claude del 2026-10-23, ya realizada: **aprobado con
+observaciones, sin P1/P2**. Fuente canónica y hashes en
+[evidence/batch5c-prior-review.json](evidence/batch5c-prior-review.json). No se
+repite la auditoría ni se atribuye este registro a una revisión nueva. Los tres
+P3 se atienden en A-2/A-3/A-4 de 5C. La revisión histórica no documentó el modelo
+exacto ni el esfuerzo de su sesión: no se infieren retrospectivamente.
+
+Julian autorizó 5C por fases, manteniendo selección, rúbrica y umbrales. Clave:
+**no rotada, por decisión de Julian; vence 2026-11-20**. Esa decisión sustituye
+la recomendación anterior de rotar; no significa rotación ni revocación.
+Respaldo independiente y H-18 siguen pendientes. Piloto y aceptación todavía
+no ejecutados; no hay aceptación aprobada ni publicación.
