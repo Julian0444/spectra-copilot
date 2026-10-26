@@ -125,6 +125,9 @@ def authorize_run(plan,candidates,protocol_dir,campaign_dir,effort,usd):
     for variant in variants:
         if not candidates.get(variant):raise ValueError('Registered identity required for each variant')
         verify(candidates[variant],protocol_dir,effort=variant,require_installed=True)
+    if phase!='pilot':
+        from copilot.pilot_decision import authorize
+        authorize(campaign_dir,phase,effort,candidates[effort])
     payloads=None
     if plan['mode']=='development':
         from copilot.development import validate_plan

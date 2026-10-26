@@ -24,6 +24,8 @@ def test_aggregate_exact_fractional_microdollars_and_inflight_is_uncertified():
 
 def test_all_128_invented_cases_receive_new_worker_budget_without_float_drift(tmp_path,monkeypatch):
     from copilot import candidate_identity
+    from copilot import pilot_decision
+    monkeypatch.setattr(pilot_decision,'authorize',lambda *a,**k:None)  # arithmetic loop only
     from test_development_execution import campaign
     _,campaign_dir,docs=campaign(tmp_path)
     write_json(campaign_dir/'pilot.claim.json',{})
