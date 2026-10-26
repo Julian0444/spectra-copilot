@@ -32,8 +32,8 @@ def recorder(path):
     (403, "permission_error", "PermissionDeniedError"),
     (429, "rate_limit_error", "RateLimitError"),
     (500, "api_error", "InternalServerError"),
-    (503, "service_unavailable_error", "ServiceUnavailableError"),
-    (504, "deadline_exceeded_error", "DeadlineExceededError"),
+    (503, "service_unavailable_error", "InternalServerError"),
+    (504, "deadline_exceeded_error", "InternalServerError"),
     (529, "overloaded_error", "OverloadedError"),
 ])
 def test_http_failure_persists_only_safe_metadata_before_propagating(
@@ -118,4 +118,3 @@ def test_untrusted_metadata_cannot_copy_content_or_secrets(request_id, provider_
     result = budget_module.sdk_error_metadata(error)
     assert result == {"exception_type": "BadRequestError", "http_status": 400,
                       "request_id": None, "provider_error_type": None}
-

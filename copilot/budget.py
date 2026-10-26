@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 import json
 import math
+import re
 import time
 
 PINNED_MODEL = 'claude-haiku-5-5'
@@ -213,6 +214,45 @@ def request_bound(body,model,effort='low'):
     return n_in,n_out
 
 
+def sdk_error_metadata(error):
+    """Only bounded diagnostic identifiers, never exception text or HTTP content.
+
+    Unknown classes/metadata are redacted rather than stringified. This does not
+    infer usage or release a reservation, even for an HTTP authentication error.
+    """
+    import anthropic
+    known = {kind: kind.__name__ for kind in (
+        TypeError, ValueError, KeyError, AttributeError, RuntimeError, OSError,
+        TimeoutError, ConnectionError, KeyboardInterrupt, SystemExit)}
+    for name in ('AnthropicError', 'APIError', 'APIStatusError', 'APIConnectionError',
+                 'APITimeoutError', 'APIResponseValidationError', 'BadRequestError',
+                 'AuthenticationError', 'PermissionDeniedError', 'NotFoundError',
+                 'ConflictError', 'RequestTooLargeError', 'UnprocessableEntityError',
+                 'RateLimitError', 'ServiceUnavailableError', 'OverloadedError',
+                 'DeadlineExceededError', 'InternalServerError'):
+        kind = getattr(anthropic, name, None)
+        if isinstance(kind, type):
+            known[kind] = name
+    result = {'exception_type': known.get(type(error), 'OtherException'),
+              'http_status': None, 'request_id': None, 'provider_error_type': None}
+    if type(error) not in known or not isinstance(error, anthropic.APIError):
+        return result
+    status = getattr(error, 'status_code', None)
+    if type(status) is int and 100 <= status <= 599:
+        result['http_status'] = status
+    request_id = getattr(error, 'request_id', None)
+    if type(request_id) is str and re.fullmatch(r'req_[A-Za-z0-9]{8,80}', request_id):
+        result['request_id'] = request_id
+    provider_type = getattr(error, 'type', None)
+    allowed = {'invalid_request_error', 'authentication_error', 'permission_error',
+               'not_found_error', 'rate_limit_error', 'timeout_error', 'overloaded_error',
+               'api_error', 'billing_error', 'request_too_large',
+               'service_unavailable_error', 'deadline_exceeded_error'}
+    if type(provider_type) is str and provider_type in allowed:
+        result['provider_error_type'] = provider_type
+    return result
+
+
 @contextmanager
 def guard_sdk(client,budget):
     """Guard the SDK's actual POST boundary, including tool_runner.parse requests."""
@@ -237,7 +277,8 @@ def guard_sdk(client,budget):
         kwargs['options']=options
         try:
             message=original(path,*args,**kwargs)
-        except BaseException:
+        except BaseException as error:
+            ticket.update(diagnostic=sdk_error_metadata(error), failed_ns=time.time_ns())
             budget.uncertain(ticket)
             raise
         headers=options.get('headers') or {}
