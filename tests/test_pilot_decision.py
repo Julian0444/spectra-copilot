@@ -28,3 +28,19 @@ def test_gate_rejects_pending_invalid_valid_case_unknown_and_inflight():
     for key,value in [('status','pending'),('status','invalid_input'),('status','technical_error'),('cost_certified',False),('reserved_nanodollars',1),('prompt_tier_exceeded',True)]:
         changed=deepcopy(rows);changed[0][key]=value
         assert not aggregate(changed)['gate_passed']
+
+
+def test_confirmation_uses_same_twelve_inputs_and_registered_effort(tmp_path):
+    import json
+    from copilot.acceptance_io import write_json,sha256
+    from copilot.development import prepare_confirmation,validate_plan
+    from test_development_execution import fixtures
+    reg,plan=fixtures(tmp_path)
+    (tmp_path/'pilot-inputs.json').write_bytes(plan.read_bytes())
+    write_json(tmp_path/'development-scoring.json',{'schema':'batch5c-development-scoring-v1',
+        'cases':[{'alias':i['alias'],'effort':i['effort'],'slot':n//2} for n,i in enumerate(json.loads(plan.read_text())['inputs'])]})
+    decision=tmp_path/'decision.json';write_json(decision,{'chosen_effort':'medium'})
+    prepare_confirmation(tmp_path,decision,tmp_path/'confirmation')
+    prepared=json.loads((tmp_path/'confirmation/confirmation-inputs.json').read_text())
+    assert len(validate_plan(prepared,reg,sha256(reg),'medium'))==12
+    assert all(i['effort']=='medium' for i in prepared['inputs'])

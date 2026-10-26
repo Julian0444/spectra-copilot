@@ -19,3 +19,16 @@ def test_installed_identity_rejects_candidate_before_recapture(tmp_path,monkeypa
     monkeypatch.setattr(identity,'capture',lambda *a,**k:pytest.fail('Candidate reached runtime capture'))
     with pytest.raises(ValueError,match='installed-5c'):
         identity.verify(path,tmp_path,require_installed=True)
+
+
+def test_llm_path_tracks_execution_but_not_posthoc_scoring_or_protocol():
+    from copy import deepcopy
+    behavior={'code_sha256':{'copilot/agent.py':'a','copilot/budget.py':'b','copilot/review.py':'c','desi_fm/model.py':'d'},
+              'source_content_sha256':'all','protocol':{'adenda':'a'},'installation':{'wheel':'a'},
+              'auxiliary_code_sha256':{},'assets':{'checkpoint':'fixed'},'prompt_sha256':'fixed'}
+    first=identity.llm_path_digest(behavior)
+    later=deepcopy(behavior);later['code_sha256']['copilot/review.py']='new';later['protocol']['adenda']='new'
+    later['installation']['wheel']='new';later['source_content_sha256']='new'
+    assert identity.llm_path_digest(later)==first
+    later['code_sha256']['copilot/budget.py']='new'
+    assert identity.llm_path_digest(later)!=first
