@@ -24,6 +24,10 @@ def test_aggregate_exact_fractional_microdollars_and_inflight_is_uncertified():
 
 def test_all_128_invented_cases_receive_new_worker_budget_without_float_drift(tmp_path,monkeypatch):
     from copilot import candidate_identity
+    from test_development_execution import campaign
+    _,campaign_dir,docs=campaign(tmp_path)
+    write_json(campaign_dir/'pilot.claim.json',{})
+    write_json(campaign_dir/'pilot.close.json',{'certified':True})
     source=tmp_path/'invented-input';source.write_text('fixture')
     identity=tmp_path/'invented-identity.json';identity.write_text('{}')
     plan=tmp_path/'plan.json'
@@ -39,7 +43,7 @@ def test_all_128_invented_cases_receive_new_worker_budget_without_float_drift(tm
             ledger.settle(ticket,{'input_tokens':100000,'output_tokens':4096})
         return {'status':'complete','model_z':.42,'execution_budget':ledger.snapshot()},False
     monkeypatch.setattr(acceptance,'run_worker',worker)
-    result=acceptance.execute_plan(plan,tmp_path/'output',usd=12.337152,candidate=identity)
+    result=acceptance.execute_plan(plan,tmp_path/'output',usd=12.337152,candidate=identity,campaign_dir=campaign_dir,protocol_dir=docs)
     assert dispatched==[.096384]*128
     assert result['status_counts']['complete']==128
     assert result['cost']['known_usd']==12.337152 and result['cost']['certified'] is True
@@ -49,6 +53,10 @@ def test_all_128_invented_cases_receive_new_worker_budget_without_float_drift(tm
 def test_exact_remaining_case_budget_does_not_stop_at_float_boundary(tmp_path,monkeypatch):
     """0.125014 - 0.028630 rounds below 0.096384 in binary floating point."""
     from copilot import candidate_identity
+    from test_development_execution import campaign
+    _,campaign_dir,docs=campaign(tmp_path)
+    write_json(campaign_dir/'pilot.claim.json',{})
+    write_json(campaign_dir/'pilot.close.json',{'certified':True})
     source=tmp_path/'invented-input';source.write_text('fixture')
     identity=tmp_path/'invented-identity.json';identity.write_text('{}')
     plan=tmp_path/'plan.json'
@@ -65,7 +73,7 @@ def test_exact_remaining_case_budget_does_not_stop_at_float_boundary(tmp_path,mo
         dispatched.append(ledger.snapshot()['known_nanodollars'])
         return {'status':'complete','model_z':.42,'execution_budget':ledger.snapshot()},False
     monkeypatch.setattr(acceptance,'run_worker',worker)
-    result=acceptance.execute_plan(plan,tmp_path/'output',usd=.125014,candidate=identity)
+    result=acceptance.execute_plan(plan,tmp_path/'output',usd=.125014,candidate=identity,campaign_dir=campaign_dir,protocol_dir=docs)
     assert dispatched==[28630000,96384000]
     assert result['attempted']==2 and result['status_counts']['pending']==126
     assert result['cost']['known_nanodollars']==125014000 and result['cost']['certified']
@@ -83,11 +91,14 @@ def test_cli_and_worker_use_the_same_authorized_limits(tmp_path,monkeypatch,entr
     if entry=='agent':
         monkeypatch.setattr(agent,'run',check_budget)
         monkeypatch.setattr(sys,'argv',['agent','invented','--budget-usd','0.1','--effort',effort])
-        assert agent.main()==0
+        with pytest.raises(SystemExit) as exc:agent.main()
+        assert exc.value.code==2 and not captured
+        return
     else:
         monkeypatch.setattr(agent,'run_structured',check_budget)
         monkeypatch.setattr(candidate_identity,'verify',lambda *a,**k:None)
-        monkeypatch.setattr(sys,'argv',['worker','--input','invented','--progress',str(tmp_path/'progress'),
+        source=tmp_path/'scientific-input';source.write_bytes(b'invented fixture bytes; agent is replaced')
+        monkeypatch.setattr(sys,'argv',['worker','--input',str(source),'--progress',str(tmp_path/'progress'),
             '--result',str(tmp_path/'result'),'--budget-usd','0.1','--candidate','invented','--protocol-dir','invented','--effort',effort])
         assert acceptance_worker.main()==0
     assert vars(captured[0])==dict(input_tokens=800000,output_tokens=32768,max_output_per_call=4096,

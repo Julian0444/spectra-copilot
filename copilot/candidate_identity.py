@@ -47,6 +47,8 @@ def capture(protocol_dir,effort='low'):
         except importlib.metadata.PackageNotFoundError:versions[name]=None
     protocol={name:sha256(protocol_dir/name) for name in
               ('BATCH_5B_PROTOCOL.md','protocol/batch5b-development.json','evidence/batch5b-commitment.json')}
+    for name in ('protocol/batch5c-development-registry.json','protocol/batch5c-campaign.json'):
+        if (protocol_dir/name).is_file():protocol[name]=sha256(protocol_dir/name)
     sdk_root=Path(anthropic.__file__).resolve().parent
     sdk_sources={name:sha256(sdk_root/name) for name in
                  ('lib/tools/_beta_runner.py','resources/messages/messages.py','resources/beta/messages/messages.py')}
@@ -64,15 +66,17 @@ def capture(protocol_dir,effort='low'):
                                              'packages':versions,'anthropic_source_sha256':sdk_sources}}
     heads={}
     for name,directory in locations.items():
-        try:heads[name]=subprocess.check_output(['git','-C',directory,'rev-parse','HEAD'],text=True,stderr=subprocess.DEVNULL).strip()
+        try:heads[name]=subprocess.check_output(['git','-C',directory,'rev-parse','HEAD'],text=True,stderr=subprocess.DEVNULL,
+                                               env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'}).strip()
         except subprocess.CalledProcessError:heads[name]=None
     return {'schema':'spectra-system-identity-v1','kind':'candidate-5b22','behavior':behavior,'behavior_sha256':digest(behavior),
             'source_locations':locations,'source_heads':heads,
             'closure':'Candidate only. 5C must record the final installed identity and justify every behavioral difference before real acceptance.'}
 
 
-def verify(path,protocol_dir,effort='low'):
+def verify(path,protocol_dir,effort='low',require_installed=False):
     saved=json.loads(Path(path).read_text())
+    if require_installed and saved.get('kind')!='installed-5c':raise ValueError('Paid execution requires installed-5c identity')
     if saved.get('schema')!='spectra-system-identity-v1' or digest(saved['behavior'])!=saved['behavior_sha256']:
         raise ValueError('Invalid candidate identity')
     current=capture(protocol_dir,effort=effort)

@@ -432,6 +432,8 @@ def main() -> int:
     p.add_argument("--budget-usd", type=float, default=0., help="Explicit paid ceiling; default zero. 5C requires prior authorization.")
     p.add_argument("--save-transcript", default=None, metavar="PATH")
     args = p.parse_args()
+    if args.budget_usd:
+        p.error('Paid 5C execution requires copilot.acceptance with registered identity and campaign')
     if not 0 <= args.budget_usd <= CASE_CEILING_USD or (args.budget_usd and args.model != PINNED_MODEL):
         p.error('Paid proposal requires the pinned model and USD ceiling at most 0.10')
     budget = Budget(args.model, Limits(usd=args.budget_usd),effort=args.effort) if args.budget_usd else None

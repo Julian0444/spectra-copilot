@@ -95,12 +95,13 @@ def test_corpus_change_during_run_returns_technical_error_with_prediction_and_us
         budget.settle(ticket,{'input_tokens':50,'output_tokens':10})
         lookup={t.name:t for t in state.tools}['lookup_reference']
         lookup.call({'query':'Halpha OII confusion'})
-        if submitted:state.tools[-1].call({'observation_ids':['obs-1','obs-2']})
+        if submitted:state.tools[-1].call({'observation_ids':[o['id'] for o in state.observations]})
         monkeypatch.setattr(rag,'corpus_revision',lambda:'changed-revision')
         return state,None,state.usage,state.history
     monkeypatch.setattr(agent,'execute_run',execute)
     result=agent.run_structured(str(path),budget=Budget(limits=Limits(usd=.1)))
     assert result['status']=='technical_error' and result['model_z']==.42
-    assert result['citations']==[] and len(result['observations'])==2
+    assert result['citations']==[] and [o['tool'] for o in result['observations']]==[
+        'predict_redshift','identify_spectral_lines','lookup_reference']
     assert 'reference_validation_failed' in result['policy_violations']
     assert result['execution_budget']['calls']==1 and result['execution_budget']['cost_certified']
