@@ -40,7 +40,9 @@ result remains authoritative for the historical policy that produced it.
 Current source preserves executor-owned model_z. Alternatives are calculated in
 code and never replace it; all registered measurements determine minimum
 ambiguity or insufficiency, even when the LLM does not cite them. The real LLM
-acceptance, installed identity and release remain pending in 5C.
+acceptance remains conditional on the 5C pilot. Version 0.3.0 wheels and their
+installed identities have been verified locally; publication remains pending.
+See the [5C report](docs/BATCH_5C_REPORT.md).
 
 **Tools** (`copilot/tools.py`):
 
@@ -64,10 +66,15 @@ acceptance, installed identity and release remain pending in 5C.
 
 ## Quick start
 
+For the delivered 0.3.0 wheels, use the [tested installed quick start](docs/BATCH_5C_REPRODUCE.md).
+It includes local assets, a valid input, rejection, single-line ambiguity, Gradio,
+API and MCP. The following editable commands are for source development.
+
+
 ```bash
 # Development from matched source checkouts only: first install the current FM checkout.
 # Archived 0.2.0 wheels certify batch 2 only and lack current modules.
-# Definitive versions, wheels and clean installation acceptance belong to 5C.
+# Local 0.3.0 wheel verification is documented in docs/BATCH_5C_REPRODUCE.md.
 pip install -e ".[dev]"
 # optional: skip the ~104 MB Hub download by pointing at a local checkpoint
 export DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt
@@ -458,11 +465,11 @@ their [CC BY 4.0 attribution, EDR citation and modification notices](ATTRIBUTION
 
 Batch 2 contracts, opaque agent inputs, executable limits and local wheel installation: [BATCH_2.md](docs/BATCH_2.md). Historical examples and transcripts retain their original labels and protocols; the runner strips label-bearing metadata and paths before any LLM request.
 
-Current consolidation: [5B-2.1](docs/BATCH_5.md). v2.1 remains the default.
+Current consolidation: [5C](docs/BATCH_5C_REPORT.md). v2.1 remains the default.
 Executor-owned model_z and explanatory states are protected in current source;
-alternatives cannot replace that prediction. Real acceptance and the final
-installed identity remain pending in 5C. Archived 0.2.0 wheels certify batch 2,
-not current source.
+alternatives cannot replace that prediction. Version 0.3.0 is installed and
+checked locally; real acceptance and publication have separate states in the
+5C report. Archived 0.2.0 wheels certify batch 2, not current source.
 
 ### MCP error contract (5A correction)
 
