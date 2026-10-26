@@ -19,6 +19,9 @@ def main():
     assert not os.environ.get('ANTHROPIC_API_KEY') and not os.environ.get('PYTHONPATH')
     assert 'site-packages' in acceptance.__file__
     docs=a.output/'docs';shutil.copytree(a.protocol_dir,docs)
+    # The execution snapshot is read-only; only this invented fixture is mutable.
+    docs.chmod(0o700)
+    for path in docs.rglob('*'):path.chmod(0o700 if path.is_dir() else 0o600)
     root=a.output/'invented-campaign'
     spec=json.loads((docs/'protocol/batch5c-campaign.json').read_text())
     spec['campaign_id']='offline-installed-boundary-fixture'
