@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "spectra-copilot"
-version = "0.2.0"
+version = "0.3.0"
 description = "Experimental spectral-analysis agent using the DESI multitask transformer and heuristic tools"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -14,7 +14,7 @@ dependencies = [
   "scipy",
   "torch",
   "huggingface_hub",
-  "desi-fm>=0.2.0,<0.3",
+  "desi-fm>=0.3.0,<0.4",
   "anthropic>=0.120.2,<0.121",
   "mcp[cli]>=2.0.0,<3",
   "faiss-cpu",
