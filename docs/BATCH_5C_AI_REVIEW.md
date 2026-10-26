@@ -80,3 +80,38 @@ N=128 global, 80 reales y 48 sintéticos; se presentan M, C_id, C_pair, C_sci,
 C_fact y A conforme al protocolo, estratos y Wilson por caso. Las recetas públicas
 son comprobaciones de mecanismo. Una nueva sesión de Opus revisa agregados,
 denominadores, sello, identidad, costes y fidelidad del informe sin repetir pagos.
+
+
+## Unión validada y adjudicación de inventario
+
+El coordinador registra first_sha256 y second_sha256 en un archivo exclusivo
+`batch5c-annotation-registration-v1` con registered_before_reading_judgments=true
+antes de leer contenido. Esta declaración se contrasta con el registro temporal
+de herramientas; el software no puede demostrar por sí solo que nadie leyó antes.
+Se auditan ambos hilos. Los paquetes se copian en directorios privados aleatorios;
+se declara ceguera parcial sobre real/sintético porque el contenido puede revelarlo.
+Etiquetas y puntuación mecánica de aceptación se abren solo después de registrar
+ambos hashes; esto no impide puntuar desarrollo para la puerta del piloto.
+
+`copilot.review_annotations join --package ... --mapping ... --first ...
+--second ... --registration ... --output ... [--adjudication ...]` verifica los
+hashes, manifiesto, sello, mapa, cobertura de todos los casos y ambos contratos.
+Produce `batch5c-ai-reviews-v1`, indexado por alias, con bundles
+`batch5c-ai-case-review-v1`. El scorer rechaza esquemas desconocidos; en propuesta
+solo admite esa unión validada. La unión no lee etiquetas ni modifica anotaciones.
+
+Adjudicación: archivo `batch5c-ai-adjudication-v1` con reviewer=Julian,
+independent=true, package_manifest_sha256 y cases (solo los casos adjudicados).
+Cada caso incluye reviewer, independent, judgments y case_obligations (solo las
+disputadas salvo exposición de identidad, que requiere todas). Para inventario,
+inventory_resolution contiene input_sha256=inventory_digest(semillas,primera,segunda),
+claims (inventario final completo) y reason. Puede rechazar adiciones, excluir,
+dividir o fusionar semillas. Los claims resultantes llevan texto exacto y spans;
+los nuevos o modificados requieren juicio humano. Una resolución con hash viejo
+se rechaza; una anotación independiente faltante siempre queda pendiente. Se
+conservan conteos de semilla, cada anotador y final, además de los originales.
+
+Las omisiones y pendientes se agregan por obligación. Las tasas semánticas por
+caso y Wilson son descriptivas (casos enteramente correctos/respaldados); no
+reemplazan los umbrales agrupados de afirmaciones. Las notas que revelen identidad
+y blindness_intact=false fuerzan juicio humano en todo el caso.

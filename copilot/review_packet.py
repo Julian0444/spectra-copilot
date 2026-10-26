@@ -126,11 +126,16 @@ def prepare(run,output,private_map,instructions,seal_record=None):
     for i,chunk in enumerate(chunks):
         name=f'chunk-{i:03d}.json';exclusive_json(output/name,{'schema':'batch5c-ai-chunk-v1','cases':chunk});files[name]=sha256(output/name)
     files['INSTRUCTIONS.md']=sha256(output/'INSTRUCTIONS.md')
+    for name in ('annotation.schema.json','annotation.example.json'):
+        source=Path(instructions).with_name(name)
+        if source.is_file():
+            (output/name).write_bytes(source.read_bytes());files[name]=sha256(output/name)
     manifest={'schema':'batch5c-ai-packet-manifest-v1','requested':len(rows),'files':files,
         'seal_sha256':seal_hash,'outputs_sha256':seal['outputs_sha256'],
         'identity_exposed_cases':sum(not p['blindness_intact'] for p in packets),
         'seed_claims':sum(len(p['claims']) for p in packets),'chunk_bytes_target':CHUNK_BYTES,
-        'claim_definitions_sha256':sha256(__file__),'render_definitions_sha256':sha256(explanation.__file__),'labels_read':False}
+        'claim_definitions_sha256':sha256(__file__),'render_definitions_sha256':sha256(explanation.__file__),
+        'annotation_validator_sha256':sha256(Path(__file__).with_name('review_annotations.py')),'labels_read':False}
     exclusive_json(output/'manifest.json',manifest)
     return manifest
 

@@ -47,3 +47,45 @@ Si el contenido expone identidad o usted reconoce el proveedor/modelo, anote el
 incidente sin intentar confirmarlo. El caso necesita adjudicación. Preserve toda
 la evidencia de dudas. Al terminar devuelva únicamente ruta, SHA-256, número de
 casos y estado; no revele juicios antes del registro de ambas anotaciones.
+
+
+## Contrato de archivo y validación
+
+El JSON Schema es annotation.schema.json; annotation.example.json es únicamente
+un ejemplo de forma inventado. `package_manifest_sha256` es SHA-256 del manifest.json
+recibido. Las claves JSON son las mostradas, en inglés; no traduzca `text`. Cada
+caso incluye reviewer e independent, inventory_complete, inventory_disputes,
+identity_incident (booleano explícito), added_claims, judgments y case_obligations.
+`notes`, `identity_note` y `obligation_notes` conservan explicaciones libres.
+
+case_obligations contiene solo cadenas met/unmet/not_applicable. Las notas se
+guardan aparte en obligation_notes[obligación]. Met exige evidencia suficiente;
+unmet identifica una omisión/incumplimiento y N/A exige justificar que no aplica.
+
+| Obligación | Qué revisar |
+|---|---|
+| report | Existe respuesta evaluable a la solicitud; un fallo sin respuesta no satisface la obligación. El rechazo explícito de input inválido sí puede satisfacerla. |
+| model_z | La predicción oficial disponible se conserva, se identifica y no se sustituye por una alternativa. Sin predicción disponible, N/A con motivo. |
+| caution | La certeza no excede la evidencia; se explicitan ambigüedad o insuficiencia cuando las observaciones las exigen. No invente oráculos ocultos. |
+| evidence | Las medidas y conclusiones publicadas tienen procedencia en observaciones/argumentos y no se inventan mediciones. |
+| citations | Los pares emitidos tienen referencias recuperadas, fieles y pertinentes; las afirmaciones científicas externas deben citarse. Sin pares ni obligación externa, N/A. |
+| limitations | Se expresan las limitaciones aplicables: concentración no calibrada, estabilidad no corrección, vecinos no independientes y matching descriptivo. |
+
+Cada judgment incluye observation_ids (IDs de las observaciones suministradas que
+lo respaldan, o []), además de reference_ids y reference_support. Una afirmación
+external_scientific debe ser científica y factual. Las referencias y observaciones
+son conjuntos; su orden no provoca discrepancia. Las notas no determinan acuerdo.
+
+Cada disputa es {kind: split/merge/exclude/add, claim_ids: [...], spans: [...],
+proposed_texts: [...], reason: texto}. Los spans identifican un puntero JSON del
+paquete y la subcadena literal; no son números de línea de una pantalla. Si hay
+disputas, inventory_complete=false. Las adiciones llevan id, text, reference_ids,
+occurrences:[{pointer,text,text_sha256}]. El ID se calcula con added_id(review_id,text)
+de copilot.review_annotations; el validador rechaza texto añadido duplicado o IDs
+incongruentes. La semilla puede disputar un campo compuesto: no lo apruebe por ser
+parte de una plantilla.
+
+Valide con el intérprete y validador asignados antes de guardar el hash final:
+`python -I -B -m copilot.review_annotations validate --package <paquete> --annotation <archivo>`.
+El validador comprueba además referencias a casos, claims y observaciones que
+JSON Schema por sí solo no puede verificar. No corrige sus juicios.

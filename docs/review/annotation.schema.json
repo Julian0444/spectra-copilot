@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "batch5c-ai-annotation-v1",
+  "title": "Independent 5C annotation",
+  "type": "object",
+  "required": [
+    "schema",
+    "reviewer",
+    "independent",
+    "package_manifest_sha256",
+    "cases"
+  ],
+  "properties": {
+    "schema": {
+      "const": "batch5c-ai-annotation-v1"
+    },
+    "reviewer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "independent": {
+      "const": true
+    },
+    "package_manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "cases": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "reviewer",
+          "independent",
+          "inventory_complete",
+          "inventory_disputes",
+          "identity_incident",
+          "added_claims",
+          "judgments",
+          "case_obligations"
+        ],
+        "properties": {
+          "reviewer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "independent": {
+            "const": true
+          },
+          "inventory_complete": {
+            "type": "boolean"
+          },
+          "identity_incident": {
+            "type": "boolean"
+          },
+          "identity_note": {
+            "type": "string"
+          },
+          "inventory_disputes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "kind",
+                "claim_ids",
+                "spans",
+                "proposed_texts",
+                "reason"
+              ],
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "split",
+                    "merge",
+                    "exclude",
+                    "add"
+                  ]
+                },
+                "claim_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "uniqueItems": true
+                },
+                "spans": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "proposed_texts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "uniqueItems": true
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "added_claims": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "text",
+                "reference_ids",
+                "occurrences"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "reference_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "uniqueItems": true
+                },
+                "occurrences": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "pointer",
+                      "text"
+                    ],
+                    "properties": {
+                      "pointer": {
+                        "type": "string"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "text_sha256": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "judgments": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "factual",
+                "scientific",
+                "external_scientific",
+                "critical_error",
+                "textual_support",
+                "scientific_accuracy",
+                "reference_ids",
+                "reference_support",
+                "observation_ids"
+              ],
+              "properties": {
+                "factual": {
+                  "type": "boolean"
+                },
+                "scientific": {
+                  "type": "boolean"
+                },
+                "external_scientific": {
+                  "type": "boolean"
+                },
+                "critical_error": {
+                  "type": "boolean"
+                },
+                "textual_support": {
+                  "enum": [
+                    "supported",
+                    "unsupported",
+                    "not_applicable"
+                  ]
+                },
+                "scientific_accuracy": {
+                  "enum": [
+                    "correct",
+                    "incorrect",
+                    "not_applicable"
+                  ]
+                },
+                "reference_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "uniqueItems": true
+                },
+                "observation_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "uniqueItems": true
+                },
+                "reference_support": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "enum": [
+                      "supported",
+                      "unsupported"
+                    ]
+                  }
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "case_obligations": {
+            "type": "object",
+            "required": [
+              "report",
+              "model_z",
+              "caution",
+              "evidence",
+              "citations",
+              "limitations"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "report": {
+                "enum": [
+                  "met",
+                  "unmet",
+                  "not_applicable"
+                ]
+              },
+              "model_z": {
+                "enum": [
+                  "met",
+                  "unmet",
+                  "not_applicable"
+                ]
+              },
+              "caution": {
+                "enum": [
+                  "met",
+                  "unmet",
+                  "not_applicable"
+                ]
+              },
+              "evidence": {
+                "enum": [
+                  "met",
+                  "unmet",
+                  "not_applicable"
+                ]
+              },
+              "citations": {
+                "enum": [
+                  "met",
+                  "unmet",
+                  "not_applicable"
+                ]
+              },
+              "limitations": {
+                "enum": [
+                  "met",
+                  "unmet",
+                  "not_applicable"
+                ]
+              }
+            }
+          },
+          "obligation_notes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

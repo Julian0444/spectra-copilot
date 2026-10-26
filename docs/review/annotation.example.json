@@ -1,0 +1,41 @@
+{
+  "schema": "batch5c-ai-annotation-v1",
+  "reviewer": "assigned-reviewer",
+  "independent": true,
+  "package_manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "cases": {
+    "invented-review-id": {
+      "reviewer": "assigned-reviewer",
+      "independent": true,
+      "inventory_complete": true,
+      "inventory_disputes": [],
+      "identity_incident": false,
+      "identity_note": "",
+      "added_claims": [],
+      "judgments": {
+        "invented-review-id:status": {
+          "factual": true,
+          "scientific": false,
+          "external_scientific": false,
+          "critical_error": false,
+          "textual_support": "supported",
+          "scientific_accuracy": "not_applicable",
+          "reference_ids": [],
+          "reference_support": {},
+          "observation_ids": [],
+          "notes": "Status is explicitly published."
+        }
+      },
+      "case_obligations": {
+        "report": "not_applicable",
+        "model_z": "not_applicable",
+        "caution": "not_applicable",
+        "evidence": "not_applicable",
+        "citations": "not_applicable",
+        "limitations": "not_applicable"
+      },
+      "obligation_notes": {},
+      "notes": "Invented shape example, not an annotation of a real case."
+    }
+  }
+}
