@@ -5,10 +5,14 @@ Hub, aceptación privada ni una clave. La evidencia experimental vigente está e
 [BATCH_5C_REPORT.md](BATCH_5C_REPORT.md); una demo no constituye aceptación.
 Los wheels 0.2.0 archivados solo certifican el lote 2.
 
-La entrega build-06 incorpora cuatro módulos de revisión/puntuación posteriores
-al piloto. Su camino de ejecución LLM coincide por hash con build-05. El piloto
-usó installed-env/build-05, que se conserva congelado y no se reinstala.
-Evidencia de entrega en [batch5c-delivery.json](evidence/batch5c-delivery.json).
+La instalación actual de diagnóstico y repetición es build-07/diagnostic-env.
+Frente a build-06 cambia solo budget.py para registrar fallos SDK. Build-05 y
+build-06 se conservan congelados. La demo/CLI/API/MCP/Gradio se comprobaron antes
+en build-05/06; no se atribuye una nueva prueba de interfaces a build-07. Esta
+última verificó fuentes instaladas, RECORD, identidades y13 pruebas diagnósticas;
+el piloto repetido se ejecutó desde ella. No hay reconstrucción final posterior
+porque la variante elegida no pasó la puerta. Nunca ejecutar nuevamente los
+lanzadores privados de pago: sus autorizaciones únicas están consumidas.
 
 ## Entorno y activos
 
@@ -18,8 +22,8 @@ mcp 2.0.0 y pydantic 2.13.4. Versiones completas y hashes de descarga quedan en
 `evidence/batch5c-dependencies.txt` y `evidence/batch5c-wheelhouse.json`.
 No se ha comprobado esta combinación en Linux/Windows ni otro hardware.
 
-El directorio privado de la corrida contiene `release-env`, `build-06/wheels`,
-`build-06/installed-build.json`, `downloaded-wheels`, `frozen-assets`,
+El directorio privado de la corrida contiene `diagnostic-env`, `build-07/wheels`,
+`build-07/installed-build.json`, `downloaded-wheels`, `frozen-assets`,
 `protocol-pilot/docs`, `development-v2` y registros de comandos. Los paths de ese
 manifiesto son locales: al trasladarlo, cambie solo wheel_path a las copias con
 el mismo hash, conserve el original y registre un manifiesto nuevo. Toda identidad
@@ -54,8 +58,8 @@ python3.12 -m venv "$S5C_ENV"
   -r "$S5C_ARCHIVE/declared-dependencies.txt" \
   -c "$S5C_ARCHIVE/dependency-constraints.txt"
 "$S5C_ENV/bin/python" -m pip --isolated install --no-index --no-deps --no-compile \
-  "$S5C_ARCHIVE/build-06/wheels/desi_fm-0.3.0-py3-none-any.whl" \
-  "$S5C_ARCHIVE/build-06/wheels/spectra_copilot-0.3.0-py3-none-any.whl"
+  "$S5C_ARCHIVE/build-07/wheels/desi_fm-0.3.0-py3-none-any.whl" \
+  "$S5C_ARCHIVE/build-07/wheels/spectra_copilot-0.3.0-py3-none-any.whl"
 "$S5C_ENV/bin/python" -m pip check
 ```
 
@@ -73,7 +77,7 @@ export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 GRADIO_ANALYTICS_ENABLED=False
   --valid "$S5C_ARCHIVE/development-v2/inputs/input_0000.npz" \
   --invalid "$S5C_ARCHIVE/development-v2/inputs/input_0007.npz" \
   --ambiguous "$S5C_ARCHIVE/development-v2/inputs/input_0011.npz" \
-  --build-manifest "$S5C_ARCHIVE/build-06/installed-build.json" \
+  --build-manifest "$S5C_ARCHIVE/build-07/installed-build.json" \
   --output /ruta/privada/nueva/demo.json
 ```
 

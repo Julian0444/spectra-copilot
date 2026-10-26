@@ -1,20 +1,24 @@
 {
-  "schema": "batch5c-local-delivery-v1",
+  "schema": "batch5c-diagnostic-verification-v1",
   "installation": {
     "desi-fm": {
       "version": "0.3.0",
-      "source_commit": "f27fb4946d6f2505a922505ed24095c9c0b2df3f",
-      "wheel_sha256": "d0cdfbc068f4d0598929ff2134fbe5b5fe6765a4b6572b4a888b75a866af7e44",
-      "record_sha256": "61313b0ced3a4549231fb93acc1a01ce19b2c4911a38996f44b70adf3ec0ab45",
+      "source_commit": "e5ae6cf342d66ac87576d3e43a3b0cd572da9fdb",
+      "wheel_sha256": "5061b5f6f5cffa39ec9efef5fd3bc4546eb75024b663626fb9df98cf6d06bff9",
+      "record_sha256": "544a59dc4338158ef3dbffa4ffa79079be8011a6f87a91b806ee0f7f7af0306b",
       "files_checked": 29
     },
     "spectra-copilot": {
       "version": "0.3.0",
-      "source_commit": "0cdc6ea8e76454dcdc88da1c43893e623eb8d233",
-      "wheel_sha256": "8b86488fb5dc291496f4563e67a85698a7c29ab1ff031e38559d36c130039933",
-      "record_sha256": "5035aec70803aabcd38e1ef298cf5f90378d421cee3e007e43394d2e6948a450",
+      "source_commit": "7a260de09b9e76a0e33693db7626cc0aba7d8493",
+      "wheel_sha256": "9bbcea34f236c7391e5f8396a434773289ed684d29cc6d592bd97980e571eff8",
+      "record_sha256": "17b43671d8d403de76263b48848b6d5687696f116d4d99bc594606aaf3485d93",
       "files_checked": 45
     }
+  },
+  "imports": {
+    "copilot": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5c-20261025-f50jj9q_/diagnostic-env/lib/python3.12/site-packages/copilot",
+    "desi_fm": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5c-20261025-f50jj9q_/diagnostic-env/lib/python3.12/site-packages/desi_fm"
   },
   "content_matches_source": {
     "copilot": {
@@ -30,24 +34,26 @@
   },
   "identities": {
     "low": {
-      "sha256": "8cb09a9f747d05832ba535ffa03d6fbede469f94470a19ad0ee50befe156d189",
-      "behavior_sha256": "af17aacbb12e974c4b213cd5a7a4a9ae51ffea046cdf972ac093be10f56064fc",
-      "llm_path_sha256": "8d79a71d8152836cc8005e7c16e4d516b00d14978b0b30700efae50e4d501dbb",
-      "llm_path_equal_to_pilot": true,
+      "sha256": "6a8183f2be400002940cdde88a1e429396fb5037d6e842ae59e8c8aceda2083a",
+      "behavior_sha256": "8ba499f57126e53ce4a11e46a55f12676af9ae6b69df03a9851b7dd90ecc3de4",
+      "llm_path_sha256": "985e74a43f8be5e6cb82bacb40d0ea82681af065dfd02390f7f1f49b0401158d",
+      "llm_path_equal_to_pilot": false,
       "changed_source_files": [
         "copilot/acceptance_score.py",
+        "copilot/budget.py",
         "copilot/review.py",
         "copilot/review_annotations.py",
         "copilot/review_packet.py"
       ]
     },
     "medium": {
-      "sha256": "992d9749a97950bff9f185bf4f3abb5b2f9d5a016a18ce10e4f249605690a485",
-      "behavior_sha256": "0a3f927e80649b0f53454d3edd47340852b9cecea885b6ceac47fbe6931bd5c6",
-      "llm_path_sha256": "537e07b9e0d9701012f3029305f7519ac563b6c4cec5855fadd86392f29f2235",
-      "llm_path_equal_to_pilot": true,
+      "sha256": "9986d5b8ae51a0e545d4dd239fd3ac6eb9fc2fbce03e462aae8a0ad1a3d2bdfb",
+      "behavior_sha256": "c51c738680a08dfddd1fe7c06042667bbd55ed54c551ae3b71254975bf8293a0",
+      "llm_path_sha256": "0a99d9eb135b2f5d3dda23d81b909199233d62e78805a06a5c1e51e43c13aa07",
+      "llm_path_equal_to_pilot": false,
       "changed_source_files": [
         "copilot/acceptance_score.py",
+        "copilot/budget.py",
         "copilot/review.py",
         "copilot/review_annotations.py",
         "copilot/review_packet.py"
@@ -56,44 +62,25 @@
   },
   "paid_calls": 0,
   "acceptance_opened": false,
-  "installed_review_tests": {
+  "installed_diagnostic_tests": {
     "returncode": 0,
-    "files": 3,
-    "expected_tests": 15,
+    "tests": 13,
     "production_imports": "installed wheels",
-    "fixtures": "invented copied tests from committed build06 clone",
     "network": "blocked"
   },
-  "build": "build-06",
-  "environment": "release-env",
-  "evaluated_pilot_build": "build-05",
-  "evaluated_environment_preserved": "installed-env",
-  "acceptance_identity_registered": false,
-  "scientific_acceptance": "not_evaluated_gate_failed",
-  "build_manifest_sha256": "b6ba69da73f30160f6cb0d5ab45bf306278ec833796fcc0fee78deece805ce9d",
-  "verification_sha256": "defb558196380e0131ce8b392064f76059239e01c37847272143d612f4b9a754",
-  "demo_sha256": "dd1c5eb5a8d4cf4ba90d7c71b7956aeff3400983d7261b87c79a39b19e78b6c1",
-  "demo": {
-    "valid_model_z": 1.0745,
-    "invalid_rejected": true,
-    "single_line": "ambiguous",
-    "mcp_lookup_reference": true,
-    "paid_calls": 0
-  },
-  "operational_interfaces_evidence": "B build-05; all FM sources and Copilot execution/interface sources identical in build-06",
-  "source_test_collection_incidents": [
-    "G-installed-release: missing fixture helper import; 0 tests executed",
-    "G-installed-release-v2: second missing fixture helper import; 0 tests executed",
-    "G-installed-release-v3: complete fixture dependency copies; 15 tests passed against installed modules"
+  "build": "build-07",
+  "environment": "diagnostic-env",
+  "used_for": "authorized pilot repeat and diagnostic",
+  "prior_builds_preserved": [
+    "build-05/installed-env",
+    "build-06/release-env"
   ],
-  "observations": [
-    "No inference over batch4a-v1/test",
-    "No acceptance manifest opened",
-    "Build-06 is not the package used by the pilot",
-    "No selected final effort; low/medium identities are archival software identities, not authorization for another phase"
-  ],
-  "review_procedure_status": "blocked",
-  "open_review_P1": 0,
-  "open_review_P2": 2,
-  "independent_D_report_sha256": "1be49a27f626cab086217e6c8e70456f7df16b9a1f5c7a73139ac6c3fd530de6"
+  "repeat_protocol_commit": "020ff39",
+  "repeat_registration_sha256": "04539436fbebe7fe8cae76fc7d95b467f141c8aa0823937cffbfe06bd536cc4e",
+  "build_manifest_sha256": "7926bd21c1cfd2ab8129dbfb3fc8eeb87c8e465803e88849838b3fbbce5526c6",
+  "final_reconstruction_performed": false,
+  "scientific_acceptance": "pending",
+  "review_procedure_status": "blocked_two_P2",
+  "diagnostic_independent_review": "interrupted_no_verdict",
+  "prior_demo_evidence": "build-06; no repeat claimed"
 }

@@ -1,5 +1,10 @@
 # spectra-copilot
 
+**5C (cierre económico):** clave inválida reemplazada por Julian; piloto repetido
+y puntuado mecánicamente: low11/11 pasa la puerta operativa. Puerta completa pendiente de verificación final. Aceptación sin abrir;
+exactitud científica y aceptación global pendientes. [Informe](docs/BATCH_5C_REPORT.md).
+
+
 [![ci](https://github.com/Julian0444/spectra-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/Julian0444/spectra-copilot/actions/workflows/ci.yml)
 
 LLM agent that analyzes astronomical spectra using the

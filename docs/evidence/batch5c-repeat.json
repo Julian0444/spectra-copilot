@@ -1,0 +1,103 @@
+{
+  "schema": "batch5c-repeat-mechanical-summary-v1",
+  "phase": "pilot",
+  "seal_sha256": "31eb1b78e55836ddaa9457aadf3ef7a8dc83ad93f27f736c35ca6db3e8163137",
+  "outputs_sha256": "86e28478974cc69e86e9afd59d87a48a3ca6d42440ef9ecd2e31ac92c60dc532",
+  "labels_sha256": "1838aced93a476452e9d574bcc120a42fc977be1b1f9daa1dec9c568b3ef13e3",
+  "variant_identities": {
+    "low": "6b6391b22557cd9a240fbe26ec6a10dcd493889b5bb1eb1ea36387ed02ee202f",
+    "medium": "b4b10bba6aadf9431e954237b0fe3ed44d5e33053b2f885833d06fc89914439f"
+  },
+  "variants": {
+    "low": {
+      "requested": 12,
+      "valid_inputs": 11,
+      "invalid_inputs": 1,
+      "valid_reports": 11,
+      "max_tokens_or_refusal": 0,
+      "status_counts": {
+        "ambiguous": 7,
+        "insufficient_data": 4,
+        "invalid_input": 1
+      },
+      "cost_certified": true,
+      "known_nanodollars": 9973400,
+      "llm_calls": 11,
+      "gate_checks": {
+        "population": true,
+        "valid_reports": true,
+        "max_tokens_or_refusal": true,
+        "no_other_failures": true,
+        "invalid_zero_calls": true,
+        "certified_cost": true,
+        "no_inflight_or_prompt_tier": true,
+        "model_z_preserved": true
+      },
+      "gate_passed": true
+    },
+    "medium": {
+      "requested": 12,
+      "valid_inputs": 11,
+      "invalid_inputs": 1,
+      "valid_reports": 6,
+      "max_tokens_or_refusal": 0,
+      "status_counts": {
+        "ambiguous": 3,
+        "explanation_incomplete": 5,
+        "insufficient_data": 3,
+        "invalid_input": 1
+      },
+      "cost_certified": true,
+      "known_nanodollars": 18088000,
+      "llm_calls": 18,
+      "gate_checks": {
+        "population": true,
+        "valid_reports": false,
+        "max_tokens_or_refusal": true,
+        "no_other_failures": false,
+        "invalid_zero_calls": true,
+        "certified_cost": true,
+        "no_inflight_or_prompt_tier": true,
+        "model_z_preserved": true
+      },
+      "gate_passed": false
+    }
+  },
+  "chosen_effort": "low",
+  "gate_passed": true,
+  "interpretation": "Operational development comparison only; no redshift accuracy used; selection precedes gate.",
+  "requested": 24,
+  "attempted": 24,
+  "status_counts": {
+    "ambiguous": 10,
+    "complete": 0,
+    "explanation_incomplete": 5,
+    "insufficient_data": 7,
+    "invalid_input": 2,
+    "max_tokens": 0,
+    "pending": 0,
+    "refusal": 0,
+    "technical_error": 0,
+    "timeout": 0
+  },
+  "llm_calls": 29,
+  "automatic_retries": 0,
+  "cost": {
+    "certified": true,
+    "total_usd": 0.0280614,
+    "known_usd": 0.0280614,
+    "known_nanodollars": 28061400,
+    "mean_per_requested": 0.001169225
+  },
+  "prior_attempt_debit_nanodollars": 3570600,
+  "aggregate_accounting_nanodollars": 31632000,
+  "remaining_pilot_nanodollars": 2368368000,
+  "original_attempt_actual_usage_certified": false,
+  "original_attempt_preserved": true,
+  "seal_record_sha256": "524c079285d2c82648e121e065c0c7715a1961e9ee5961ba1c99b3568730157e",
+  "private_score_sha256": "3cc263d2178c738f379b12b22f890575d03dc9d185ff3ca3399d7df3e75e016a",
+  "semantic_annotation": "deferred_by_Julian",
+  "scientific_accuracy": "pending",
+  "global_acceptance": "pending",
+  "acceptance_opened": false
+}

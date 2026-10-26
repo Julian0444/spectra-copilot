@@ -39,3 +39,7 @@ condicionado autorizado en BATCH_5C_REPORT.md. La aceptación permanece cerrada.
 No existe variante elegida. La reserva US$0,0035706 no es gasto facturado;
 conciliación con el proveedor y cualquier decisión sobre un experimento futuro
 requieren tratar el intento preservado. No se concede otro piloto implícitamente.
+
+Cierre económico: la repetición eligió low, pero falló la puerta operativa.
+Revisión y reconstrucción final en preparación; aceptación sin abrir. La clave inválida
+fue reemplazada por Julian y count_tokens nuevo dio200. Semántica otra sesión.

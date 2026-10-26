@@ -962,7 +962,7 @@ Respaldo independiente y H-18 siguen pendientes. Piloto y aceptación todavía
 no ejecutados; no hay aceptación aprobada ni publicación.
 
 
-## 5C — matriz vigente tras el piloto único (2026-10-25/26)
+## 5C — matriz vigente tras la repetición autorizada (2026-10-25/26)
 
 Este registro actualiza los estados históricos anteriores. Fuentes canónicas:
 [BATCH_5C_REPORT.md](BATCH_5C_REPORT.md), [piloto](evidence/batch5c-pilot.json),
@@ -985,19 +985,17 @@ aceptación científica ni publicación.
 | H-11 comparabilidad | No afirmar superioridad CNN/v2.1 ni comparar 12%/9,29% como tal | README/model card; informe 5C |
 | H-12 reproducción lote3 | Se mantiene alcance original por dispositivo; instalación actual no repite lote3 | BATCH_3.md histórico; límites de reproducción 5C |
 | H-13 residuos | Documentos/corpus/contratos locales coherentes; datos históricos rotulados | BATCH_5C_REPRODUCE.md; informe 5C |
-| H-14 evaluador | Intento único persistido y sellado; gasto desconocido detuvo las 23 filas restantes | batch5c-pilot.json y sello externo privado |
+| H-14 evaluador | Primer intento preservado; repetición24 filas sellada y puntuada mecánicamente | batch5c-pilot.json y sello externo privado |
 | H-15 huecos | Contrato v3 conservado; rechazo verificado por API/Gradio/MCP instalados | B instalado; demo de desarrollo |
-| H-16 agotamiento | Estados/límites conservados; primer fallo técnico bloqueó gasto; diagnóstico remoto insuficiente | batch5c-pilot.json, causa explícitamente desconocida |
+| H-16 agotamiento | Diagnóstico SDK corregido; clave inválida reemplazada; repetición no pasa puerta | batch5c-repeat.json y diagnóstico401→200 |
 | H-17 alcance revisión | 5B-2.2 registrada; A/B revisados; D bloqueado con dos P2 tras R2; no revisión científica de aceptación | batch5c-prior-review.json; informe 5C |
 | H-18 autoría | Pendiente de respuestas personales de Julian; no atribuidas | BATCH_5C_HUMAN_ACTIONS.md, seis preguntas |
 
-Piloto: low 1 intento/12 solicitados y medium 0/12; total 1 error técnico y 23
-pendientes, cero informes válidos. US$0 liquidado conocido, total desconocido,
-reserva US$0,0035706; cero retries. No hay variante elegida, confirmación,
-aceptación abierta ni adjudicación de casos. Los 128 de aceptación no se suman
-al denominador de 24 del piloto. No se cambió rúbrica para cerrar el resultado.
-
-Clave: **no rotada, por decisión de Julian; vence 2026-11-20**.
-v2.1 sigue por defecto; CNN-17 experimental; model_z oficial.
-Respaldo independiente, H-18 y publicación pendientes. Ramas locales
-codex/lote-5c; sin push, merge o despliegue.
+Piloto repetido: low elegido, puerta operativa superada; puerta completa pendiente.
+Coste certificado US$0.0280614, más reserva histórica debitadaUS$0,0035706.
+Total contableUS$0.031632, saldoUS$2.368368; consumo real original
+no certificado. Sin confirmación ni aceptación. Reconstrucción/revisión final en preparación.
+Anotación semántica IA otra sesión; exactitud científica y aceptación global pendientes.
+Clave: «credencial inválida; clave reemplazada por Julian».
+Respaldo independiente,H-18,adjudicación futura y publicación pendientes.
+Ramas codex/lote-5c; sin push,merge,despliegue ni publicación.

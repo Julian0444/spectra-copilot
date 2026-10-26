@@ -99,9 +99,11 @@
   "private_source": "pilot-negative.json",
   "private_source_sha256": "0a07e83f00c980f05faedc9a8e830d4ae6fa52adb3b247f742117b6f64236559",
   "interpretation": "piloto interrumpido por fallo de integraci\u00f3n en la primera llamada, sin evidencia de comportamiento",
-  "pilot_status": "pending_diagnosis",
+  "pilot_status": "original_interrupted_attempt_preserved",
   "attempt_accounting_note": "Original operational status counts are preserved; zero valid responses is not evidence of model behavior.",
   "prior_reservation_debited_nanodollars": 3570600,
   "remaining_pilot_budget_before_diagnostic_nanodollars": 2396429400,
-  "diagnostic_calls_executed": 0
+  "diagnostic_calls_executed": 2,
+  "credential_cause_reported_by_Julian": "invalid_credential_replaced",
+  "superseding_execution": "batch5c-repeat.json"
 }

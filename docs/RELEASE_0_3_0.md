@@ -6,13 +6,11 @@ FM agrega un demo Gradio local instalable y opcional (extra ui), sin depender de
 
 La versión del paquete identifica software, no una aprobación científica. Piloto, aceptación, revisión semántica y publicación tienen estados separados en BATCH_5C_REPORT.md. Publicación no autorizada.
 
-Estado del experimento: piloto interrumpido por fallo de integración en la primera
-llamada, sin evidencia de comportamiento ni respuesta utilizable;
-las otras 23 filas quedaron pendientes. No se eligió variante ni se abrió
-aceptación. No hay aprobación científica. Build-05/installed-env conserva el
-paquete evaluado; build-06/release-env entrega los cambios posteriores de revisión
-y puntuación, con llm_path idéntico por variante. Versiones y hashes concretos
-en evidence/batch5c-delivery.json; el número 0.3.0 solo no distingue esos wheels.
-
-Revisión/adjudicación IA: no habilitada para uso real por dos P2 abiertos de D-r2.
-La entrega conserva ese estado identificado; ver BATCH_5C_REMAINING.md.
+Estado del experimento: primer intento interrumpido por integración, sin evidencia
+de comportamiento; credencial inválida reemplazada por Julian. Repetición completa
+en build-07/diagnostic-env: variantelow elegida, puerta operativa superada; puerta completa pendiente de revisión final.
+Coste certificadoUS$0.0280614, más reserva histórica debitadaUS$0,0035706.
+Se prepara la única reconstrucción y revisión final autorizada; aceptación sigue cerrada.
+Semántica IA otra sesión; exactitud científica y aceptación global pendientes.
+Build-05 y06 preservados; hashes actuales en evidence/batch5c-delivery.json.
+Revisión/adjudicación IA sigue con dosP2 abiertos deD-r2. No publicación.

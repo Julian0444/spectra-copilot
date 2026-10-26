@@ -12,21 +12,22 @@ registro H-18, no de una evaluación generada de su autoría:
 5. ¿Qué no permiten concluir CNN/v2.1, tres semillas o un brick compartido?
 6. ¿Qué decisiones y comprobaciones realizaste personalmente?
 
-## Conciliación del piloto
+## Credencial y consumo
 
-El único intento de generación terminó sin uso certificado. US$0 conocido no
-es gasto total cero; queda una reserva US$0,0035706. El arnés no conservó ID de
-solicitud, HTTP ni clase de excepción. Cualquier conciliación con Anthropic debe
-conservar el intento y su sello, sin reemplazarlo ni autorizar reintentos por
-defecto. No compartir la clave. La puerta falló y aceptación no se abrió.
+«credencial inválida; clave reemplazada por Julian», según su declaración a las
+21:14. Consulta anterior401; consulta nueva200. No compartir la clave.
+Intento original sellado, consumo real desconocido, reservaUS$0,0035706 debitada.
+Repetición terminada con coste certificado en BATCH_5C_REPORT.md. No más llamadas
+ni nuevo piloto. Puerta operativa superada; aceptación sin abrir hasta revisión final. Conciliar el
+consumo original no equivale a modificar sus registros históricos.
 
 ## Adjudicación
 
 El procedimiento está bloqueado por dos P2 de D-r2; véase BATCH_5C_REMAINING.md.
 Antes de usarlo hacen falta correcciones y una nueva verificación que excede
 las dos rondas ya consumidas. La autorización nueva de diagnóstico no amplía esa revisión de D.
-El piloto está interrumpido, sin evidencia de comportamiento; no es un resultado
-negativo de Haiku.
+El primer intento sigue interrumpido, sin evidencia de comportamiento; la
+repetición sí produjo respuestas y no pasó la puerta operativa.
 
 Todavía no hay anotaciones de aceptación que adjudicar. Si la puerta habilita
 aceptación, cada disputa llevará review_id/claim_id, texto y spans originales,
@@ -51,7 +52,6 @@ publicación. Cualquier publicación debe distinguir estado técnico, piloto,
 aceptación científica y revisión por IA. v2.1 sigue por defecto; CNN-17 experimental.
 Clave no rotada, por decisión de Julian; vence 2026-11-20.
 
-Diagnóstico: Julian ya autorizó una consulta gratuita, una generación solo si
-la consulta funciona y la causa sigue desconocida, y una repetición del piloto
-solo tras identificar, corregir y verificar la causa con Opus. Límites y saldo
-en BATCH_5C_REPORT.md; esta autorización no abre aceptación.
+La anotación semántica por IA se pospone expresamente a otra sesión. No se
+solicita adjudicación sin anotaciones; exactitud científica y aceptación global
+permanecen pendientes.
