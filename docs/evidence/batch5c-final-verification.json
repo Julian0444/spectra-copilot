@@ -1,0 +1,45 @@
+{
+  "schema": "batch5c-final-install-verification-v1",
+  "installation": {
+    "desi-fm": {
+      "version": "0.3.0",
+      "source_commit": "8514aab684065db28948a2476117b759914618a4",
+      "wheel_sha256": "c1c65460cff4bb76fd20760f2d298c5e18dcc544af58246c33544c7546741ff4",
+      "record_sha256": "8a911e9aad7a68f513c48c3efe642aa77e8bd63b99af12ec305c79fe5adc4402",
+      "files_checked": 29
+    },
+    "spectra-copilot": {
+      "version": "0.3.0",
+      "source_commit": "94a8f44db2e2ba960ee7870663927fd9b749380d",
+      "wheel_sha256": "04117eafe8fc54779c2f05f1bfbd290dd7a3caf1a628034086f7ffabde707474",
+      "record_sha256": "e7bace541b74f1c6a24c9e513246a9779985336291465330435d5929a6923833",
+      "files_checked": 45
+    }
+  },
+  "imports": {
+    "copilot": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5c-20261025-f50jj9q_/final-env/lib/python3.12/site-packages/copilot",
+    "desi_fm": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5c-20261025-f50jj9q_/final-env/lib/python3.12/site-packages/desi_fm"
+  },
+  "source_files": {
+    "copilot": {
+      "files": 38,
+      "equal_to_executed_build07": true,
+      "installed_equal_to_source": true
+    },
+    "desi_fm": {
+      "files": 22,
+      "equal_to_executed_build07": true,
+      "installed_equal_to_source": true
+    }
+  },
+  "paid_calls": 0,
+  "acceptance_opened": false,
+  "new_build_count": 1,
+  "identity_sha256": "cbc79b894472da0a7b9a198599672b1d4e19fc551b55e272ed7f37573a84f7a8",
+  "llm_path_sha256": "985e74a43f8be5e6cb82bacb40d0ea82681af065dfd02390f7f1f49b0401158d",
+  "llm_path_equal_to_repeat": true,
+  "build_manifest_sha256": "16e1eee8b00e6d0490d9a9550a54f105358f33e5a07eda1f762fe6d950986272",
+  "protocol_sha256": "551efce27842490e22ba3895f1223837daf5d57b9db5b8f12b9065507b4c4ca0",
+  "selected_effort": "low",
+  "confirmation_required": false
+}

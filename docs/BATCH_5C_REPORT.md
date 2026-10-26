@@ -2,7 +2,8 @@
 
 La repetición autorizada terminó y quedó sellada: **la variante elegida es
 low, y pasa la puerta operativa**. No se abrió aceptación.
-La única reconstrucción final y verificación final de Opus están en preparación.
+La única reconstrucción final se completó: build-08/final-env. La única
+verificación final de Opus está pendiente.
 La puerta completa requiere además ausencia de P1/P2; los dos de D siguen declarados. Exactitud científica y aceptación global quedan pendientes.
 
 ## Piloto repetido: puntuación mecánica
@@ -88,8 +89,10 @@ Instalaciones preservadas y distintas:
 La repetición usa protocolo CP020ff39 congelado, adenda5C-1c, identidades completas
 privadas en repeat-registration. El saldo menor se impone en execute_plan y
 manifest; el cap nominal de fase histórico permanece US$2,40. Ninguna instalación
-se reinstaló durante el piloto. La reconstrucción final única usará el mismo código ejecutable; evidencia posterior
-en batch5c-final-verification.json cuando esté disponible.
+se reinstaló durante el piloto. La reconstrucción final única build-08/final-env conserva todas las fuentes
+ejecutables y llm_path de low por hash frente al build-07 evaluado. No requiere
+confirmación. Fuentes CP94a8f44/FM8514aab; RECORD e identidad verificados.
+Evidencia en [verificación final](evidence/batch5c-final-verification.json).
 
 ## Revisiones y límites
 

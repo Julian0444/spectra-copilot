@@ -78,9 +78,13 @@
   "repeat_protocol_commit": "020ff39",
   "repeat_registration_sha256": "04539436fbebe7fe8cae76fc7d95b467f141c8aa0823937cffbfe06bd536cc4e",
   "build_manifest_sha256": "7926bd21c1cfd2ab8129dbfb3fc8eeb87c8e465803e88849838b3fbbce5526c6",
-  "final_reconstruction_performed": false,
+  "final_reconstruction_performed": true,
   "scientific_acceptance": "pending",
   "review_procedure_status": "blocked_two_P2",
   "diagnostic_independent_review": "interrupted_no_verdict",
-  "prior_demo_evidence": "build-06; no repeat claimed"
+  "prior_demo_evidence": "build-06; no repeat claimed",
+  "final_build": "build-08",
+  "final_environment": "final-env",
+  "final_verification_evidence": "batch5c-final-verification.json",
+  "final_independent_review": "pending"
 }

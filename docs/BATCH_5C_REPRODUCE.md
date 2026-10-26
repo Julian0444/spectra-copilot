@@ -127,3 +127,12 @@ es **139/150 frente a 119/150**. No se establece condición de foundation model,
 independencia física ni superioridad CNN/v2.1. Un respaldo en otro directorio del
 mismo disco no es respaldo independiente. Publicación requiere una acción humana
 posterior; estos comandos no publican nada.
+
+## Reconstrucción final única
+
+Build-08/final-env: fuentes CP94a8f44 y FM8514aab, todas las fuentes ejecutables
+e idéntico llm_path low respecto al build-07 evaluado. RECORD e identidad
+verificados, sin repetir piloto ni cambiar código. Para la instalación final
+use final-env y build-08 en lugar de diagnostic-env y build-07 en los comandos
+de esta guía. Los entornos previos permanecen preservados.
+La verificación final de Opus sigue pendiente; no habilita aceptación por sí sola.
