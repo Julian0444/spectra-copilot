@@ -73,7 +73,10 @@ def mechanical(report):
             'citation_mentions':len(citations),'valid_citation_mentions':valid,'candidate_arithmetic':bool(arithmetic)}
 
 
-def score_sealed(directory,labels_path,*,review_path=None,seal_record=None):
+def score_sealed(directory,labels_path,*,review_path=None,seal_record=None,output_path=None):
+    target=Path(output_path) if output_path else Path(directory).with_name(Path(directory).name+'.scores.json')
+    if target.resolve().is_relative_to(Path(directory).resolve()):raise ValueError('Scores must be outside sealed output directory')
+    if target.exists():raise FileExistsError('Preserve earlier score artifacts; choose a new output path')
     rows,manifest,seal,seal_hash,verified_ns=validate_seal(directory,seal_record)
     labels_read_started_ns=time.time_ns()
     label_bytes=Path(labels_path).read_bytes()
@@ -105,7 +108,8 @@ def score_sealed(directory,labels_path,*,review_path=None,seal_record=None):
             expected=[peak/rest-1 for rest in (1215.7,3727.1,5006.8,6562.8) if peak>=rest]
             recipe_arithmetic=(len(expected)==len(oracle['admissible_z']) and
                 all(math.isclose(a,b,abs_tol=1e-6,rel_tol=1e-6) for a,b in zip(expected,oracle['admissible_z'])))
-        semantic=review.score_claim_review(bundle.get('claims',[]),bundle.get('first'),bundle.get('second'),bundle.get('adjudication'))
+        scorer=review.score_annotation_pair if bundle.get('schema')=='batch5c-ai-case-review-v1' else review.score_claim_review
+        semantic=scorer(bundle.get('claims',[]),bundle.get('first'),bundle.get('second'),bundle.get('adjudication'))
         scored.append({'alias':row['alias'],'kind':label['kind'],'family':label.get('family','real'),
             'cnn_exposure':label.get('cnn_exposure','unspecified'),'status':state,'checks':checks,
             'completion':bool(completion),'recipe_arithmetic_integrity':recipe_arithmetic,'abstention_required':abstention_required,'abstention':bool(abstention),
@@ -148,14 +152,16 @@ def score_sealed(directory,labels_path,*,review_path=None,seal_record=None):
                 'Zero citation denominator is not success; missing external claims/citations require case-level review.',
                 'Synthetic public recipes are mechanism checks, not blind acceptance.',
                 'No catalog redshift is substituted for the official model output.']}
-    write_json(Path(directory)/'scores.json',result)
+    from copilot.campaign import exclusive_json
+    exclusive_json(target,result)
     return result
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--run',type=Path,required=True);p.add_argument('--labels',type=Path,required=True);p.add_argument('--reviews',type=Path)
     p.add_argument('--seal-record',type=Path,help='External registered seal hash; defaults to sibling <run>.seal-record.json')
-    a=p.parse_args();result=score_sealed(a.run,a.labels,review_path=a.reviews,seal_record=a.seal_record);print(json.dumps(result['global']));return 0
+    p.add_argument('--output',type=Path,help='New external score artifact; never overwritten')
+    a=p.parse_args();result=score_sealed(a.run,a.labels,review_path=a.reviews,seal_record=a.seal_record,output_path=a.output);print(json.dumps(result['global']));return 0
 
 
 if __name__=='__main__':raise SystemExit(main())
