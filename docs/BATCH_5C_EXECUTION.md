@@ -66,6 +66,16 @@ Confirmación: los mismos 12 slots, solo el esfuerzo elegido, máximo US$1,20,
 una vez y únicamente tras corregir un defecto demostrado del camino LLM. La
 adenda 5C-1 fija elección y puerta antes del piloto; esta guía no las sustituye.
 
+## Aislamiento del proceso instalado
+
+Usar el intérprete absoluto `<venv>/bin/python -I -B`, cwd privado fuera de los
+repos, sin PYTHONPATH, y `--protocol-dir <protocolo-congelado>/docs`. El comando
+de arriba muestra argumentos; esos tres requisitos son obligatorios. Captura,
+padre y workers comparten ese protocolo y las copias verificadas de activos
+(`DESI_FM_CKPT`, `DESI_FM_INDEX_DIR`). No apuntar a docs/ o data/ editables durante
+la campaña. El apéndice prepiloto de 5C-1 y su registro nuevo sustituyen las
+huellas previas únicamente antes del primer pago; ambos registros se conservan.
+
 ## Custodia de entradas y etiquetas
 
 Un custodio de 5C materializa los inputs científicos desde la selección sellada,

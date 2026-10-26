@@ -1,0 +1,64 @@
+{
+  "schema": "batch5c-prepilot-correction-v1",
+  "supersedes_for_unstarted_pilot": "batch5c-variants.json",
+  "previous_registration_sha256": "aa1d0534abfabcb5c20a203f2ceded94ee2a82eb7ec9c7ed5ae9002a4817d6f8",
+  "paid_calls_before_amendment": 0,
+  "campaign_initialized": false,
+  "configuration_changed": false,
+  "build": {
+    "desi-fm": {
+      "source_commit": "2679d57b4bec0ac02f03e3c8f431242a5b73ab59",
+      "version": "0.3.0",
+      "wheel_sha256": "90da2025f456f0c6f8868bbcb683fb25a214b09ccb1b0ade746deb3ec98db64c"
+    },
+    "spectra-copilot": {
+      "source_commit": "3b6de336102414215e9e7c5624456aa186b76e2f",
+      "version": "0.3.0",
+      "wheel_sha256": "5ab9d8a81bfed18424c488d39d21978ff0deb1489ad3c5ae40c584269c401b92"
+    }
+  },
+  "variants": {
+    "low": {
+      "old_llm_path_sha256": "3aa4871d0064afb86d7532f763b799c7a915ac072065a47a0842dfb1f4378c72",
+      "expected_llm_path_sha256": "8d79a71d8152836cc8005e7c16e4d516b00d14978b0b30700efae50e4d501dbb",
+      "configuration": {
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "low"
+        }
+      }
+    },
+    "medium": {
+      "old_llm_path_sha256": "719fbb20ad6c4571e5233e5fce2ff2f2c2872e5c97e5144bc7d2a382a3843d14",
+      "expected_llm_path_sha256": "537e07b9e0d9701012f3029305f7519ac563b6c4cec5855fadd86392f29f2235",
+      "configuration": {
+        "thinking": {
+          "type": "adaptive"
+        },
+        "output_config": {
+          "effort": "medium"
+        }
+      }
+    }
+  },
+  "execution_code_changes": [
+    "copilot/acceptance.py",
+    "copilot/candidate_identity.py"
+  ],
+  "non_execution_code_changes": [
+    "copilot/acceptance_score.py",
+    "copilot/review.py",
+    "copilot/review_packet.py"
+  ],
+  "fixes": {
+    "relative_paths": "308fd04 red -> 3fe2b96 green; reviewed A-targeted-authorized",
+    "execution_digest": "66110a2 red -> 4bbf334 green; B-path-field-red/green"
+  },
+  "requirements": [
+    "exact expected llm_path before first POST",
+    "frozen protocol and assets",
+    "installed wheels without project bytecode"
+  ]
+}

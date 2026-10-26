@@ -502,3 +502,45 @@ esa proyección deben declararse y revisarse, aunque no exijan confirmación.
 Cambiar solo adenda/commit de documentación no fuerza una llamada innecesaria.
 Cualquier otro cambio de configuración necesita decisión de Julian antes de
 aceptación. No hay ajustes después de abrirla.
+
+
+---
+
+### Enmienda previa al primer pago de 5C-1 — 2026-10-25
+
+Se conserva todo el texto anterior y el registro original de variantes. La
+condición «comprobando que llm_path no cambió» del registro inicial se sustituye,
+**para este piloto aún no iniciado**, por la igualdad con los nuevos valores de
+`evidence/batch5c-variants-prepilot.json`. No se sustituye una corrida: campaña
+aún no inicializada, cero POST y cero gasto. Se corrigen defectos demostrados
+del arnés autorizados en el encargo; no cambian selección, orden, criterios,
+rúbrica, puerta, prompt, configuración, límites ni precios. No se elige ningún
+valor en función de resultados del LLM.
+
+Cambios de camino ejecutado respecto de build-03:
+
+- `acceptance.py`: únicamente resolver las cinco rutas antes de reclamar intento
+  (308fd04 rojo → 3fe2b96 verde). Opus cerró los dos P2 de A en la verificación
+  puntual adicional autorizada por Julian.
+- `candidate_identity.py`: rechazar un llm_path guardado que no corresponda a la
+  proyección recalculada (66110a2 rojo → 4bbf334 verde; 20 pruebas dirigidas).
+
+Cambios fuera de esa proyección: `acceptance_score.py`, `review.py` y
+`review_packet.py`, para revisión semántica, omisiones, agrupación y puntuación
+externa al sello; se declaran y revisan como D. No cambió otra parte de la
+proyección (predictor, corpus, esquemas, SDK, runtime, activos o configuración).
+
+| Esfuerzo | llm_path original | llm_path vigente antes del piloto |
+|---|---|---|
+| low | `3aa4871d0064afb86d7532f763b799c7a915ac072065a47a0842dfb1f4378c72` | `8d79a71d8152836cc8005e7c16e4d516b00d14978b0b30700efae50e4d501dbb` |
+| medium | `719fbb20ad6c4571e5233e5fce2ff2f2c2872e5c97e5144bc7d2a382a3843d14` | `537e07b9e0d9701012f3029305f7519ac563b6c4cec5855fadd86392f29f2235` |
+
+Los wheels de build-05 y sus commits/hashes están en el registro nuevo. Se
+instalaron con `--no-compile`; se comprobó ausencia de bytecode en ambos
+paquetes y contenido idéntico a las fuentes de construcción. Cada fase usa un
+directorio de protocolo congelado y copias privadas de checkpoint/índice con
+hashes idénticos, sin modificar los originales. Se recapturan ambas identidades
+contra ese directorio después de este commit y se registran externamente en
+archivo nuevo antes del primer POST, exigiendo exactamente los valores de esta
+tabla. Toda diferencia ulterior se explica antes de ejecutar. No se actualiza
+Python, macOS, dependencias ni activos durante la campaña.
