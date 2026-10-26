@@ -22,6 +22,11 @@ defecto. No compartir la clave. La puerta falló y aceptación no se abrió.
 
 ## Adjudicación
 
+El procedimiento está bloqueado por dos P2 de D-r2; véase BATCH_5C_REMAINING.md.
+Antes de usarlo hacen falta correcciones y una nueva verificación que excede
+las dos rondas ya consumidas. No se solicita esa ampliación para cerrar el
+resultado negativo actual.
+
 Todavía no hay anotaciones de aceptación que adjudicar. Si la puerta habilita
 aceptación, cada disputa llevará review_id/claim_id, texto y spans originales,
 juicios de ambos anotadores, clasificación/denominador afectado y campo vacío

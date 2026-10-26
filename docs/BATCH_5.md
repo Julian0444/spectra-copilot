@@ -988,7 +988,7 @@ aceptación científica ni publicación.
 | H-14 evaluador | Intento único persistido y sellado; gasto desconocido detuvo las 23 filas restantes | batch5c-pilot.json y sello externo privado |
 | H-15 huecos | Contrato v3 conservado; rechazo verificado por API/Gradio/MCP instalados | B instalado; demo de desarrollo |
 | H-16 agotamiento | Estados/límites conservados; primer fallo técnico bloqueó gasto; diagnóstico remoto insuficiente | batch5c-pilot.json, causa explícitamente desconocida |
-| H-17 alcance revisión | 5B-2.2 registrada; A/B revisados; D en revisión final; no revisión científica de aceptación | batch5c-prior-review.json; informe 5C |
+| H-17 alcance revisión | 5B-2.2 registrada; A/B revisados; D bloqueado con dos P2 tras R2; no revisión científica de aceptación | batch5c-prior-review.json; informe 5C |
 | H-18 autoría | Pendiente de respuestas personales de Julian; no atribuidas | BATCH_5C_HUMAN_ACTIONS.md, seis preguntas |
 
 Piloto: low 1 intento/12 solicitados y medium 0/12; total 1 error técnico y 23

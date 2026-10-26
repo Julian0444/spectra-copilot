@@ -1,5 +1,8 @@
 # Anotación independiente de informes de observación
 
+**No usar para anotación real:** D-r2 dejó dos P2 abiertos. Este contrato es
+material de preparación. Véase [bloqueos](../BATCH_5C_REMAINING.md).
+
 Lea todos los casos de los chunks y el manifiesto. No consulte otros paquetes,
 etiquetas, evaluaciones ni identidades del sistema. No busque identificarlo.
 No modifique informes ni evidencia. Su tarea es revisar las afirmaciones publicadas,

@@ -91,5 +91,9 @@
     "No acceptance manifest opened",
     "Build-06 is not the package used by the pilot",
     "No selected final effort; low/medium identities are archival software identities, not authorization for another phase"
-  ]
+  ],
+  "review_procedure_status": "blocked",
+  "open_review_P1": 0,
+  "open_review_P2": 2,
+  "independent_D_report_sha256": "1be49a27f626cab086217e6c8e70456f7df16b9a1f5c7a73139ac6c3fd530de6"
 }

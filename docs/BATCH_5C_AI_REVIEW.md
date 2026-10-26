@@ -1,5 +1,10 @@
 # Procedimiento 5C de revisión semántica por IA
 
+**Estado 5C: bloqueado para uso real.** D terminó su segunda ronda con dos
+P2 abiertos sobre adjudicación de inventario y tratamiento de extractos citados.
+Este documento conserva el procedimiento preparado; no habilita anotaciones,
+adjudicaciones ni aceptación. Véase [bloqueos](BATCH_5C_REMAINING.md).
+
 Este procedimiento implementa la rúbrica congelada de BATCH_5B_PROTOCOL.md §4.
 Todavía no constituye la adenda 5C-2 ni habilita aceptación. Esa adenda registrará
 la variante elegida y la identidad instalada final después del piloto.

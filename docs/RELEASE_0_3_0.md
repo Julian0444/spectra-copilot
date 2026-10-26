@@ -12,3 +12,6 @@ aceptación. No hay aprobación científica. Build-05/installed-env conserva el
 paquete evaluado; build-06/release-env entrega los cambios posteriores de revisión
 y puntuación, con llm_path idéntico por variante. Versiones y hashes concretos
 en evidence/batch5c-delivery.json; el número 0.3.0 solo no distingue esos wheels.
+
+Revisión/adjudicación IA: no habilitada para uso real por dos P2 abiertos de D-r2.
+La entrega conserva ese estado identificado; ver BATCH_5C_REMAINING.md.

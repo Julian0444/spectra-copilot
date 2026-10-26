@@ -15,6 +15,10 @@ tool returns compact JSON conclusions, never raw arrays.
 **[▶ Model demo](https://huggingface.co/spaces/jirustaroure/desi-spectra-fm-demo)** ·
 **[📡 Model REST API](https://jirustaroure-desi-fm-api.hf.space/api/docs)**
 
+5C pilot: stopped with unknown usage; acceptance not opened. The AI review
+procedure remains blocked by two P2 findings. See [status](docs/BATCH_5C_REPORT.md)
+and [remaining work](docs/BATCH_5C_REMAINING.md).
+
 The 60-second version:
 
 - **5 tools + agent + [MCP server](#use-it-from-any-mcp-client)** — redshift prediction,

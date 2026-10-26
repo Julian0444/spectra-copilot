@@ -9,7 +9,8 @@ Fuente canónica del piloto: [batch5c-pilot.json](evidence/batch5c-pilot.json).
 Este informe se refleja en ambos repositorios. Evidencia privada completa en
 lote-5c-20261025-f50jj9q_, con comandos, logs, sellos, identidades y revisiones.
 La entrega instalada posterior es build-06; se distingue de build-05, usado en el piloto.
-La segunda revisión de D todavía está en curso.
+D terminó bloqueado con dos P2 abiertos; la revisión/adjudicación sigue sin habilitar.
+Los controles instalados y la demo no resuelven esos dos bloqueos.
 
 ## Piloto y puerta
 
@@ -128,11 +129,15 @@ atestación del esfuerzo efectivo por el proveedor.
   activos, bytecode y congelación se aplicaron al lanzador antes del intento.
 - D: la primera revisión encontró un P1 y tres P2 en adjudicación de inventario,
   ruptura de ceguera, enlace de anotaciones y contrato de datos. Codex los
-  reprodujo y corrigió; segunda revisión sobre 0cdc6ea en curso.
+  reprodujo y corrigió. La segunda revisión sobre 0cdc6ea cerró los cuatro,
+  pero dejó dos P2 nuevos: adjudicación que puede borrar acuerdos y tratamiento
+  ambiguo de extractos citados. Codex reprodujo ambos contra build-06 instalado.
+  D queda bloqueado; se agotaron las dos rondas, sin pedir otra.
 - Haiku 5.5: solo objetivo de la aplicación. No participó del trabajo de
   desarrollo/revisión y no produjo una respuesta utilizable en este intento.
 
-No hubo revisión semántica de aceptación. El procedimiento preparado contempla
+[Bloqueos y reproducciones](BATCH_5C_REMAINING.md): no se corrigieron ni se
+certificaron los dos P2 nuevos al agotar las rondas. No hubo revisión semántica de aceptación. El procedimiento preparado contempla
 dos sesiones nuevas e independientes, paquetes equivalentes con identidad oculta,
 anotaciones guardadas y hasheadas antes de compararlas y adjudicación de Julian.
 La revisión sería por IA; Opus y Haiku comparten proveedor. No se la llama revisión
