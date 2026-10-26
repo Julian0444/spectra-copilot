@@ -2,8 +2,8 @@
 
 El procedimiento de revisión y adjudicación no está habilitado para una
 evaluación real. D agotó sus dos rondas: Opus cerró los cuatro P1/P2 de R1,
-pero halló **dos P2 nuevos** sobre Copilot 0cdc6ea. No se solicitaron ni
-ejecutaron rondas adicionales. Build-06 conserva ese código identificado.
+pero halló **dos P2 nuevos** sobre Copilot 0cdc6ea. No hubo nuevas rondas de corrección de D. La verificación final única del
+cierre económico reprodujo los dos P2 sobre build-08, cuyo código D es idéntico.
 
 Codex reprodujo ambos hallazgos contra los módulos instalados de release-env,
 con fixtures inventadas y sin red. No se consumieron etiquetas de aceptación.
@@ -33,13 +33,15 @@ Los schemas/ejemplos presentes son material de preparación, no una autorizació
 para anotar o puntuar datos reales. Las seis preguntas de H-18 sí quedan listas
 en BATCH_5C_HUMAN_ACTIONS.md.
 
-Por separado, el piloto quedó interrumpido por fallo de integración en la primera
-llamada, sin evidencia de comportamiento. Sigue pendiente; ver diagnóstico
-condicionado autorizado en BATCH_5C_REPORT.md. La aceptación permanece cerrada.
-No existe variante elegida. La reserva US$0,0035706 no es gasto facturado;
-conciliación con el proveedor y cualquier decisión sobre un experimento futuro
-requieren tratar el intento preservado. No se concede otro piloto implícitamente.
+El primer intento se conserva como piloto interrumpido por fallo de integración
+en la primera llamada, sin evidencia de comportamiento. La reserva
+US$0,0035706 fue debitada como gastada; no certifica facturación real.
 
-Cierre económico: la repetición eligió low, y pasó la puerta operativa.
-Revisión y reconstrucción final en preparación; aceptación sin abrir. La clave inválida
-fue reemplazada por Julian y count_tokens nuevo dio 200. Semántica otra sesión.
+Julian reemplazó la credencial inválida; count_tokens nuevo dio 200. La
+repetición autorizada terminó y eligió low: 11/11 informes con obligaciones,
+puerta operativa superada. Reconstrucción final build-08 y verificación final
+única de Opus terminadas. Dictamen: bloqueado para abrir aceptación por N1/N2,
+0 P1 y 2 P2; ningún P1/P2 nuevo en el cierre económico. No se abre aceptación
+ni se modifica la puerta. Anotación semántica en otra sesión. EF-P3-1, las
+frases sobre reconstrucción en preparación, se corrigió documentalmente tras
+verificar la evidencia; sin otra revisión ni cambio de código.

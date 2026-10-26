@@ -1,90 +1,78 @@
 {
-  "schema": "batch5c-diagnostic-verification-v1",
+  "schema": "batch5c-final-local-delivery-v2",
   "installation": {
     "desi-fm": {
       "version": "0.3.0",
-      "source_commit": "e5ae6cf342d66ac87576d3e43a3b0cd572da9fdb",
-      "wheel_sha256": "5061b5f6f5cffa39ec9efef5fd3bc4546eb75024b663626fb9df98cf6d06bff9",
-      "record_sha256": "544a59dc4338158ef3dbffa4ffa79079be8011a6f87a91b806ee0f7f7af0306b",
+      "source_commit": "8514aab684065db28948a2476117b759914618a4",
+      "wheel_sha256": "c1c65460cff4bb76fd20760f2d298c5e18dcc544af58246c33544c7546741ff4",
+      "record_sha256": "8a911e9aad7a68f513c48c3efe642aa77e8bd63b99af12ec305c79fe5adc4402",
       "files_checked": 29
     },
     "spectra-copilot": {
       "version": "0.3.0",
-      "source_commit": "7a260de09b9e76a0e33693db7626cc0aba7d8493",
-      "wheel_sha256": "9bbcea34f236c7391e5f8396a434773289ed684d29cc6d592bd97980e571eff8",
-      "record_sha256": "17b43671d8d403de76263b48848b6d5687696f116d4d99bc594606aaf3485d93",
+      "source_commit": "94a8f44db2e2ba960ee7870663927fd9b749380d",
+      "wheel_sha256": "04117eafe8fc54779c2f05f1bfbd290dd7a3caf1a628034086f7ffabde707474",
+      "record_sha256": "e7bace541b74f1c6a24c9e513246a9779985336291465330435d5929a6923833",
       "files_checked": 45
     }
   },
   "imports": {
-    "copilot": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5c-20261025-f50jj9q_/diagnostic-env/lib/python3.12/site-packages/copilot",
-    "desi_fm": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5c-20261025-f50jj9q_/diagnostic-env/lib/python3.12/site-packages/desi_fm"
+    "copilot": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5c-20261025-f50jj9q_/final-env/lib/python3.12/site-packages/copilot",
+    "desi_fm": "/Users/jirustaroure/.local/state/spectra-consolidation/lote-5c-20261025-f50jj9q_/final-env/lib/python3.12/site-packages/desi_fm"
   },
-  "content_matches_source": {
+  "source_files": {
     "copilot": {
-      "files": 22,
-      "equal": true,
-      "project_bytecode_files": 0
+      "files": 38,
+      "equal_to_executed_build07": true,
+      "installed_equal_to_source": true
     },
     "desi_fm": {
       "files": 22,
-      "equal": true,
-      "project_bytecode_files": 0
-    }
-  },
-  "identities": {
-    "low": {
-      "sha256": "6a8183f2be400002940cdde88a1e429396fb5037d6e842ae59e8c8aceda2083a",
-      "behavior_sha256": "8ba499f57126e53ce4a11e46a55f12676af9ae6b69df03a9851b7dd90ecc3de4",
-      "llm_path_sha256": "985e74a43f8be5e6cb82bacb40d0ea82681af065dfd02390f7f1f49b0401158d",
-      "llm_path_equal_to_pilot": false,
-      "changed_source_files": [
-        "copilot/acceptance_score.py",
-        "copilot/budget.py",
-        "copilot/review.py",
-        "copilot/review_annotations.py",
-        "copilot/review_packet.py"
-      ]
-    },
-    "medium": {
-      "sha256": "9986d5b8ae51a0e545d4dd239fd3ac6eb9fc2fbce03e462aae8a0ad1a3d2bdfb",
-      "behavior_sha256": "c51c738680a08dfddd1fe7c06042667bbd55ed54c551ae3b71254975bf8293a0",
-      "llm_path_sha256": "0a99d9eb135b2f5d3dda23d81b909199233d62e78805a06a5c1e51e43c13aa07",
-      "llm_path_equal_to_pilot": false,
-      "changed_source_files": [
-        "copilot/acceptance_score.py",
-        "copilot/budget.py",
-        "copilot/review.py",
-        "copilot/review_annotations.py",
-        "copilot/review_packet.py"
-      ]
+      "equal_to_executed_build07": true,
+      "installed_equal_to_source": true
     }
   },
   "paid_calls": 0,
   "acceptance_opened": false,
-  "installed_diagnostic_tests": {
-    "returncode": 0,
-    "tests": 13,
-    "production_imports": "installed wheels",
-    "network": "blocked"
+  "new_build_count": 1,
+  "identity_sha256": "cbc79b894472da0a7b9a198599672b1d4e19fc551b55e272ed7f37573a84f7a8",
+  "llm_path_sha256": "985e74a43f8be5e6cb82bacb40d0ea82681af065dfd02390f7f1f49b0401158d",
+  "llm_path_equal_to_repeat": true,
+  "build_manifest_sha256": "16e1eee8b00e6d0490d9a9550a54f105358f33e5a07eda1f762fe6d950986272",
+  "protocol_sha256": "551efce27842490e22ba3895f1223837daf5d57b9db5b8f12b9065507b4c4ca0",
+  "selected_effort": "low",
+  "confirmation_required": false,
+  "build": "build-08",
+  "environment": "final-env",
+  "used_for": "single final local reconstruction, not another evaluation",
+  "final_reconstruction_performed": true,
+  "final_independent_review": "completed_blocked_two_preexisting_P2",
+  "final_review_evidence": "batch5c-final-review.json",
+  "final_verification_evidence": "batch5c-final-verification.json",
+  "repeat_evaluation": {
+    "build": "build-07",
+    "environment": "diagnostic-env",
+    "score_evidence": "batch5c-repeat.json",
+    "source_commits": {
+      "copilot": "7a260de09b9e76a0e33693db7626cc0aba7d8493",
+      "desi_fm": "e5ae6cf342d66ac87576d3e43a3b0cd572da9fdb"
+    },
+    "paid_calls": 29,
+    "cost_nanodollars": 28061400
   },
-  "build": "build-07",
-  "environment": "diagnostic-env",
-  "used_for": "authorized pilot repeat and diagnostic",
   "prior_builds_preserved": [
     "build-05/installed-env",
-    "build-06/release-env"
+    "build-06/release-env",
+    "build-07/diagnostic-env"
   ],
   "repeat_protocol_commit": "020ff39",
-  "repeat_registration_sha256": "04539436fbebe7fe8cae76fc7d95b467f141c8aa0823937cffbfe06bd536cc4e",
-  "build_manifest_sha256": "7926bd21c1cfd2ab8129dbfb3fc8eeb87c8e465803e88849838b3fbbce5526c6",
-  "final_reconstruction_performed": true,
+  "operational_gate_passed": true,
+  "full_preparation_gate_passed": false,
+  "open_P1": 0,
+  "open_P2": 2,
+  "acceptance_identity_registered": false,
+  "semantic_annotation": "deferred_by_Julian",
   "scientific_acceptance": "pending",
   "review_procedure_status": "blocked_two_P2",
-  "diagnostic_independent_review": "interrupted_no_verdict",
-  "prior_demo_evidence": "build-06; no repeat claimed",
-  "final_build": "build-08",
-  "final_environment": "final-env",
-  "final_verification_evidence": "batch5c-final-verification.json",
-  "final_independent_review": "pending"
+  "prior_demo_evidence": "build-06; no repeat claimed"
 }

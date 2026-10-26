@@ -1,7 +1,7 @@
 # spectra-copilot
 
 **5C (cierre económico):** clave inválida reemplazada por Julian; piloto repetido
-y puntuado mecánicamente: low11/11 pasa la puerta operativa. Puerta completa pendiente de verificación final. Aceptación sin abrir;
+y puntuado mecánicamente: low11/11 pasa la puerta operativa. Puerta completa bloqueada por dos P2 confirmados en la verificación final. Aceptación sin abrir;
 exactitud científica y aceptación global pendientes. [Informe](docs/BATCH_5C_REPORT.md).
 
 

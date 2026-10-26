@@ -99,5 +99,12 @@
   "semantic_annotation": "deferred_by_Julian",
   "scientific_accuracy": "pending",
   "global_acceptance": "pending",
-  "acceptance_opened": false
+  "acceptance_opened": false,
+  "operational_gate_passed": true,
+  "full_preparation_gate_passed": false,
+  "full_gate_blockers": [
+    "D-P2-N1",
+    "D-P2-N2"
+  ],
+  "final_review_evidence": "batch5c-final-review.json"
 }

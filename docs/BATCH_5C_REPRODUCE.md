@@ -10,7 +10,7 @@ Frente a build-06 cambia solo budget.py para registrar fallos SDK. Build-05 y
 build-06 se conservan congelados. La demo/CLI/API/MCP/Gradio se comprobaron antes
 en build-05/06; no se atribuye una nueva prueba de interfaces a build-07. Esta
 última verificó fuentes instaladas, RECORD, identidades y 13 pruebas diagnósticas;
-el piloto repetido se ejecutó desde ella. Se prepara una reconstrucción final porque low pasó la puerta operativa. Nunca ejecutar nuevamente los
+el piloto repetido se ejecutó desde ella. La reconstrucción final build-08/final-env está terminada; véase el apartado final. Nunca ejecutar nuevamente los
 lanzadores privados de pago: sus autorizaciones únicas están consumidas.
 
 ## Entorno y activos
@@ -135,4 +135,5 @@ e idéntico llm_path low respecto al build-07 evaluado. RECORD e identidad
 verificados, sin repetir piloto ni cambiar código. Para la instalación final
 use final-env y build-08 en lugar de diagnostic-env y build-07 en los comandos
 de esta guía. Los entornos previos permanecen preservados.
-La verificación final de Opus sigue pendiente; no habilita aceptación por sí sola.
+La verificación final de Opus terminó: 0 P1 y 2 P2 preexistentes de D.
+Piloto e instalación verificados; aceptación bloqueada por la puerta vigente.

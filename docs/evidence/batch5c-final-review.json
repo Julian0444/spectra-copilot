@@ -1,0 +1,30 @@
+{
+  "schema": "batch5c-economic-final-review-v1",
+  "reviewer": "claude-opus-5-5",
+  "verdict": "blocked_for_acceptance",
+  "open_P1": 0,
+  "open_P2": 2,
+  "new_P1_P2_in_economic_delta": 0,
+  "open_findings": [
+    "D-P2-N1",
+    "D-P2-N2"
+  ],
+  "review_sha256": "5d6cd6f733508f8328ebd81a3c81dff839380600d0c65cce0a7eb2a0e659ffde",
+  "reviewed_document_commits": {
+    "copilot": "67d26a99cae520aa82879c84414c05fdba7469cb",
+    "desi_fm": "7a469c8647fd2fdac6715290db5e56008b662f14"
+  },
+  "final_build": "build-08",
+  "installed_focused_tests_passed": 33,
+  "repeat_accounting_verified": true,
+  "repeat_score_recomputed_equal": true,
+  "selected_effort": "low",
+  "operational_gate_passed": true,
+  "full_preparation_gate_passed": false,
+  "acceptance_opened": false,
+  "semantic_annotation": "deferred",
+  "scientific_accuracy": "pending",
+  "global_acceptance": "pending",
+  "documentary_P3": "EF-P3-1 corrected after review; no extra review or code change",
+  "review_preparation_incident": "Reviewer initial pyc check falsely positive; script corrected and first log preserved"
+}

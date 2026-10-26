@@ -8,9 +8,10 @@ La versión del paquete identifica software, no una aprobación científica. Pil
 
 Estado del experimento: primer intento interrumpido por integración, sin evidencia
 de comportamiento; credencial inválida reemplazada por Julian. Repetición completa
-en build-07/diagnostic-env: variante low elegida, puerta operativa superada; puerta completa pendiente de revisión final.
+en build-07/diagnostic-env: variante low elegida, puerta operativa superada; puerta completa bloqueada por dos P2.
 Coste certificado US$0.0280614, más reserva histórica debitada US$0,0035706.
-Se prepara la única reconstrucción y revisión final autorizada; aceptación sigue cerrada.
+Reconstrucción final build-08 y única revisión final completadas: 0 P1, 2 P2
+preexistentes de D, reproducidos por Opus; aceptación sigue cerrada.
 Semántica IA otra sesión; exactitud científica y aceptación global pendientes.
-Build-05 y06 preservados; hashes actuales en evidence/batch5c-delivery.json.
+Build-05, 06 y 07 preservados; hashes actuales en evidence/batch5c-delivery.json.
 Revisión/adjudicación IA sigue con dos P2 abiertos de D-r2. No publicación.
