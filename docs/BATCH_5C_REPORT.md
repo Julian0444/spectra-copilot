@@ -1,7 +1,8 @@
-# Lote 5C — cierre experimental negativo; entrega técnica local
+# Lote 5C — piloto interrumpido; entrega técnica local
 
-El piloto único se detuvo tras el primer intento con consumo desconocido.
-La puerta de aceptación falló. No se eligió variante, no hubo confirmación,
+Estado: **piloto interrumpido por fallo de integración en la primera llamada,
+sin evidencia de comportamiento**. Haiku no produjo una respuesta utilizable.
+El piloto queda pendiente y la puerta de aceptación sigue cerrada. No se eligió variante, no hubo confirmación,
 no se abrió aceptación y no se publica una aceptación científica. La instalación
 local 0.3.0, los controles de ejecución y la demo sí tienen evidencia independiente.
 
@@ -41,7 +42,9 @@ El modelo solicitado fue claude-haiku-5-5, thinking adaptive, effort low.
 El error ocurrió dentro de la llamada SDK protegida. El arnés no conservó
 tipo de excepción, código HTTP ni ID del proveedor; no se puede determinar
 la causa remota, si el servicio recibió la solicitud o su facturación.
-Se conserva esa limitación; no se hace otra llamada para diagnosticarla.
+Se conserva esa limitación del intento original. Julian autorizó después un
+diagnóstico limitado, descrito abajo; no se interpreta como resultado negativo
+de Haiku ni se reemplaza el intento sellado.
 El cierre de fase está sellado y marca certified=false. El sello externo
 se verificó antes de leer etiquetas de desarrollo.
 
@@ -175,10 +178,32 @@ preguntas preparadas y ninguna respuesta atribuida. La adjudicación no tiene
 casos porque no hubo aceptación. El criterio C_pair=0 sigue sin resolución
 humana general; no se convierte en 100%. Falta respaldo en un destino
 independiente y conciliación externa del intento con consumo desconocido.
-Se consultó a Julian si prefiere cierre negativo o dejar esa conciliación pendiente;
-la pregunta no autoriza repetir el piloto.
+Julian descartó ambas opciones de cierre y autorizó el diagnóstico condicionado
+descrito abajo. La reserva previa se descuenta como gastada del presupuesto
+del piloto; esto no certifica su consumo real.
 
 Clave: **no rotada, por decisión de Julian; vence 2026-11-20**.
 Ramas locales codex/lote-5c en ambos repositorios. Sin push, merge,
-despliegue ni publicación. Cierre técnico local y resultado experimental
-negativo no equivalen a aceptación científica aprobada.
+despliegue ni publicación. La entrega técnica local no equivale a una
+evaluación de comportamiento ni a aceptación científica aprobada.
+
+## Diagnóstico autorizado tras la interrupción
+
+Se corrigió la brecha de diagnóstico en la frontera SDK: tipo de excepción,
+estado HTTP, request-id y tipo de error del proveedor; nunca mensaje, cuerpo
+ni secretos. Rojo a3f4bcc (13 fallos), verde 42b8f3c (59 pruebas dirigidas
+pasan). Las simulaciones cubren 400, 401, 403, 429, 500, 503, 504, 529 y timeout.
+La primera preparación verde tuvo dos expectativas erróneas de clases SDK
+503/504; sus logs se conservan. Verificación puntual de Opus en curso.
+
+Autorización nueva: una consulta gratuita count_tokens con la entrada del primer
+caso; solo si funciona y la causa sigue desconocida, una generación diagnóstica
+con techo US$0,01. Solo con causa identificada, corregida y verificada por Opus
+puede repetirse el piloto una vez, en un directorio nuevo, con los mismos casos,
+variantes y regla. No se reinicia automáticamente. Si la causa no queda clara,
+no se gasta más y el piloto queda pendiente. Aún no se hicieron esas llamadas.
+
+Presupuesto disponible antes del diagnóstico: US$2,3964294 = US$2,40 menos
+US$0,0035706 del intento conservado, debitado por autorización de Julian.
+Cualquier diagnóstico pago se descuenta también. No se transfieren fondos.
+Aceptación sigue cerrada: además del piloto, persisten los dos P2 de D.

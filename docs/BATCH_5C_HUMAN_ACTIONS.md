@@ -24,8 +24,9 @@ defecto. No compartir la clave. La puerta falló y aceptación no se abrió.
 
 El procedimiento está bloqueado por dos P2 de D-r2; véase BATCH_5C_REMAINING.md.
 Antes de usarlo hacen falta correcciones y una nueva verificación que excede
-las dos rondas ya consumidas. No se solicita esa ampliación para cerrar el
-resultado negativo actual.
+las dos rondas ya consumidas. La autorización nueva de diagnóstico no amplía esa revisión de D.
+El piloto está interrumpido, sin evidencia de comportamiento; no es un resultado
+negativo de Haiku.
 
 Todavía no hay anotaciones de aceptación que adjudicar. Si la puerta habilita
 aceptación, cada disputa llevará review_id/claim_id, texto y spans originales,
@@ -49,3 +50,8 @@ Las ramas y notas de release son locales. No se hizo push, merge, despliegue o
 publicación. Cualquier publicación debe distinguir estado técnico, piloto,
 aceptación científica y revisión por IA. v2.1 sigue por defecto; CNN-17 experimental.
 Clave no rotada, por decisión de Julian; vence 2026-11-20.
+
+Diagnóstico: Julian ya autorizó una consulta gratuita, una generación solo si
+la consulta funciona y la causa sigue desconocida, y una repetición del piloto
+solo tras identificar, corregir y verificar la causa con Opus. Límites y saldo
+en BATCH_5C_REPORT.md; esta autorización no abre aceptación.

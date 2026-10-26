@@ -33,7 +33,9 @@ Los schemas/ejemplos presentes son material de preparación, no una autorizació
 para anotar o puntuar datos reales. Las seis preguntas de H-18 sí quedan listas
 en BATCH_5C_HUMAN_ACTIONS.md.
 
-Por separado, el piloto quedó cerrado con uso desconocido y la puerta fallida.
+Por separado, el piloto quedó interrumpido por fallo de integración en la primera
+llamada, sin evidencia de comportamiento. Sigue pendiente; ver diagnóstico
+condicionado autorizado en BATCH_5C_REPORT.md. La aceptación permanece cerrada.
 No existe variante elegida. La reserva US$0,0035706 no es gasto facturado;
 conciliación con el proveedor y cualquier decisión sobre un experimento futuro
 requieren tratar el intento preservado. No se concede otro piloto implícitamente.

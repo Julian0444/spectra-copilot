@@ -1,6 +1,6 @@
 {
-  "schema": "batch5c-negative-pilot-v1",
-  "outcome": "blocked_uncertified_usage",
+  "schema": "batch5c-interrupted-pilot-v2",
+  "outcome": "integration_interruption_first_call_no_behavioral_evidence",
   "sealed": true,
   "seal_sha256": "c2036cdcc7e7830d83fa221e86d74405d7ba6bc22981b9bd90dae9122029d105",
   "seal_record_sha256": "3cd4d6fd41f755d2446a8b3dee13902bf0be0c528402adf3e5fb7e610dcf8947",
@@ -97,5 +97,11 @@
     "reason": "Preparation gate failed"
   },
   "private_source": "pilot-negative.json",
-  "private_source_sha256": "0a07e83f00c980f05faedc9a8e830d4ae6fa52adb3b247f742117b6f64236559"
+  "private_source_sha256": "0a07e83f00c980f05faedc9a8e830d4ae6fa52adb3b247f742117b6f64236559",
+  "interpretation": "piloto interrumpido por fallo de integraci\u00f3n en la primera llamada, sin evidencia de comportamiento",
+  "pilot_status": "pending_diagnosis",
+  "attempt_accounting_note": "Original operational status counts are preserved; zero valid responses is not evidence of model behavior.",
+  "prior_reservation_debited_nanodollars": 3570600,
+  "remaining_pilot_budget_before_diagnostic_nanodollars": 2396429400,
+  "diagnostic_calls_executed": 0
 }
