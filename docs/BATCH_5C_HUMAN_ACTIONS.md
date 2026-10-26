@@ -49,7 +49,7 @@ tamaños. Los inventarios existentes no son un respaldo.
 Las ramas y notas de release son locales. No se hizo push, merge, despliegue o
 publicación. Cualquier publicación debe distinguir estado técnico, piloto,
 aceptación científica y revisión por IA. v2.1 sigue por defecto; CNN-17 experimental.
-Clave no rotada, por decisión de Julian; vence 2026-11-20.
+Credencial inválida; clave reemplazada por Julian. Vencimiento nuevo no informado.
 
 La anotación semántica por IA se pospone expresamente a otra sesión. No se
 solicita adjudicación sin anotaciones; exactitud científica y aceptación global

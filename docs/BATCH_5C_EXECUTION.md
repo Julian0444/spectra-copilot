@@ -27,8 +27,9 @@ y seis sintéticos inválidos, sobre 96 de desarrollo. Son respuestas simuladas,
 no evidencia del comportamiento real del LLM. Ver evidence/batch5b22-tokens.json.
 
 v2.1 permanece por defecto y CNN-17 experimental. Aceptación cerrada hasta la
-puerta D, sin modificar rúbrica/selección. Clave: **no rotada, por decisión de
-Julian; vence 2026-11-20**. Solo se carga dentro del proceso autorizado, jamás
+puerta D, sin modificar rúbrica/selección. Clave: **credencial inválida; clave reemplazada por Julian**, declarada
+a las 21:14. El estado anterior sin rotación queda como registro histórico;
+no se infiere vencimiento de la clave nueva. Solo se carga dentro del proceso autorizado, jamás
 en argumentos, archivos o sesiones de revisión.
 
 ## Desarrollo y campaña 5C
