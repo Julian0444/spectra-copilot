@@ -141,6 +141,8 @@ def verify(path,protocol_dir,effort='low',require_installed=False):
     if require_installed and saved.get('kind')!='installed-5c':raise ValueError('Paid execution requires installed-5c identity')
     if saved.get('schema')!='spectra-system-identity-v1' or digest(saved['behavior'])!=saved['behavior_sha256']:
         raise ValueError('Invalid candidate identity')
+    if saved.get('llm_path_sha256')!=llm_path_digest(saved['behavior']):
+        raise ValueError('Invalid candidate execution path digest')
     current=capture(protocol_dir,effort=effort,kind=saved.get('kind','candidate-5b22'),build_manifest=saved.get('build_manifest'))
     if current['behavior_sha256']!=saved['behavior_sha256']:
         raise ValueError('Runtime differs from registered identity; register and justify final 5C identity first')
