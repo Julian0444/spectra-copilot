@@ -87,7 +87,8 @@ def score_sealed(directory,labels_path,*,review_path=None,seal_record=None,outpu
     if len(indexed)!=len(labels['cases']) or set(indexed)!={r['alias'] for r in rows}:raise ValueError('Labels must cover every requested case exactly once')
     if manifest['mode']=='proposal' and (sum(c['kind']=='real' for c in indexed.values())!=80 or sum(c['kind']=='synthetic' for c in indexed.values())!=48):
         raise ValueError('Frozen real/synthetic denominators changed')
-    reviews=json.loads(Path(review_path).read_text()) if review_path else {}
+    review_bytes=Path(review_path).read_bytes() if review_path else None
+    reviews=json.loads(review_bytes) if review_bytes is not None else {}
     if reviews.get('schema')=='batch5c-ai-reviews-v1':
         if reviews['seal_sha256']!=seal_hash or reviews['outputs_sha256']!=seal['outputs_sha256']:
             raise ValueError('Review join differs from sealed outputs')
@@ -95,7 +96,8 @@ def score_sealed(directory,labels_path,*,review_path=None,seal_record=None,outpu
         if set(reviews)!=set(indexed):raise ValueError('Review join must cover every case')
     elif reviews and manifest['mode']=='proposal':raise ValueError('Proposal requires the validated AI review join schema')
     for bundle in reviews.values():
-        if bundle.get('schema') not in (None,'batch5c-ai-case-review-v1'):
+        allowed_schemas=('batch5c-ai-case-review-v1',) if manifest['mode']=='proposal' else (None,'batch5c-ai-case-review-v1')
+        if bundle.get('schema') not in allowed_schemas:
             raise ValueError('Unknown case review schema; validate and join annotations first')
     scored=[]
     for row in rows:
@@ -161,6 +163,7 @@ def score_sealed(directory,labels_path,*,review_path=None,seal_record=None,outpu
             'missing_required_citations':sum(r['semantic']['missing_required_citations'] for r in group),
             'status_counts':{s:sum(r['status']==s for r in group) for s in sorted({r['status'] for r in group})}}
     result={'schema':'batch5c-score-v1','mode':manifest['mode'],'outputs_sha256':seal['outputs_sha256'],
+            'reviews_sha256':hashlib.sha256(review_bytes).hexdigest() if review_bytes is not None else None,
             'labels_sha256':hashlib.sha256(label_bytes).hexdigest(),'labels_loaded_ns':labels_loaded_ns,
             'outputs_sealed_ns':seal['created_ns'],'seal_sha256':seal_hash,
             'seal_verified_ns':verified_ns,'labels_read_started_ns':labels_read_started_ns,

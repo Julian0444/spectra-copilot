@@ -1,9 +1,9 @@
 # Procedimiento 5C de revisión semántica por IA
 
-**Estado 5C: bloqueado para uso real.** D terminó su segunda ronda con dos
-P2 abiertos sobre adjudicación de inventario y tratamiento de extractos citados.
-Este documento conserva el procedimiento preparado; no habilita anotaciones,
-adjudicaciones ni aceptación. Véase [bloqueos](BATCH_5C_REMAINING.md).
+**Estado del cierre de 2026-10-27: correcciones en verificación.** Los dos P2
+de D-r2 se corrigen bajo la nueva autorización; no se atribuye aún aprobación
+independiente. El uso real exige registro 5C-2 y revisión sin P1/P2.
+Véase [estado](BATCH_5C_REMAINING.md).
 
 Este procedimiento implementa la rúbrica congelada de BATCH_5B_PROTOCOL.md §4.
 Todavía no constituye la adenda 5C-2 ni habilita aceptación. Esa adenda registrará
@@ -31,7 +31,8 @@ Observaciones, argumentos y predicción acompañan como evidencia. Se excluyen
 presupuesto, costes, tiempos, modelo del LLM, historia y thinking. Predictor y
 contrato publicados se conservan íntegros, incluidos rangos, fórmulas y hashes.
 **No se sustituye la identidad del predictor ni se modifica texto científico.**
-Se conserva la procedencia `executor_fallback` frente a selección del LLM.
+Se conserva `llm_selected` o `undetermined_after_failure`, según el estado y
+las violaciones registradas; un fallo no demuestra selección del LLM ni fallback.
 
 Se buscan nombres de proveedor/modelo, IDs de API, aliases exactos y rutas
 locales en lo entregado. Cualquier acierto se declara como incidente de ceguera;
@@ -65,6 +66,11 @@ provisionales del scorer son diagnósticos pendientes, nunca el denominador fina
 
 C_pair incluye únicamente pares afirmación–cita emitidos: no se inventan por
 pertinencia y una cita literal no se convierte en tesis sobre el espectro.
+El extracto `quotation:<id>`, su encabezado y `Retrieved reference IDs` no crean
+pares. La extracción es factual, no científica/externa, con ciencia N/A; soporte
+se juzga contra el fragmento recuperado. No exige una autocita. Referencias de
+juicios iguales a las semillas salvo disputa registrada y limitadas a las citas
+del caso. El contrato entregado contiene la regla completa y su validación.
 Denominador cero es N/A, nunca 100%. Si C_pair=0 y no hay obligación externa
 omitida, la aceptación global queda pendiente de criterio explícito de Julian.
 Sin adjudicar desacuerdos, exactitud científica y aceptación global pendientes.
@@ -111,7 +117,10 @@ Cada caso incluye reviewer, independent, judgments y case_obligations (solo las
 disputadas salvo exposición de identidad, que requiere todas). Para inventario,
 inventory_resolution contiene input_sha256=inventory_digest(semillas,primera,segunda),
 claims (inventario final completo) y reason. Puede rechazar adiciones, excluir,
-dividir o fusionar semillas. Los claims resultantes llevan texto exacto y spans;
+dividir o fusionar semillas únicamente sobre disputas/adiciones registradas.
+Todo original no disputado conserva ID y texto. Sin disputas ni adiciones se
+rechaza una resolución. Cada fila registra inventory_changes: excluded, changed
+y added. Los claims resultantes llevan texto exacto y spans;
 los nuevos o modificados requieren juicio humano. Una resolución con hash viejo
 se rechaza; una anotación independiente faltante siempre queda pendiente. Se
 conservan conteos de semilla, cada anotador y final, además de los originales.
@@ -120,3 +129,19 @@ Las omisiones y pendientes se agregan por obligación. Las tasas semánticas por
 caso y Wilson son descriptivas (casos enteramente correctos/respaldados); no
 reemplazan los umbrales agrupados de afirmaciones. Las notas que revelen identidad
 y blindness_intact=false fuerzan juicio humano en todo el caso.
+
+Los desacuerdos iniciales se conservan en disagreements; forced y changed
+separan los juicios exigidos por pérdida de ceguera o cambios de inventario.
+El score registra reviews_sha256; cada caso de propuesta exige el esquema IA.
+El score no vuelve a reconstruir la unión: se conserva la unión validada y su
+registro, paquete y mapa para comprobar su procedencia con el hash registrado.
+
+Herramientas sin etiquetas:
+`python -I -B -m copilot.review_annotations worksheet --package <paquete>
+--first <primera> --second <segunda> --registration <registro> --output <hoja>`
+calcula los input_sha256 y lista disputas, inventarios originales y pendientes.
+No necesita mapa privado ni etiquetas. Para validar una adjudicación:
+`python -I -B -m copilot.review_annotations validate --package <paquete>
+--adjudication <archivo> --first <primera> --second <segunda> --registration <registro>`.
+La validación acepta juicios humanos de adiciones registradas de un solo anotador,
+sin obligar a una resolución si no cambia el inventario.

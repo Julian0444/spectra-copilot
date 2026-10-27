@@ -1,7 +1,7 @@
 # Anotación independiente de informes de observación
 
-**No usar para anotación real:** D-r2 dejó dos P2 abiertos. Este contrato es
-material de preparación. Véase [bloqueos](../BATCH_5C_REMAINING.md).
+**Uso condicionado al registro 5C-2 y revisión independiente sin P1/P2.**
+Este contrato corrige D-r2; no constituye por sí solo autorización de ejecución.
 
 Lea todos los casos de los chunks y el manifiesto. No consulte otros paquetes,
 etiquetas, evaluaciones ni identidades del sistema. No busque identificarlo.
@@ -32,6 +32,19 @@ fragmento, recurso, SHA y corpus. Solo registre pares afirmación–referencia
 explícitamente emitidos; no los invente por similitud o pertinencia. Una cita fiel
 no certifica la predicción ni se atribuye como tesis sobre este espectro.
 Use reference_support por cada reference_id: supported/unsupported.
+
+El claim `quotation:<id>` representa la fidelidad de extracción del fragmento:
+factual=true, scientific=false, external_scientific=false y
+scientific_accuracy=not_applicable. Juzgue su textual_support contra el fragmento
+recuperado, sin tratarlo como una tesis científica del sistema sobre el espectro.
+El extracto con su encabezado `Retrieved local excerpt [id]`, y la línea
+`Retrieved reference IDs`, no son pares afirmación–cita. El extracto ya es la
+cita; no requiere otra cita de sí mismo ni una afirmación externa sin respaldo.
+Para estas semillas, reference_ids=[] y reference_support={}. Esto no certifica
+la verdad científica de la fuente. Si la segmentación/clasificación propuesta
+no representa lo publicado, registre una disputa de inventario para Julian.
+En general, reference_ids del juicio debe coincidir con la semilla salvo disputa
+de inventario registrada, y siempre pertenecer a las citas emitidas del caso.
 
 Cada caso exige `case_obligations`: report, model_z, caution, evidence, citations,
 limitations, con met/unmet/not_applicable y notas. Examine omisiones, incluidos

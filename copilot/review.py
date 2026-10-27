@@ -117,11 +117,10 @@ def score_annotation_pair(claims,first=None,second=None,adjudication=None,*,blin
     original_catalog=deepcopy(catalog)
     resolution=(adjudication or {}).get('inventory_resolution')
     resolved=resolution is not None
+    inventory_changes={'excluded':[],'changed':[],'added':[]}
     if resolved:
-        from copilot.review_annotations import inventory_digest
-        if (resolution.get('input_sha256')!=inventory_digest(claims,first,second)
-            or not resolution.get('reason') or not isinstance(resolution.get('claims'),list)):
-            raise ValueError('Invalid or stale inventory resolution')
+        from copilot.review_annotations import validate_inventory_resolution
+        inventory_changes=validate_inventory_resolution(claims,first,second,resolution)
         final=resolution['claims'];catalog={c['id']:deepcopy(c) for c in final}
         if len(catalog)!=len(final) or any(not c['text'].strip() for c in final):raise ValueError('Distinct final inventory required')
     forced=not blindness_intact or any((b or {}).get('identity_incident',False) for b in (first,second))
@@ -152,9 +151,16 @@ def score_annotation_pair(claims,first=None,second=None,adjudication=None,*,blin
             or any(not isinstance(v,str) or v not in {'met','unmet','not_applicable'} for v in obligations.values())):
             raise ValueError('All case obligations require explicit annotation')
         for key in bundle['judgments']:judgment(bundle,key)
+    initial_disagreements=[]
+    for key in original_catalog:
+        a,b=judgment(first,key),judgment(second,key)
+        one_added=key not in ids and not all(key in x for x in additions[:2])
+        if (a is not None and b is not None and a!=b) or one_added:initial_disagreements.append(key)
     result={'claims':len(catalog),'citation_mentions':0,'valid_citation_mentions':0,'textual_pairs':0,'textual_supported':0,
             'scientific_claims':0,'scientific_correct':0,'factual_claims':0,'unsupported_claims':0,
-            'missing_required_citations':0,'critical_errors':0,'pending_claims':0,'disagreements':[], 'rows':[]}
+            'missing_required_citations':0,'critical_errors':0,'pending_claims':0,
+            'disagreements':initial_disagreements,'forced':[],'changed':[],
+            'inventory_changes':inventory_changes,'rows':[]}
     inventory_pending=not (first and second) or (not resolved and not
         (first.get('inventory_complete') is True and second.get('inventory_complete') is True
          and not first.get('inventory_disputes') and not second.get('inventory_disputes')))
@@ -166,8 +172,9 @@ def score_annotation_pair(claims,first=None,second=None,adjudication=None,*,blin
         changed=resolved and (key not in original_catalog or c['text']!=original_catalog[key]['text'])
         agreed=a if a is not None and a==b and existence_agreed and not forced and not changed else None
         disputed=(a is not None and b is not None and a!=b) or (added and not existence_agreed)
+        if forced:result['forced'].append(key)
+        if changed:result['changed'].append(key)
         if disputed or forced or changed or (resolved and agreed is None):
-            result['disagreements'].append(key)
             agreed=judgment(adjudication,key)
         # Provisional inclusive counts are explicitly pending, never a pass.
         flags=agreed or {k:any((j or {}).get(k,False) for j in (a,b)) for k in ('scientific','factual','external_scientific')}
