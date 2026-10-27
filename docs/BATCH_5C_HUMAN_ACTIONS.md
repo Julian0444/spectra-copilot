@@ -1,5 +1,13 @@
 # Acciones humanas pendientes
 
+## Resumen de tareas pendientes
+
+Quedan por completar la adjudicación humana de las discrepancias semánticas,
+la explicación personal del trabajo y de las decisiones, una copia de respaldo
+en un destino independiente, el hospedaje de artefactos y la desactivación de
+claves antiguas. La exactitud científica y la aceptación global permanecen
+pendientes. Los registros y preguntas detallados se conservan a continuación.
+
 ## H-18: explicación personal de Julian
 
 No se ha recibido ni se atribuye una respuesta. Estas preguntas provienen del

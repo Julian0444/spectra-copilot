@@ -41,7 +41,7 @@ The verified checkpoint and FAISS assets are available from the
 [model repository](https://huggingface.co/jirustaroure/desi-spectra-fm).
 Without a local checkpoint, the tools download the pinned default asset.
 For installed wheels, asset configuration, local UI and API checks, use the
-[reproduction guide](docs/BATCH_5C_REPRODUCE.md).
+[reproduction guide](docs/REPRODUCE.md).
 
 ## Tools and agent
 
@@ -95,6 +95,4 @@ retained in `eval/transcripts/` as historical evidence.
 - [Semantic review procedure](docs/BATCH_5C_AI_REVIEW.md) and [remaining human actions](docs/BATCH_5C_HUMAN_ACTIONS.md)
 - [Release notes](docs/RELEASE_0_3_0.md)
 
-Development and audits used AI assistants (Codex and Claude), with decisions and
-verifications recorded in `docs/`. Personal contributions are not inferred from
-that assistance or from commits; H-18 remains pending.
+Development and audits used AI coding assistants (Codex and Claude); decisions and verification records are in docs/.

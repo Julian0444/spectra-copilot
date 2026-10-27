@@ -1,3 +1,5 @@
+> Superseded by [REPRODUCE.md](REPRODUCE.md). Final evaluation status: [BATCH_5C_REPORT.md](BATCH_5C_REPORT.md).
+
 # Reproducción local de 0.3.0
 
 Esta guía usa wheels instalados fuera de los checkouts. No presupone acceso a
