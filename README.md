@@ -19,13 +19,12 @@ for protocols, current status and limits, and the [historical evaluation record]
 
 ## Install and run
 
-The 0.3.0 release is being prepared. `desi-fm` is not on PyPI: install matching
-source checkouts for development. After publication, CI installs it from the
-GitHub `v0.3.0` tag.
+Install the matching 0.3.0 source releases. `desi-fm` is not on PyPI; CI
+installs it from the GitHub `v0.3.0` tag.
 
 ```bash
-git clone https://github.com/Julian0444/desi-spectra-fm.git
-git clone https://github.com/Julian0444/spectra-copilot.git
+git clone --branch v0.3.0 https://github.com/Julian0444/desi-spectra-fm.git
+git clone --branch v0.3.0 https://github.com/Julian0444/spectra-copilot.git
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e './desi-spectra-fm[api,ui,dev]'

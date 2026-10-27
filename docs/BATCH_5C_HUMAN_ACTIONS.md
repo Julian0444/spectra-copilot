@@ -80,7 +80,7 @@ La publicación espera la palabra expresa PUBLICAR, tras presentar los comandos.
 ## Efecto del README del Space antes de PUBLICAR
 
 La propuesta solo modifica README en Hugging Face, pero ese commit reconstruye
-y reinicia el Space. Su desi-fm depende de main sin fijar: puede instalar0.3.0
+y reinicia el Space. Su desi-fm depende de main sin fijar: puede instalar 0.3.0
 bajo el mismo app.py, conservar caché o fallar. La autorización PUBLICAR debe
 aceptar expresamente ese efecto al aprobar los comandos presentados. No se
 editarán app.py ni requirements, no se afirmará runtime idéntico y se comprobará
