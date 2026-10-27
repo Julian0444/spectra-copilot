@@ -1,4 +1,19 @@
-# Lote 5C — cierre económico local; aceptación pendiente
+# Lote 5C — cierre en curso, 2026-10-27
+
+La repetición sellada eligió low y pasó la puerta operativa (11/11 válidos).
+Bajo la nueva autorización se corrigen D-P2-N1/N2 y P3-N1/N2/N3, se prepara CI y
+documentación y se verifica la identidad final antes de abrir aceptación.
+La corrida única de 128 casos no se ha materializado ni ejecutado. Correcciones
+locales no equivalen a aprobación independiente; la puerta sigue cerrada.
+La anotación semántica IA ahora forma parte del alcance, con adjudicación humana
+pendiente. No hubo nuevas llamadas pagas ni publicación. PUBLICAR es obligatorio.
+
+El registro siguiente describe exclusivamente el cierre económico anterior.
+Se conserva su cronología; sus restricciones de alcance fueron sustituidas por
+la autorización del 2026-10-27. Resultados del piloto, costes y sellos no cambian.
+
+## Registro del cierre económico anterior
+
 
 La repetición autorizada terminó y quedó sellada: **la variante elegida es
 low, y pasa la puerta operativa**. No se abrió aceptación.

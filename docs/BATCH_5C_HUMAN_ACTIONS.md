@@ -22,11 +22,13 @@ consumo original no equivale a modificar sus registros históricos.
 
 ## Adjudicación
 
-El procedimiento está bloqueado por dos P2 de D-r2; véase BATCH_5C_REMAINING.md.
-Antes de usarlo hacen falta correcciones y una nueva verificación que excede
-las dos rondas ya consumidas. La autorización nueva de diagnóstico no amplía esa revisión de D.
-El primer intento sigue interrumpido, sin evidencia de comportamiento; la
-repetición sí produjo respuestas y no pasó la puerta operativa.
+La autorización de cierre del 2026-10-27 incluye las correcciones de D-r2 y
+su revisión independiente, con un máximo de dos rondas por hito. La aceptación
+sigue cerrada mientras se verifican esas correcciones y la identidad instalada.
+El primer intento permanece interrumpido sin evidencia de comportamiento.
+La repetición sí produjo respuestas: **low pasó la puerta operativa, 11/11**,
+según el sello y la puntuación conservados en el informe. Los P2 del evaluador
+bloquearon la puerta completa del cierre anterior; no falló la puerta de low.
 
 Todavía no hay anotaciones de aceptación que adjudicar. Si la puerta habilita
 aceptación, cada disputa llevará review_id/claim_id, texto y spans originales,
@@ -51,6 +53,10 @@ publicación. Cualquier publicación debe distinguir estado técnico, piloto,
 aceptación científica y revisión por IA. v2.1 sigue por defecto; CNN-17 experimental.
 Credencial inválida; clave reemplazada por Julian. Vencimiento nuevo no informado.
 
-La anotación semántica por IA se pospone expresamente a otra sesión. No se
-solicita adjudicación sin anotaciones; exactitud científica y aceptación global
-permanecen pendientes.
+La nueva autorización incluye dos sesiones nuevas de anotación semántica IA,
+una Astra y otra Opus, después de la aceptación sellada y antes de abrir etiquetas.
+No se solicita adjudicación sin anotaciones. Exactitud científica y aceptación
+global permanecen pendientes de Julian. Las claves viejas deben desactivarse en
+la Consola del proveedor; no se presume que eso ya ocurrió. El hospedaje del
+paquete de artefactos y un respaldo independiente también quedan pendientes.
+La publicación espera la palabra expresa PUBLICAR, tras presentar los comandos.

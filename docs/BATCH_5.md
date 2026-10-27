@@ -736,7 +736,7 @@ model_z es garantía del software, no mejora de precisión.
 **Custodia y preservación:** barrido previo al commit del ejecutor, 4.945
 superficies y cero violaciones. El barrido posterior a los commits documentales,
 con todo el historial 5B y el consenso actualizado, queda en
-`/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/final-custody.log` y `FINAL_STATE.json` del mismo directorio.
+`<private-state>/lote-5b-2-20261019-8zngcpwb/final-custody.log` y `FINAL_STATE.json` del mismo directorio.
 Los conteos son superficies, no casos de aceptación. Se verificaron al inicio
 y al final 1.174 archivos por SHA-256 y tamaño, cero diferencias y cero extras
 en los tres árboles inmutables. El CSV histórico sigue sin versionar e intacto.
@@ -744,7 +744,7 @@ Las evidencias ligeras enlazan los inventarios privados; no se versionan pesos,
 datos, secretos ni logs voluminosos.
 
 **Identidad candidata:** archivo `docs/evidence/batch5b2-candidate.json`, copia
-exacta de `/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/candidate-identity.json`.
+exacta de `<private-state>/lote-5b-2-20261019-8zngcpwb/candidate-identity.json`.
 SHA-256 del archivo: `db0f26daa12d7f38f633f9017bbe0576afa0b93cbbf81fa4d1d48dae174f92a4`.
 SHA-256 de comportamiento: `9e76fe83d40a3761d67a6519698cfa28291657287d2b45963c6e3e8cbb7d59dd`.
 Incluye código, prompt, corpus, herramientas, política, predictor, índice,
@@ -760,14 +760,14 @@ FM `2cff06db5f86e06c0de0a767d2ccec024fa2ee20`,
 Copilot `ae44d262343d4f487c08b5061e2406cc991c925b`.
 Los commits posteriores son exclusivamente documentación. Los **HEAD finales**,
 incluidos esos commits, se registran fuera de los repositorios en
-`/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-20261019-8zngcpwb/FINAL_STATE.json` y consenso §13.6, evitando auto-referenciar el hash del
+`<private-state>/lote-5b-2-20261019-8zngcpwb/FINAL_STATE.json` y consenso §13.6, evitando auto-referenciar el hash del
 propio commit. `batch5b2-close.json` contiene el historial de implementación.
 
 Manifiestos sin cambios:
 
 - Desarrollo en ambos `docs/protocol/batch5b-development.json`:
   `60b2b4584e5a57030a4ff82a1b13d23065505a4d8bb878a20f5d4caecbe3f7c4`.
-- Aceptación privada: `/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-1-20261018T225723/custody-final/acceptance.json`, 82.805 bytes;
+- Aceptación privada: `<private-state>/lote-5b-1-20261018T225723/custody-final/acceptance.json`, 82.805 bytes;
   `b8482511783a4d970693c650cd7046274303732643c13f95fdf03de9c9ae6a05`.
   Solo hash/comprobador; no se mostraron ni ejecutaron sus casos.
 - Compromiso en ambos `docs/evidence/batch5b-commitment.json`:
@@ -825,7 +825,7 @@ en el cierre técnico de 5B-2; no se declara cerrado el proyecto completo.
 El núcleo de 5B-2 se conserva. Esta sesión no es otra verificación independiente.
 
 Directorio privado 0700 de comandos, logs, mediciones y handoff:
-`/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-1-20261019-9ax7b98b/`.
+`<private-state>/lote-5b-2-1-20261019-9ax7b98b/`.
 [BATCH 5B-2.1: evidencia](evidence/batch5b21-close.json),
 [opciones de presupuesto](evidence/batch5b21-budget.md),
 [diferencias de identidad](evidence/batch5b21-identity-diff.json).
@@ -940,7 +940,7 @@ independiente. SDK 0.120.2 y entorno sin cambios.
 [conteo agregado](evidence/batch5b22-tokens.json),
 [candidata](evidence/batch5b22-candidate.json) y
 [diff por componente](evidence/batch5b22-candidate-differences.json).
-Handoff y comprobador final en `/Users/jirustaroure/.local/state/spectra-consolidation/lote-5b-2-2-20261022-recvy0zo`.
+Handoff y comprobador final en `<private-state>/lote-5b-2-2-20261022-recvy0zo`.
 Respaldo independiente, rotación de claves y H-18 mantienen sus estados.
 Sigue verificación independiente de 5B-2.2, decisión sobre piloto pago y luego
 autorización de gasto de 5C. Sin push, merge ni publicación.
@@ -999,3 +999,14 @@ Anotación semántica IA otra sesión; exactitud científica y aceptación globa
 Clave: «credencial inválida; clave reemplazada por Julian».
 Respaldo independiente, H-18, adjudicación futura y publicación pendientes.
 Ramas codex/lote-5c; sin push, merge, despliegue ni publicación.
+
+
+## Reapertura de cierre autorizada — 2026-10-27
+
+Low ya pasó la puerta operativa (11/11); el cierre económico quedó bloqueado por
+D-P2-N1/N2, no por un fracaso del piloto repetido. La nueva autorización incluye
+correcciones acotadas del evaluador y revisión independiente, adenda 5C-2 e
+identidad antes de materializar la aceptación única low de 128 casos (80/48,
+techo US$12,80). Incluye anotación por dos sesiones nuevas IA y adjudicación de
+Julian pendiente; no autoriza repetir un piloto ni una aceptación defectuosa.
+Se prepara publicación, detenida hasta PUBLICAR. Estado en BATCH_5C_REPORT.md.

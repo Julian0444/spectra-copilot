@@ -571,3 +571,85 @@ reconstrucción final, una sola verificación final Opus y, sinP1/P2, aceptació
 única HitoD. Si falla, aceptación cerrada. Los dosP2 deD siguen declarados.
 Solo puntuación mecánica: anotación semántica IA queda para otra sesión;
 exactitud científica y aceptación global pendientes. Sin otras revisiones Opus.
+
+
+### Adenda 5C-2 — cierre, aceptación y anotación semántica (2026-10-27)
+
+Esta adenda conserva íntegros los protocolos anteriores y sustituye las
+restricciones de alcance del cierre económico por la autorización de Julian
+del 2026-10-27. No cambia rúbrica, umbrales, selección, modelos ni regla del
+piloto. No habilita pagos hasta completar el registro y la revisión descritos.
+
+La variante es **low**, elegida por la repetición ya aprobada: 11/11 válidos,
+puerta operativa superada. Se conserva el primer intento interrumpido, sin
+respuesta utilizable ni evidencia de comportamiento; reserva US$0,0035706
+debitada. La repetición costó US$0,0280614 certificado; no se ejecuta otro piloto.
+Su sello es 31eb1b78e55836ddaa9457aadf3ef7a8dc83ad93f27f736c35ca6db3e8163137,
+y su camino LLM low registrado es
+985e74a43f8be5e6cb82bacb40d0ea82681af065dfd02390f7f1f49b0401158d.
+
+Correcciones D-r2: resolución de inventario acotada a disputas/adiciones,
+preservando ID/texto no disputados y enumerando cambios; extractos como
+fidelidad de extracción, no tesis externa ni autopares; referencias limitadas
+a las emitidas y a la semilla salvo disputa; desacuerdos separados de forzados
+y cambios; hoja de adjudicación sin etiquetas; validación con contexto original;
+schema IA por caso en propuesta y hash de unión en el score. El procedimiento
+corregido es BATCH_5C_AI_REVIEW.md y el contrato docs/review/INSTRUCTIONS.md.
+No se delega adjudicación humana a ningún asistente. C_pair=0 permanece N/A,
+con aceptación global pendiente. El registro previo liga sus hashes exactos.
+
+Antes de materializar los 128 casos, se construye e instala desde commits
+registrados, se verifican los wheels, RECORD y recursos, y se captura la identidad
+completa contra una copia congelada del protocolo. El registro externo nuevo
+incluye hashes de wheels, commits fuente, identidad, protocolo, instrucciones,
+esquema/ejemplo, cambios frente a build-08 y el dictamen independiente de Opus.
+La comparación debe demostrar el mismo llm_path low del piloto. Si difiere,
+se detiene antes de aceptación para una decisión de Julian; no se ejecuta
+confirmación ni otra llamada paga por iniciativa del coordinador.
+
+Se permiten reconstrucciones necesarias, justificadas y registradas. Una nueva
+construcción no autoriza repetir la evaluación. Wheels, instalación e identidad
+evaluados se preservan. Wheels de release distintos llevan ambos hashes,
+commits y diferencias de contenido; si cambia código ejecutable, no se publica
+con el mismo número de versión ni se atribuye la aceptación previa a ese código.
+
+Para preservar la campaña del piloto, la continuación usa un directorio privado
+nuevo, comprometido en protocol/batch5c-closure-campaign.json. Copia sin cambiar
+los bytes de las reclamaciones, cierres, decisión, assessment y ledger históricos;
+conserva sus referencias a sellos e identidades originales. Un inventario de
+traslado registra cada hash y la campaña predecesora. Solo el compromiso de la
+campaña nueva cambia; el protocolo privado instalado presenta ese compromiso
+bajo el nombre esperado protocol/batch5c-campaign.json. No se reinicia ninguna
+fase ni se modifica ningún registro canónico anterior. Pilot ya reclamado impide
+otro piloto; proposal no reclamado permite la única aceptación autorizada.
+El registro externo identifica esta derivación y los dos hashes de compromiso.
+
+Con revisión independiente de delta/identidad sin P1/P2: una aceptación low,
+N=128 global, 80 reales y 48 sintéticos, techo US$12,80 y límites 5B-2.2 intactos.
+Custodio, vistas separadas, sello y registro externo antes de etiquetas. Todos
+los fallos y pendientes permanecen en el denominador. Si hay defecto de corrida,
+se conserva y declara, sin repetir. No se transfiere saldo del piloto.
+
+Dos sesiones NUEVAS de anotación, Astra y Opus, distintas del coordinador y del
+revisor, reciben paquetes ciegos equivalentes. El revisor se cierra mientras
+anotan; máximo tres sesiones activas. Cada anotación se guarda y hashea antes
+de mostrar cualquiera al coordinador o a la otra sesión; se registran ambas
+antes de abrir etiquetas/puntuación mecánica. Se auditan los hilos. Es revisión
+por IA, no humana independiente; Opus y Haiku comparten proveedor. Ceguera
+parcial real/sintética y cualquier exposición de identidad se declaran.
+La unión validada y los agregados conservan anotaciones originales y producen
+un paquete de todas las disputas para Julian, sin adjudicarlas. Exactitud
+científica y aceptación global quedan pendientes hasta su adjudicación.
+
+Opus revisa posteriormente agregados, denominadores, sello, identidad, costes y
+fidelidad del informe, y la preparación de publicación/afirmaciones públicas.
+Máximo dos rondas por hito; bloqueos persistentes se documentan y consultan,
+continuando lo independiente. Astra es el único escritor del proyecto; revisores
+no acceden a claves ni hacen llamadas pagas de la aplicación.
+
+No se publica sin la palabra PUBLICAR tras presentar el estado y los comandos.
+Luego: rama FM revisada, CI verde en commit exacto, fast-forward main, tag y
+release; después Copilot igual. No sobrescribir tags/artefactos. Hugging Face
+solo textos, distinguiendo software publicado del código actual del Space.
+No se sube el paquete de artefactos. H-18, adjudicación, respaldo independiente,
+hospedaje y desactivación de claves viejas no se dan por hechos.

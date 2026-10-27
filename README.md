@@ -1,497 +1,98 @@
-# spectra-copilot
-
-**5C (cierre económico):** clave inválida reemplazada por Julian; piloto repetido
-y puntuado mecánicamente: low11/11 pasa la puerta operativa. Puerta completa bloqueada por dos P2 confirmados en la verificación final. Aceptación sin abrir;
-exactitud científica y aceptación global pendientes. [Informe](docs/BATCH_5C_REPORT.md).
-
+# Spectra Copilot
 
 [![ci](https://github.com/Julian0444/spectra-copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/Julian0444/spectra-copilot/actions/workflows/ci.yml)
 
-LLM agent that analyzes astronomical spectra using the
-[desi-fm](https://github.com/Julian0444/desi-spectra-fm) multitask transformer as a
-tool — deterministic tools plus a Claude-API agent that calls the model,
-describes emission and supported absorption measurements and writes
-reports intended to cite tools and references. Citation IDs do not establish
-scientific correctness. Every
-tool returns compact JSON conclusions, never raw arrays.
+Experimental tools and an LLM agent for astronomical spectra. Copilot uses the
+[DESI multitask transformer](https://github.com/Julian0444/desi-spectra-fm) for an
+official redshift, measures spectral features, retrieves neighbors and reference
+excerpts, and produces reports tied to recorded observations. The executor owns
+`model_z`; generated alternatives cannot replace it. **v2.1 is the default;
+CNN-17 is experimental.**
 
-**[🧠 The model: desi-spectra-fm](https://github.com/Julian0444/desi-spectra-fm)** ·
-**[🤗 Checkpoint + FAISS index](https://huggingface.co/jirustaroure/desi-spectra-fm)** ·
-**[▶ Model demo](https://huggingface.co/spaces/jirustaroure/desi-spectra-fm-demo)** ·
-**[📡 Model REST API](https://jirustaroure-desi-fm-api.hf.space/api/docs)**
+The main historical result is negative: on a stratified sample of 150 spectra,
+the original agent achieved 119/150 successes versus 139/150 for the model alone,
+at normalized redshift error below 0.15. It broke 21 correct predictions and
+recovered one outlier. The sample came from non-independent historical validation;
+this result describes that earlier policy. The protected-report policy has a
+separate 5C evaluation. See the [canonical evaluation](https://github.com/Julian0444/desi-spectra-fm/blob/main/docs/EVALUATION.md)
+for protocols, current status and limits, and the [historical evaluation record](eval/README.md).
 
-5C pilot: stopped with unknown usage; acceptance not opened. The AI review
-procedure remains blocked by two P2 findings. See [status](docs/BATCH_5C_REPORT.md)
-and [remaining work](docs/BATCH_5C_REMAINING.md).
+## Install and run
 
-The 60-second version:
-
-- **5 tools + agent + [MCP server](#use-it-from-any-mcp-client)** — redshift prediction,
-  descriptive spectral measurements, masked-reconstruction stability, FAISS semantic
-  search over 15k spectra, and BM25 reference lookup with a citation contract.
-- **[End-to-end evals on 150 held-out spectra](#end-to-end-evals-does-verification-actually-help-n--150)**
-  with an honest headline: the bare model beats its own cheap-LLM agent
-  (92.7 % vs 79.3 %). The agent's self-reported confidence tracks accuracy
-  monotonically, so a hybrid "trust the agent only when it says *high*"
-  policy gets back to 90.0 % (by avoiding breaks, not by recovering
-  outliers). **The eval caught a deployment-relevant failure that four
-  cherry-picked demos had hidden** — that is what evals are for.
-- **[Mini-RAG with citation ID checks](#mini-rag-cited-references-bm25)** —
-  historical saved transcripts passed 6/6 ID checks, 0 invented IDs. These checks
-  establish retrieval membership, not textual support or scientific accuracy.
-- **Tests cover tools, the agent contract, MCP, RAG and evaluation persistence.**
-  Some integration tests require a local or previously cached checkpoint. They
-  simulate the LLM; no paid API call is needed for tests. Historical structured
-  evaluation cost was documented as US$4.06; that is not a current price quote.
-
-Local consolidation, October 2026, pending publication. The negative historical
-result remains authoritative for the historical policy that produced it.
-Current source preserves executor-owned model_z. Alternatives are calculated in
-code and never replace it; all registered measurements determine minimum
-ambiguity or insufficiency, even when the LLM does not cite them. The real LLM
-acceptance remains conditional on the 5C pilot. Version 0.3.0 wheels and their
-installed identities have been verified locally; publication remains pending.
-See the [5C report](docs/BATCH_5C_REPORT.md).
-
-**Tools** (`copilot/tools.py`):
-
-- `predict_redshift` — desi-fm v2.1 prediction: `z_pred_map` (official) +
-  `z_confidence` + `z_pred` (`expm1(E[log(1+z)])` from the same classification posterior).
-- `identify_spectral_lines` — measures emission and Ca H/K absorption with
-  mask/ivar, gaps and line coverage, and computes alternative z hypotheses in
-  code from observed wavelengths. A single line remains ambiguous. Unsupported
-  modalities and missing coverage do not refute a hypothesis. Its development
-  gate failed; physical confirmation is disabled.
-- `reconstruct_spectrum` — masks a fraction of the model's tokens and
-  re-predicts, probing the stability of the prediction.
-- `find_similar_spectra` — embeds the spectrum with the model's encoder and
-  retrieves its nearest neighbors from a FAISS index of 15k DESI training
-  spectra, each with its catalog redshift — another descriptive signal from the same supervised encoder ([details below](#semantic-search-embeddings--faiss)).
-- `lookup_reference` (`copilot/rag.py`) — BM25 retrieval over a committed
-  corpus of DESI reference notes + the extended line catalog, so the agent can
-  ground its reasoning in citable priors — target-type z ranges, line
-  visibility windows, classic degeneracies
-  ([details below](#mini-rag-cited-references-bm25)).
-
-## Quick start
-
-For the delivered 0.3.0 wheels, use the [tested installed quick start](docs/BATCH_5C_REPRODUCE.md).
-It includes local assets, a valid input, rejection, single-line ambiguity, Gradio,
-API and MCP. The following editable commands are for source development.
-
+The 0.3.0 release is being prepared. `desi-fm` is not on PyPI: install matching
+source checkouts for development. After publication, CI installs it from the
+GitHub `v0.3.0` tag.
 
 ```bash
-# Development from matched source checkouts only: first install the current FM checkout.
-# Archived 0.2.0 wheels certify batch 2 only and lack current modules.
-# Local 0.3.0 wheel verification is documented in docs/BATCH_5C_REPRODUCE.md.
-pip install -e ".[dev]"
-# optional: skip the ~104 MB Hub download by pointing at a local checkpoint
-export DESI_FM_CKPT=/path/to/desi-spectra-fm/runs/desi_80k_classhead_v21/checkpoint_last.pt
-pytest -q                                  # local/cached checkpoint needed by integration tests
-python -m copilot eval/inputs-v2/spectrum_0001.npz
+git clone https://github.com/Julian0444/desi-spectra-fm.git
+git clone https://github.com/Julian0444/spectra-copilot.git
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e './desi-spectra-fm[api,ui,dev]'
+python -m pip install -e './spectra-copilot[ui,dev]'
+cd spectra-copilot
+export DESI_FM_CKPT=/path/to/checkpoint_last.pt
+python -m copilot /path/to/spectrum.npz
 ```
 
-For external MCP clients, prepare opaque inputs with `scripts/derive_agent_inputs.py`
-and keep its source map with the evaluator; see [BATCH_2.md](docs/BATCH_2.md).
-Use the generated IDs in agent requests. The historical examples below retain
-their original names and labels as evaluation evidence.
+That command runs deterministic tools and needs no LLM key. Inputs follow the
+[FM input contract](https://github.com/Julian0444/desi-spectra-fm/blob/main/docs/INPUT_CONTRACT.md):
+flux and wavelength in Å, with optional inverse variance and bad-pixel mask.
+The verified checkpoint and FAISS assets are available from the
+[model repository](https://huggingface.co/jirustaroure/desi-spectra-fm).
+Without a local checkpoint, the tools download the pinned default asset.
+For installed wheels, asset configuration, local UI and API checks, use the
+[reproduction guide](docs/BATCH_5C_REPRODUCE.md).
 
-Without `DESI_FM_CKPT`, the public checkpoint is downloaded from
-[jirustaroure/desi-spectra-fm](https://huggingface.co/jirustaroure/desi-spectra-fm)
-and cached. The `examples/` spectra are historical DESI validation objects (excluded from v2.1 fine-tuning,
-with strongly supported v1 exposure and checkpoint selection; not an independent test), each with its `z_true` for reference —
-`examples/trap_single_line.npz` is the synthetic exception, see below.
+## Tools and agent
 
-Historical CLI output from contract v1 (`examples/heldout_z020.npz`, catalog z = 0.204).
-This archived example retains its obsolete verdict and numbers. The current CLI
-omits labels/original paths, includes coverage/model identity and emits descriptive
-measurements with `physical_confirmation=false`, without a `verdict` field:
+| Tool | Output and limit |
+|---|---|
+| `predict_redshift` | Official MAP redshift, concentration and coverage; concentration is not calibrated accuracy. |
+| `identify_spectral_lines` | Descriptive emission and supported absorption measurements, coverage and computed alternatives; physical confirmation is disabled. |
+| `reconstruct_spectrum` | Prediction under masking; stability is not correctness. |
+| `find_similar_spectra` | Neighbors from the same supervised encoder; no independent confirmation. |
+| `lookup_reference` | Local BM25 excerpts and provenance; a valid citation ID does not establish scientific support. |
 
-```json
-{
-  "input": "examples/heldout_z020.npz",
-  "predict_redshift": {
-    "z_pred_map": 0.2267,
-    "z_confidence": 0.6376,
-    "z_pred": 0.2314
-  },
-  "identify_spectral_lines": {
-    "z_tested": 0.2267,
-    "n_peaks_detected": 64,
-    "strongest_peaks_angstrom": [7900.8, 4488.0, 3644.0, 3740.0, 5852.0],
-    "n_expected_in_coverage": 11,
-    "n_matched": 2,
-    "match_fraction": 0.18,
-    "matched_lines": [
-      {"line": "Hβ 4861", "lambda_expected": 5963.4, "matched_peak_at": 5968.8, "delta": 5.4},
-      {"line": "[NII] 6583", "lambda_expected": 8076.0, "matched_peak_at": 8085.6, "delta": 9.6}
-    ],
-    "verdict": "weak_or_inconsistent"
-  },
-  "z_true_reference": 0.2036
-}
-```
+Run the stdio MCP server with `python -m copilot.mcp_server`. External clients
+should use opaque inputs prepared by `scripts/derive_agent_inputs.py`, keeping
+the source map with the evaluator. See [decisions](docs/DECISIONS.md).
 
-In that historical example, at the model's `z_pred_map = 0.2267`
-only 2/11 lines match, but at the true `z = 0.2036` the same spectrum matches
-**8/11 (`consistent`)** — and the strongest peak (7900.8 Å) read as Hα gives
-exactly that z. This selected example illustrates the heuristic; it does not establish
-discrimination against incorrect redshifts. Incorrect candidates can also receive
-`consistent`. Development controls in 5B-2 failed the frozen gate; the current
-tool has retired that verdict. Real LLM acceptance remains pending in 5C.
+The paid agent is a separate command, `python -m copilot.agent`. Its budget is
+zero by default; a key alone does not authorize requests. Explicit model, budget
+and limits are required. Secrets belong in the process environment, never in
+committed files. The 5C acceptance is a controlled one-time evaluation, not a
+quick-start command or a reusable authorization.
 
-## The agent (Claude API)
+For a separately authorized individual request, the explicit flags are
+`--model claude-haiku-5-5 --budget-usd 0.10`; the command still enforces its
+per-call, token and time limits. This example does not launch or authorize it.
 
-`copilot/agent.py` obtains the official prediction before the SDK tool runner.
-Claude selects tools and registered observations; the executor renders a protected
-explanatory report. Concentration is not calibrated accuracy, and neighbors from
-the same supervised encoder are not independent evidence. The four Opus reference
-transcripts below predate `find_similar_spectra` and `lookup_reference` and
-call only `predict_redshift` + `identify_spectral_lines`; the three
-`*_rag.json` transcripts in the same folder, run with `claude-haiku-4-5`,
-exercise the historical five-tool set and predate the protected explanatory policy.
+## Evaluation and limitations
 
-The paid budget is **zero by default**. An API key alone does not authorize a
-request: the CLI returns an incomplete result and exit code 2. The examples below
-require separate approval of model, rates and limits before use; they were not
-executed in 5B-2, 5B-2.1 or 5B-2.2. The maximum is eight SDK turns and six analysis tools,
-but the byte-based input reservation can stop earlier. Haiku 5.5 uses adaptive thinking at low effort and 4,096 output tokens per call.
-Input capacity is assessed with free token counts on scripted development replays;
-real model behavior is unvalidated. See [BATCH_5.md](docs/BATCH_5.md).
+The completed 5C development pilot compared low and medium effort on the same
+12 cases each. Low passed the operational gate with 11/11 valid reports; medium
+had 6/11. The earlier interrupted attempt is retained, with no usable response
+and no behavioral evidence. Current acceptance, semantic review and human
+adjudication status are recorded in [the 5C report](docs/BATCH_5C_REPORT.md).
+Scientific accuracy and global acceptance remain pending human adjudication;
+zero emitted claim–citation pairs are N/A, never 100% support.
 
-```bash
-# Only after separate authorization; keep ANTHROPIC_API_KEY out of files and logs.
-python -m copilot.agent eval/inputs-v2/spectrum_0001.npz \
-    --model claude-haiku-5-5 --budget-usd 0.10
-python -m copilot.agent eval/inputs-v2/spectrum_0004.npz \
-    --model claude-haiku-5-5 --budget-usd 0.10 \
-    --save-transcript eval/runs/new-trap.json
-```
+The matcher failed its physical-confirmation development gate. Neighbors,
+reference existence and template fidelity must not be treated as independent
+scientific evidence. Synthetic public recipes test mechanisms, not blind
+scientific generalization. No improvement over the official redshift is claimed.
 
-Historically documented cost per analysis in this report mode, with the original 3-tool set
-(`predict_redshift`, `identify_spectral_lines`, `reconstruct_spectrum`; token
-usage was printed to stderr after each run): **`claude-opus-4-8`** (historical default) ≈
-**$0.09–0.13**; **`claude-haiku-4-5`** ≈ **$0.013** — cheap enough to iterate
-with, and it completes the full verify-then-refine loop too. With the five-tool set, a historical
-Haiku report run cost ≈ $0.023 (as printed to stderr in the `*_rag.json`
-runs; the transcripts themselves do not record usage), and
-the structured eval mode averaged ≈ $0.027/case over 150 stratified spectra
-([evals section](#end-to-end-evals-does-verification-actually-help-n--150)).
-Full transcripts of the four reference runs (including every tool call and
-result) are in [`eval/transcripts/`](eval/transcripts/).
+Historical transcript checks passed 6/6 ID membership checks. They did not
+evaluate textual support or scientific accuracy; the saved transcripts are
+retained in `eval/transcripts/` as historical evidence.
 
-### Historical demonstrations and their limits
+- [Documentation index](docs/README.md)
+- [Architecture and decisions](docs/DECISIONS.md)
+- [Canonical scientific evaluation](https://github.com/Julian0444/desi-spectra-fm/blob/main/docs/EVALUATION.md)
+- [Semantic review procedure](docs/BATCH_5C_AI_REVIEW.md) and [remaining human actions](docs/BATCH_5C_HUMAN_ACTIONS.md)
+- [Release preparation](docs/RELEASE_0_3_0.md)
 
-The unedited reports remain in [`eval/transcripts/`](eval/transcripts/).
-On `heldout_z020.npz`, the model gives 0.2267 versus catalog 0.2036:
-normalized error ≈0.0192, already within the 0.15 tolerance. The Opus report
-refines it to ≈0.204 but incorrectly calls the original a catastrophic error.
-On z≈2.87, model error ≈0.110 is also within tolerance.
-
-The single-line trap near 8,000 Å admits Hα at z≈0.219, [OIII] at z≈0.598
-or [OII] at z≈1.146. Both saved outcomes must be considered:
-
-| Saved run | Conditions | Outcome |
-|---|---|---|
-| [trap_single_line.json](eval/transcripts/trap_single_line.json) | `claude-opus-4-8`, original toolset; before FAISS/RAG | Reports indeterminate redshift and the competing assignments |
-| [trap_rag.json](eval/transcripts/trap_rag.json) | `claude-haiku-4-5`, five tools including FAISS/RAG | Reports high confidence after testing incorrectly calculated alternatives; false certainty |
-
-These are not controlled Opus/Haiku comparisons. In the second run the [OIII]
-and [OII] alternatives were calculated as 0.5883 and 1.1769; from 7,999.6 Å
-the correct values are approximately 0.5977 and 1.1464. Each correct assignment
-matches one line; no unique solution follows.
-
-For `heldout_lowconf_z157.npz`, Opus replaces error ≈0.24 with ≈0.16: both
-are outliers at 0.15. Only Lyα is outside coverage at the catalog redshift;
-other UV lines remain in-band. Filenames reveal catalog-redshift clues, so
-these demonstrations are not blind evaluations. The prompt and tool issues
-are documented for later consolidation batches, not fixed by these text edits.
-
-## End-to-end evals: does verification actually help? (n = 150)
-
-Hand-picked demos like the ones above are exactly what evals exist to keep
-honest. `eval/` runs the **whole system** — agent + tools + desi-fm v2.1 —
-against DESI pipeline redshifts on **150 real held-out spectra** (stratified:
-45 in the z > 1.5 failure band; selection deterministic, seed 7, labels
-asserted against the committed predictions CSV). Both systems answer the same
-question per case; the agent finishes with a structured `submit_report`
-(150/150 did — zero parsing, zero errors). Full methodology in
-[`eval/README.md`](eval/README.md), raw results in
-[`eval/results.csv`](eval/results.csv).
-
-| system (protocol of the tools) | rate < 0.15 | rate < 0.05 | MAE_norm |
-|---|---|---|---|
-| desi-fm v2.1 alone | **92.7 %** | **77.3 %** | **0.061** |
-| agent (`claude-haiku-4-5` + 5 tools + RAG) | 79.3 % | 72.0 % | 0.104 |
-| hybrid: agent only when it reports `high` confidence | 90.0 % | — | — |
-
-**The agent harms the measured result:** 139/150 successes for the model,
-119/150 for the agent. It breaks 21 correct predictions, recovers 1 of 11
-outliers and leaves 10 wrong. In z>1.5, model success is 41/45 versus 31/45.
-Weak matcher confirmation is associated with the broken predictions; absent
-full per-case traces and a controlled intervention, the mechanism remains a
-hypothesis. Coverage alone has not been shown to explain the failures.
-
-The sample is stratified (seed 7; quotas 40/35/30/25/10/10 across six z bins),
-selected from the non-independent historical validation set. Both tools and
-baseline use full spectra; the model card's 14.95% uses random 50% masking.
-11/150 model errors is a measured 7.33% for this sample. Population reweighting
-(6.54%) and paired-difference estimation (8.19%) are historical antecedents.
-Batch 3 subsequently measured **240/2,000 = 12.00%** under the full-spectrum
-v2 contract. It remains a non-independent historical diagnostic. It cannot
-be compared to CNN’s 9.29% on the different 4B test, where v2.1 was not evaluated.
-
-Neither confidence-based signal beats the model alone. Verbal confidence
-orders historical success but is not a calibrated probability:
-
-| agent confidence | n | rate < 0.15 |
-|---|---|---|
-| high | 63 | 88.9 % |
-| medium | 70 | 77.1 % |
-| low | 17 | 52.9 % |
-
-17 of the 21 broken cases were self-flagged as medium/low. Second, that
-signal is actionable: the hybrid row above (trust the agent only on `high`,
-keep the model otherwise) gets back to 90.0 % — by avoiding 17 of the 21
-breaks (the other 4 were reported `high`), not by recovering outliers: the
-single outlier the agent did recover (`case_088`) came with `medium`
-confidence, so the `high`-only gate hands it back to the model. The eval did
-exactly what evals are for — it caught a deployment-relevant failure (don't
-let this agent overrule the model on the basis of an unvalidated confidence policy) that four cherry-picked
-demos had hidden.
-
-Historically documented cost of the full run: **US$ 4.06** (150 agent analyses in the
-structured mode — `run_structured`, 5 tools + `submit_report` —
-`claude-haiku-4-5`, 3.27 M tokens ≈ 21.8 k/case ≈ $0.027/case; the report
-mode of the demos above is cheaper per run, see
-[The agent](#the-agent-claude-api)). The
-model-only baseline needs no API and is reproducible with
-`python eval/run_evals.py --baseline-only`.
-
-## Semantic search (embeddings + FAISS)
-
-The foundation-model encoder doubles as an **embedding model**: `desi_fm`'s
-`embed_spectrum()` mean-pools the valid spectral tokens into a 512-d vector,
-and `scripts/build_index.py` indexes 15k DESI training spectra
-(L2-normalized → `faiss.IndexFlatIP`, i.e. cosine similarity). The index ships
-on the [Hub](https://huggingface.co/jirustaroure/desi-spectra-fm/tree/main/faiss)
-and is downloaded automatically on first use (~30 MB); the held-out `examples/`
-are *not* in it by construction (it indexes the training side of the split).
-
-A real query — the held-out galaxy at z_true = 0.204 whose official model
-prediction was off (z_pred_map = 0.2267):
-
-```json
-{
-  "k": 5, "index_size": 15000,
-  "neighbors": [
-    {"rank": 1, "similarity": 0.992, "z": 0.187},
-    {"rank": 2, "similarity": 0.992, "z": 0.202},
-    {"rank": 3, "similarity": 0.991, "z": 0.198},
-    {"rank": 4, "similarity": 0.990, "z": 0.192},
-    {"rank": 5, "similarity": 0.989, "z": 0.193}
-  ],
-  "neighbor_z_range": [0.187, 0.202], "neighbor_z_median": 0.193
-}
-```
-
-The five nearest neighbors cluster tightly around the true redshift — evidence
-from the same encoder trained with supervised redshift loss. It is not an
-independent confirmation of the line-based hypothesis. The tool is equally
-honest about failure modes: on the low-confidence outlier
-(`heldout_lowconf_z157.npz`) the neighbor redshifts scatter across
-[0.13, 1.39]. The synthetic single-line trap peaks at similarity 0.90 vs ~0.99
-in these selected real examples. These are descriptive observations, not
-validated distance thresholds or independent evidence of correctness.
-
-The same embeddings, projected with UMAP and colored by catalog redshift:
-
-![UMAP of the embedding space, colored by redshift](docs/img/umap_z.png)
-
-The encoder was trained jointly with a supervised redshift loss. This UMAP of
-15,000 training objects is descriptive; the gradient does not demonstrate
-unsupervised discovery or transfer. Reproduce the plot with
-`scripts/build_index.py` and `scripts/plot_umap.py` using the historical assets.
-
-## Mini-RAG: cited references (BM25)
-
-The agent's missing ingredient was *priors*: knowing that ELGs live at
-0.6 < z < 1.6 turns "z_pred = 3.5 on an emission-line galaxy" from a number
-into a red flag. `copilot/refs/` holds the installed corpus — `copilot/refs/lines.json`
-(the 15-line catalog, extended with retrieval-friendly context: visibility
-windows in DESI coverage, known confusions) plus 15 short notes on DESI
-written from the public documentation (SV3, the BGS/LRG/ELG/QSO target
-classes and their z ranges, Redrock, spectrograph coverage, sky residuals,
-the single-line degeneracy), each carrying its `source:` URL on the first
-line. `copilot/rag.py` indexes the ~30 documents with **BM25**
-(`rank_bm25`) behind the `lookup_reference(query)` tool.
-
-BM25 is a deliberate choice, not a placeholder: for ~30 short, technical
-documents with controlled vocabulary, embeddings would add a model dependency (no recall comparison has been measured), while BM25 keeps retrieval deterministic, offline and
-testable in CI. A real query:
-
-```json
-// lookup_reference("ELG redshift range", k=2)
-{
-  "results": [
-    {"id": "desi-targets-elg", "source": "https://arxiv.org/abs/2208.08513",
-     "snippet": "ELG (Emission Line Galaxy) targets are star-forming galaxies selected to lie at 0.6 < z < 1.6, the largest DESI target class. Their redshifts are measured primarily from the [OII] 3727 doublet, since Halpha has left the optical window above z = 0.49. ..."},
-    {"id": "oii-doublet", "source": "https://arxiv.org/abs/2208.08513",
-     "snippet": "The [OII] line is actually a doublet (3726.0 and 3728.8 A rest, ..."}
-  ]
-}
-```
-
-The system prompt closes the loop with a citation contract: when the agent
-uses retrieved information it must cite the document id in square brackets
-(`[desi-targets-elg]`, `[oii-doublet]`), and it may cite **only** ids
-returned by `lookup_reference` in that conversation — never invent a
-reference. `rag.valid_ids()` exposes the citable set so evals can verify
-that no cited source was hallucinated. The classic failure the corpus
-targets — `lookup_reference("Halpha OII confusion")` — retrieves the
-single-line degeneracy note plus the `Halpha_6563` / `OII_3727` catalog
-entries (pinned by a unit test).
-
-**Historical ID checks on 3 real Haiku runs (~$0.07 total):** in every analysis the agent
-consulted `lookup_reference` unprompted when the redshift was ambiguous, and
-**all 6 citations across the 3 reports matched documents actually returned in
-that conversation** — zero invented references (checked against
-`rag.valid_ids()` and the transcripts in `eval/transcripts/*_rag.json`).
-This did not evaluate textual support or scientific accuracy. Those dimensions
-require the independent review prepared for 5C.
-
-**Historical transcript**, verbatim, from the low-confidence outlier
-(`claude-haiku-4-5`, $0.023 as printed to stderr in that run). Its weak/consistent
-verdicts and free-form conclusions predate the current descriptive tool and
-protected policy; they are preserved as evidence, not current recommendations:
-
-> ## Observation report
->
-> **Object:** examples/heldout_lowconf_z157.npz
->
-> **Redshift:** Indeterminate; z_pred_map = 0.957 is unverified.
->
-> **Evidence:**
->
-> The foundation model prediction z_pred_map = 0.957 carries low confidence
-> (0.181, well below the 0.3 threshold). Spectral-line verification at this
-> redshift yields only 1 matched line (CIII] 1909) from 10 expected lines,
-> match_fraction = 0.1 (identify_spectral_lines). This "weak_or_inconsistent"
-> verdict is incompatible with a confident redshift claim.
->
-> Alternative hypothesis z = 0.058 (derived by assuming the strongest peak
-> 3944 Å is [OII] 3727) matches 2/11 lines and is equally weak. The 61
-> detected peaks show no coherent signature of either redshift.
->
-> The spectrum's nearest neighbors in the embedding space scatter widely
-> (z = 0.129 to 1.386, median 0.937; find_similar_spectra), indicating the
-> embedding is not distinctive—a sign the spectrum may be low
-> signal-to-noise, ambiguous, or absorption-dominated.
->
-> This spectrum's properties are consistent with an LRG (absorption-dominated,
-> few emission lines; z_pred in the 0.4–1.1 LRG window **[desi-targets-lrg]**),
-> but absorption-dominated spectra will inherently yield weak emission-line
-> matches even at correct redshift **[absorption-dominated-spectra]**. The
-> lack of strong, corroborating emission-line pairs (e.g. Hβ–[OIII] or [OII]
-> doublet at consistent wavelengths) prevents secure redshift determination.
->
-> **Confidence:** Very low. Neither z_pred_map nor alternative hypotheses
-> exhibit >40% line-match fractions or tight neighbor clustering.
->
-> **Notes:** The spectrum requires either higher signal-to-noise data or
-> physical priors (photometry, host-galaxy morphology) to disambiguate. A
-> robust absorption-feature-based redshift estimate (e.g. 4000 Å break,
-> Ca H/K) would be more suitable for this object.
-
-## Use it from any MCP client
-
-`copilot/mcp_server.py` exposes the same five tools over the
-[Model Context Protocol](https://modelcontextprotocol.io) (stdio transport),
-so any MCP client — Claude Code, Claude Desktop, the `mcp dev` inspector —
-can drive the foundation model directly. The client's LLM does the reasoning;
-the tools only report measurements.
-
-Register it in **Claude Code** (use the venv python so all deps resolve;
-`DESI_FM_CKPT` is optional — without it the checkpoint is pulled from the Hub
-on the first model call):
-
-```bash
-claude mcp add desi-fm \
-    -e DESI_FM_CKPT=/path/to/checkpoint_last.pt \
-    -- /path/to/spectra-copilot/.venv/bin/python \
-       /path/to/spectra-copilot/copilot/mcp_server.py
-claude mcp list   # desi-fm: ... - ✔ Connected
-```
-
-Or in **Claude Desktop**
-(`~/Library/Application Support/Claude/claude_desktop_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "desi-fm": {
-      "command": "/path/to/spectra-copilot/.venv/bin/python",
-      "args": ["/path/to/spectra-copilot/copilot/mcp_server.py"],
-      "env": {"DESI_FM_CKPT": "/path/to/checkpoint_last.pt"}
-    }
-  }
-}
-```
-
-Historical session (before batch 2; Claude Code driving the server on
-`examples/heldout_z020.npz`, z_true = 0.204 — no agent code involved, just
-the MCP tools and the client's own reasoning):
-
-1. `predict_redshift` → `z_pred_map = 0.2267`, `z_confidence = 0.64`.
-2. `identify_spectral_lines(z=0.2267)` → **weak** (2/11 lines,
-   match_fraction 0.18): the peak-matching heuristic does not confirm the model.
-3. `reconstruct_spectrum(mask_ratio=0.5)` → `z_pred_under_masking = 0.2031`,
-   a notable swing — fragile evidence.
-4. The client reads the strongest peak (7900.8 Å) as Hα and re-tests
-   `z = 0.204` → **consistent** (8/11 lines, match_fraction 0.73, deltas
-   < 2 Å).
-
-That historical detect-and-refine sequence used the retired matcher verdict.
-Current MCP tools return descriptive evidence; this session is not validation
-of the present policy or authority to replace the official model prediction.
-(`find_similar_spectra` was added after that session; called through the same
-MCP layer on the same spectrum it returns the neighbor cluster shown in the
-semantic-search section — z ∈ [0.187, 0.202] around the true 0.204.)
-
-## Related
-
-- Model: [desi-spectra-fm](https://github.com/Julian0444/desi-spectra-fm)
-  (code) · [HF checkpoint](https://huggingface.co/jirustaroure/desi-spectra-fm)
-  · [live demo](https://huggingface.co/spaces/jirustaroure/desi-spectra-fm-demo)
-  · [REST API](https://jirustaroure-desi-fm-api.hf.space/api/docs)
-
-## License and data
-
-Code: [MIT, Julian Irusta Roure](LICENSE). DESI examples and derived data retain
-their [CC BY 4.0 attribution, EDR citation and modification notices](ATTRIBUTIONS.md).
-
-[Batch-1 execution and remaining limits](docs/BATCH_1.md).
-
-Batch 2 contracts, opaque agent inputs, executable limits and local wheel installation: [BATCH_2.md](docs/BATCH_2.md). Historical examples and transcripts retain their original labels and protocols; the runner strips label-bearing metadata and paths before any LLM request.
-
-Current consolidation: [5C](docs/BATCH_5C_REPORT.md). v2.1 remains the default.
-Executor-owned model_z and explanatory states are protected in current source;
-alternatives cannot replace that prediction. Version 0.3.0 is installed and
-checked locally; real acceptance and publication have separate states in the
-5C report. Archived 0.2.0 wheels certify batch 2, not current source.
-
-### MCP error contract (5A correction)
-
-MCP schema/type errors are validated by MCP/Pydantic. Tool execution returns
-`is_error=true` with the same JSON in text and structured content:
-`error.code=invalid_input`, `error.type=SpectrumInputError` for invalid scientific
-inputs or arguments, including input files the reader cannot open; and
-`error.code=internal_error`, `error.type=ServerExecutionError` for missing or
-unreadable checkpoints/index/metadata, offline Hub cache misses, asset identity
-mismatches and other server failures. Error responses omit exception messages,
-paths and tracebacks. A failed load is not cached; a subsequent valid request can
-recover. [Current evidence and limits](docs/BATCH_5.md).
-
-Server diagnostics for `internal_error` write only a sanitized exception class
-to stderr. Exception messages, personal paths and tracebacks are omitted; MCP
-stdout and the safe client error payload are unchanged.
+Development and audits used AI assistants (Codex and Claude), with decisions and
+verifications recorded in `docs/`. Personal contributions are not inferred from
+that assistance or from commits; H-18 remains pending.

@@ -1,17 +1,55 @@
-# Release local 0.3.0 — borrador, sin publicar
+# 0.3.0 — release preparation
 
-Ambos paquetes pasan de 0.2.0 a 0.3.0 porque los wheels 0.2.0 archivados solo representaban el lote 2. Esta entrega incorpora el contrato de entrada v3 y las correcciones posteriores ya presentes en las fuentes, junto con las herramientas/ejecutor de 5C. Copilot requiere desi-fm >=0.3.0,<0.4 para evitar mezclar contratos. No cambia el checkpoint predeterminado v2.1; CNN-17 sigue experimental. No hay entrenamiento ni selección nueva.
+Publication is pending explicit authorization. This version identifies software,
+not scientific acceptance. The default checkpoint remains v2.1; CNN-17 remains
+experimental. No training, checkpoint selection or frozen-test inference is
+part of this release preparation.
 
-FM agrega un demo Gradio local instalable y opcional (extra ui), sin depender del hosting ZeroGPU. Copilot agrega desarrollo exclusivo de manifiesto, esfuerzo autorizado y contabilidad sellada por fase, bootstrap predict+identify, huella SDK beta y verificación de wheels instalados. La CLI individual no habilita gasto; la evaluación paga usa la campaña registrada.
+## Software changes
 
-La versión del paquete identifica software, no una aprobación científica. Piloto, aceptación, revisión semántica y publicación tienen estados separados en BATCH_5C_REPORT.md. Publicación no autorizada.
+- Input contract v3: explicit validity, masks, coverage, gaps and typed rejection.
+- Official `model_z` preserved by the executor; computed alternatives, descriptive
+  spectral measurements and cautious protected reports.
+- Local installable FM Gradio demo, Python inference and FastAPI; Copilot CLI,
+  five MCP tools, FAISS neighbors and local BM25 reference resources.
+- Bounded paid execution with durable accounting, isolated case workers,
+  registered installed identity, phase claims and sealed outputs.
+- SDK error metadata without response content or secrets.
+- Corrected semantic-review inventory adjudication and literal citation contract,
+  separate forced/changed counts, label-free dispute worksheet and score join hash.
+- Reader-oriented evaluation/decision documentation and explicit CI dependency
+  installation. Copilot requires desi-fm >=0.3.0,<0.4, installed from GitHub because
+  desi-fm is not on PyPI.
 
-Estado del experimento: primer intento interrumpido por integración, sin evidencia
-de comportamiento; credencial inválida reemplazada por Julian. Repetición completa
-en build-07/diagnostic-env: variante low elegida, puerta operativa superada; puerta completa bloqueada por dos P2.
-Coste certificado US$0.0280614, más reserva histórica debitada US$0,0035706.
-Reconstrucción final build-08 y única revisión final completadas: 0 P1, 2 P2
-preexistentes de D, reproducidos por Opus; aceptación sigue cerrada.
-Semántica IA otra sesión; exactitud científica y aceptación global pendientes.
-Build-05, 06 y 07 preservados; hashes actuales en evidence/batch5c-delivery.json.
-Revisión/adjudicación IA sigue con dos P2 abiertos de D-r2. No publicación.
+The prior archived 0.2.0 wheels represented batch 2. Frozen 0.3.0 pilot builds
+remain preserved; final acceptance/release wheel identities and content
+comparisons are recorded separately. No acceptance is attributed to changed
+executable code or assets.
+
+## Evaluation state
+
+The first pilot attempt was interrupted at its first call, without a usable
+response or behavioral evidence. Julian replaced the invalid credential.
+The repeat selected low and passed the operational gate with 11/11 valid reports;
+certified repeat cost was US$0.0280614. The earlier US$0.0035706 reservation remains
+debited without certifying its actual use. Neither that pilot nor package tests
+establish scientific accuracy.
+
+Closure corrections and final installed identity are being independently
+verified before the single authorized 128-case acceptance. Semantic review will
+use two new blinded AI sessions, with Opus and Haiku sharing a provider; disputes
+go to Julian. Scientific accuracy and global acceptance remain pending human
+adjudication. Zero emitted claim–citation pairs are N/A, not success.
+See [current 5C state](BATCH_5C_REPORT.md) and [human actions](BATCH_5C_HUMAN_ACTIONS.md).
+
+## Publication boundaries
+
+FM must pass CI on its exact reviewed branch commit before main fast-forward,
+tag v0.3.0 and release; Copilot follows after the FM tag exists. Tags and artifacts
+are never overwritten. Hosted Space code is unchanged by this software release;
+only model-card/README text is in the publication scope. The reproduction bundle
+is prepared separately and is not uploaded. H-18, human adjudication, independent
+backup, artifact hosting and deactivation of old keys remain human actions.
+
+Development and audits used Codex and Claude, with decisions and verifications
+recorded in documentation. No personal contribution is inferred.

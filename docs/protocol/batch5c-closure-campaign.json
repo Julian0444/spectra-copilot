@@ -1,0 +1,11 @@
+{
+  "schema": "batch5c-campaign-v1",
+  "campaign_id": "5c-20261027-uafc60xo-acceptance-continuation",
+  "directory_sha256": "8c61b67bdc0920e9969895638e409a138e1b831fff9de7ef109e5d340b6bfefc",
+  "registry_sha256": "60251d98247192c7089fdd954f43212f86b885b44bbbd927e934e655cf9e696f",
+  "phase_caps_nanodollars": {
+    "pilot": 2400000000,
+    "confirmation": 1200000000,
+    "proposal": 12800000000
+  }
+}

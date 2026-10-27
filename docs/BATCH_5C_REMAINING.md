@@ -1,4 +1,22 @@
-# Bloqueos conservados al cierre 5C
+# Trabajo pendiente del cierre 5C — 2026-10-27
+
+Correcciones locales de D-P2-N1/N2 y P3-N1/N2/N3: rojo 61b1ce9 (16 fallos,
+1 control verde), verde 0ae8ef0 (42 pruebas dirigidas). Pendiente la revisión
+independiente del delta, adenda 5C-2 e identidad instalada; no se abre aceptación.
+No se repite el piloto aprobado ni se cambian criterios. Después de esa puerta:
+una corrida de 128 casos, dos anotaciones IA ciegas, unión y puntuación, paquete
+para Julian, revisión del informe y preparación de publicación sin push.
+
+Los P3 no incluidos en la corrección solicitada siguen declarados: detección de
+identidad parcial en razones; schema/ejemplo opcionales en paquetes genéricos;
+validación incompleta de justificaciones N/A y adiciones; discrepancias por IDs
+de observación; anotaciones parciales no se unen; Wilson por subconjunto revisado
+es interino. La ejecución controlada debe conservar estos límites y no atribuir
+al validador comprobaciones que no hace. H-18, adjudicación, respaldo independiente,
+hospedaje de artefactos y desactivación de claves viejas requieren acción humana.
+
+## Registro histórico del bloqueo económico
+
 
 El procedimiento de revisión y adjudicación no está habilitado para una
 evaluación real. D agotó sus dos rondas: Opus cerró los cuatro P1/P2 de R1,

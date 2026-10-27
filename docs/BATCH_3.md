@@ -6,15 +6,15 @@ opaque directory, and verified immutable Hub assets. No historical derivatives,
 index, weights, cases, CSVs or transcripts were regenerated.
 
 Data and scientific evaluation live in the FM original:
-`/Users/jirustaroure/Desktop/FINAL PROJECT DEEP LEARNING`, `codex/lote-3`.
+`<fm-repo>`, `codex/lote-3`.
 Use the two source revisions together; the old 0.2.0 wheels still describe their
 old bytes. No wheels were rebuilt, and their old acceptance manifests were not
 reused as evidence for batch 3.
 
 The raw snapshot is
-`/Users/jirustaroure/.local/share/spectra-data/933b9056b93b0f3e7790ee28c43412b49c39e232/`.
+`<local-home>/.local/share/spectra-data/933b9056b93b0f3e7790ee28c43412b49c39e232/`.
 Its seven parquet are size/SHA-256 checked and read-only. The object-ID index is
-`/Users/jirustaroure/.local/share/spectra-data/derived-933b9056/spectra-input-v2.sqlite`.
+`<local-home>/.local/share/spectra-data/derived-933b9056/spectra-input-v2.sqlite`.
 IDs remain strings, including values above the exact integer range of float64.
 `desi_fm.local_data.LocalDESIStore.rows_for_ids` preserves caller order, rejects
 duplicate/missing requested IDs and binds the index to its snapshot hash.
