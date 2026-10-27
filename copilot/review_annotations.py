@@ -27,6 +27,24 @@ def disputed_ids(first,second=None):
             for key in dispute['claim_ids']}
 
 
+def original_inventory(claims,first,second):
+    """Full registered catalog; provenance is separate from claim content."""
+    catalog={c['id']:deepcopy(c) for c in claims}
+    origins={c['id']:'seed' for c in claims}
+    for name,bundle in (('first',first),('second',second)):
+        for c in (bundle or {}).get('added_claims',[]):
+            key=c['id']
+            if key in catalog and catalog[key]['text']!=c['text']:
+                raise ValueError('Conflicting claim identity')
+            catalog[key]=deepcopy(c)
+            origins[key]='joint_addition' if key in origins else name+'_addition'
+    return catalog,origins
+
+
+def claim_content(claim):
+    return claim['text'],sorted(claim.get('reference_ids',[]))
+
+
 def validate_inventory_resolution(claims,first,second,resolution):
     """An inventory adjudication may change only registered disputes/additions."""
     if first is None and second is None:
@@ -46,12 +64,19 @@ def validate_inventory_resolution(claims,first,second,resolution):
         raise ValueError('Distinct nonempty final inventory claims required')
     by_id={c['id']:c for c in final}
     if len(by_id)!=len(final):raise ValueError('Distinct final inventory required')
-    for c in claims:
-        if c['id'] not in disputes and (c['id'] not in by_id or by_id[c['id']]['text']!=c['text']):
-            raise ValueError('Undisputed inventory claim must retain its ID and text')
-    original={c['id']:c for c in claims};original.update(additions)
+    original,origins=original_inventory(claims,first,second)
+    for key,c in original.items():
+        if origins[key] in {'seed','joint_addition'} and key not in disputes and (
+                key not in by_id or claim_content(by_id[key])!=claim_content(c)):
+            raise ValueError('Undisputed inventory claim must retain its ID, text and reference_ids')
+    proposed={text for b in (first,second) for d in (b or {}).get('inventory_disputes',[])
+              for text in d['proposed_texts']}
+    proposed.update(c['text'] for c in additions.values())
+    for key,c in by_id.items():
+        if (key not in original or c['text']!=original[key]['text']) and c['text'] not in proposed:
+            raise ValueError('Final inventory changes require registered proposed texts or additions')
     return {'excluded':sorted(set(original)-set(by_id)),
-            'changed':sorted(k for k in set(original)&set(by_id) if original[k]['text']!=by_id[k]['text']),
+            'changed':sorted(k for k in set(original)&set(by_id) if claim_content(original[k])!=claim_content(by_id[k])),
             'added':sorted(set(by_id)-set(original))}
 
 
@@ -84,12 +109,16 @@ def validate_case(case,packet,*,adjudication=False,first=None,second=None):
                 claims[c['id']]=c
     additions=case.get('added_claims',[])
     if not isinstance(additions,list):raise ValueError('added_claims must be a list')
+    if adjudication and additions:
+        raise ValueError('Adjudicator added_claims are forbidden; use registered inventory resolution')
     seen=set()
     for c in additions:
         if (not isinstance(c,dict) or not isinstance(c.get('text'),str) or not c['text'].strip()
             or c.get('id')!=added_id(packet['review_id'],c['text']) or c['text'] in seen
             or c['id'] in claims or not isinstance(c.get('occurrences'),list)):
             raise ValueError('Invalid or duplicate added claim; use exact text and its derived ID')
+        if c['text'] in {seed['text'] for seed in packet['claims']}:
+            raise ValueError('Added claim text duplicates a seed')
         seen.add(c['text']);claims[c['id']]=c
     if not adjudication:
         if type(case.get('inventory_complete')) is not bool or type(case.get('identity_incident')) is not bool:
@@ -192,8 +221,9 @@ def dispute_worksheet(package,first,second,registration,output):
         ca,cb=deepcopy(a['cases'][key]),deepcopy(b['cases'][key])
         for c in (ca,cb):c['identity_incident'] |= exposed_notes(c)
         score=score_annotation_pair(packet['claims'],ca,cb,blindness_intact=packet['blindness_intact'])
+        catalog,origins=original_inventory(packet['claims'],ca,cb)
         cases[key]={'input_sha256':inventory_digest(packet['claims'],ca,cb),
-                    'claims':packet['claims'],'first':ca,'second':cb,
+                    'claims':list(catalog.values()),'claim_origins':origins,'first':ca,'second':cb,
                     'disagreements':score['disagreements'],'forced':score['forced'],
                     'obligation_disagreements':score['obligation_disagreements'],
                     'inventory_pending':score['inventory_pending'],

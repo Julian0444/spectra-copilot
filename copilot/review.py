@@ -105,13 +105,16 @@ def score_annotation_pair(claims,first=None,second=None,adjudication=None,*,blin
     reviewers=[x['reviewer'] for x in bundles]
     if len(set(reviewers))!=len(reviewers) or any(not x['reviewer'] or x.get('independent') is not True for x in bundles):
         raise ValueError('Distinct annotation sessions required')
+    if (adjudication or {}).get('added_claims'):
+        raise ValueError('Adjudicator added_claims are forbidden; use registered inventory resolution')
     catalog={c['id']:deepcopy(c) for c in claims};additions=[]
-    for bundle in bundles:
-        added={c['id']:c for c in bundle.get('added_claims',[])}
-        if len(added)!=len(bundle.get('added_claims',[])):raise ValueError('Duplicate proposed claim')
+    for bundle in (first,second):
+        added={c['id']:c for c in (bundle or {}).get('added_claims',[])}
+        if len(added)!=len((bundle or {}).get('added_claims',[])):raise ValueError('Duplicate proposed claim')
         additions.append(added)
         for key,c in added.items():
             if not c['text'].strip() or key in ids:raise ValueError('Invalid added claim')
+            if c['text'] in {seed['text'] for seed in claims}:raise ValueError('Added claim text duplicates a seed')
             if key in catalog and catalog[key]['text']!=c['text']:raise ValueError('Conflicting claim identity')
             catalog[key]=deepcopy(c)
     original_catalog=deepcopy(catalog)
@@ -169,7 +172,7 @@ def score_annotation_pair(claims,first=None,second=None,adjudication=None,*,blin
         a,b=judgment(first,key),judgment(second,key)
         added=key not in ids
         existence_agreed=not added or (first and second and any(x['id']==key for x in first.get('added_claims',[])) and any(x['id']==key for x in second.get('added_claims',[])))
-        changed=resolved and (key not in original_catalog or c['text']!=original_catalog[key]['text'])
+        changed=key in inventory_changes['added'] or key in inventory_changes['changed']
         agreed=a if a is not None and a==b and existence_agreed and not forced and not changed else None
         disputed=(a is not None and b is not None and a!=b) or (added and not existence_agreed)
         if forced:result['forced'].append(key)

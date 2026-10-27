@@ -1,8 +1,10 @@
 # Trabajo pendiente del cierre 5C — 2026-10-27
 
 Correcciones locales de D-P2-N1/N2 y P3-N1/N2/N3: rojo 61b1ce9 (16 fallos,
-1 control verde), verde 0ae8ef0 (42 pruebas dirigidas). Pendiente la revisión
-independiente del delta, adenda 5C-2 e identidad instalada; no se abre aceptación.
+1 control verde), verde 0ae8ef0 (42 pruebas dirigidas). La revisión independiente R1 verificó esas correcciones, adenda e identidad,
+pero encontró un P2 residual: conservación de adiciones conjuntas durante la
+adjudicación. Rojo 78a1d8b: 11 fallos; corrección y segunda revisión pendientes
+de registro final. No se abre aceptación mientras exista un P1/P2.
 No se repite el piloto aprobado ni se cambian criterios. Después de esa puerta:
 una corrida de 128 casos, dos anotaciones IA ciegas, unión y puntuación, paquete
 para Julian, revisión del informe y preparación de publicación sin push.
@@ -11,7 +13,7 @@ Los P3 no incluidos en la corrección solicitada siguen declarados: detección d
 identidad parcial en razones; schema/ejemplo opcionales en paquetes genéricos;
 validación incompleta de justificaciones N/A y adiciones; discrepancias por IDs
 de observación; anotaciones parciales no se unen; Wilson por subconjunto revisado
-es interino. La ejecución controlada debe conservar estos límites y no atribuir
+es interino. inventory_complete=false permite omitir juicios, que quedan pendientes. La ejecución controlada debe conservar estos límites y no atribuir
 al validador comprobaciones que no hace. H-18, adjudicación, respaldo independiente,
 hospedaje de artefactos y desactivación de claves viejas requieren acción humana.
 

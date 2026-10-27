@@ -38,7 +38,7 @@ def test_inventory_resolution_cannot_touch_undisputed_agreement(change):
     elif change == 'rewrite':
         final[0]['text'] = 'Rewritten agreed assertion'
     j = resolution(packet, a, b, final)
-    with pytest.raises(ValueError, match='inventory'):
+    with pytest.raises(ValueError, match='^No registered inventory dispute or addition to resolve$'):
         review.score_annotation_pair(packet['claims'], a, b, j)
 
 
@@ -49,14 +49,14 @@ def test_resolution_of_another_dispute_cannot_drop_critical_agreement():
     a['inventory_disputes'] = [{'kind': 'exclude', 'claim_ids': ['c2'],
                                'spans': [], 'proposed_texts': [], 'reason': 'Invented'}]
     j = resolution(packet, a, b, [])
-    with pytest.raises(ValueError, match='inventory'):
+    with pytest.raises(ValueError, match='^Undisputed inventory claim must retain its ID, text and reference_ids$'):
         review.score_annotation_pair(packet['claims'], a, b, j)
 
 
 def test_adjudication_validator_requires_original_dispute_context():
     packet, a, b = case_fixture()
     j = resolution(packet, a, b, [])
-    with pytest.raises(ValueError, match='inventory'):
+    with pytest.raises(ValueError, match='^Original annotation context required for inventory resolution$'):
         annotations.validate_case(j, packet, adjudication=True)
 
 
@@ -181,11 +181,19 @@ def test_e2e_undisputed_critical_claim_cannot_disappear(tmp_path):
     _, packets = annotations.read_package(package)
     a, b = [json.loads(p.read_text()) for p in files]
     key = next(iter(packets))
-    j = resolution(packets[key], a['cases'][key], b['cases'][key], packets[key]['claims'][1:])
+    first = a['cases'][key]
+    first['inventory_complete'] = False
+    first['inventory_disputes'] = [{'kind': 'exclude', 'claim_ids': [packets[key]['claims'][-1]['id']],
+        'spans': [], 'proposed_texts': [], 'reason': 'Another claim is disputed'}]
+    write_json(files[0], a)
+    registered = json.loads(registration.read_text())
+    registered['first_sha256'] = sha256(files[0])
+    write_json(registration, registered)
+    j = resolution(packets[key], first, b['cases'][key], packets[key]['claims'][1:])
     path = tmp_path / 'adjudication.json'
     write_json(path, {'schema': 'batch5c-ai-adjudication-v1', 'reviewer': 'Julian',
         'independent': True, 'package_manifest_sha256': sha256(package / 'manifest.json'), 'cases': {key: j}})
-    with pytest.raises(ValueError, match='inventory'):
+    with pytest.raises(ValueError, match='^Undisputed inventory claim must retain its ID, text and reference_ids$'):
         annotations.join_annotations(package, mapping, *files, registration, tmp_path / 'bad-join.json', path)
 
 

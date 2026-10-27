@@ -97,7 +97,7 @@ proposed_texts: [...], reason: texto}. Los spans identifican un puntero JSON del
 paquete y la subcadena literal; no son números de línea de una pantalla. Si hay
 disputas, inventory_complete=false. Las adiciones llevan id, text, reference_ids,
 occurrences:[{pointer,text,text_sha256}]. El ID se calcula con added_id(review_id,text)
-de copilot.review_annotations; el validador rechaza texto añadido duplicado o IDs
+de copilot.review_annotations; el validador rechaza texto añadido duplicado (incluido el de una semilla) o IDs
 incongruentes. La semilla puede disputar un campo compuesto: no lo apruebe por ser
 parte de una plantilla.
 
@@ -105,3 +105,9 @@ Valide con el intérprete y validador asignados antes de guardar el hash final:
 `python -I -B -m copilot.review_annotations validate --package <paquete> --annotation <archivo>`.
 El validador comprueba además referencias a casos, claims y observaciones que
 JSON Schema por sí solo no puede verificar. No corrige sus juicios.
+
+Las adiciones idénticas de ambos anotadores forman parte del inventario acordado.
+Julian conserva su ID, texto y reference_ids salvo disputa de inventario registrada.
+La hoja de adjudicación incluye semillas y todas las adiciones con procedencia.
+El adjudicador no agrega added_claims; los cambios de inventario solo usan
+proposed_texts y adiciones registradas, manteniendo lo no disputado.

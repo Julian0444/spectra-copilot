@@ -146,6 +146,10 @@ def score_sealed(directory,labels_path,*,review_path=None,seal_record=None,outpu
             passed=sum(x['numerator']==(0 if name=='unsupported_claims' else x['denominator']) for x in applicable)
             semantic_cases[name]=wilson(passed,len(applicable))
         return {'requested':len(group),'semantic_metrics':semantic_metrics,'semantic_by_case':semantic_cases,
+            'inventory_changes':{k:sum(len(r['semantic'].get('inventory_changes',{}).get(k,[])) for r in group)
+                                 for k in ('excluded','changed','added')},
+            'forced_claims':sum(len(r['semantic'].get('forced',[])) for r in group),
+            'changed_claims':sum(len(r['semantic'].get('changed',[])) for r in group),
             'omitted_obligations':{k:sum(k in r['semantic'].get('omitted_obligations',[]) for r in group) for k in review.OBLIGATIONS},
             'pending_obligations':{k:sum(r['semantic'].get('case_obligations',{}).get(k) is None for r in group) for k in review.OBLIGATIONS},
             'completion':wilson(sum(r['completion'] for r in group),len(group)),

@@ -118,9 +118,12 @@ disputadas salvo exposición de identidad, que requiere todas). Para inventario,
 inventory_resolution contiene input_sha256=inventory_digest(semillas,primera,segunda),
 claims (inventario final completo) y reason. Puede rechazar adiciones, excluir,
 dividir o fusionar semillas únicamente sobre disputas/adiciones registradas.
-Todo original no disputado conserva ID y texto. Sin disputas ni adiciones se
+Toda semilla y toda adición conjunta no disputada conserva ID, texto y
+reference_ids. El adjudicador no usa added_claims. Un texto nuevo o reescrito
+en la resolución debe proceder de proposed_texts o de adiciones registradas. Sin disputas ni adiciones se
 rechaza una resolución. Cada fila registra inventory_changes: excluded, changed
-y added. Los claims resultantes llevan texto exacto y spans;
+y added; los cambios de reference_ids también cuentan como changed. Estos
+conteos, forced y changed se agregan globalmente y por estrato. Los claims resultantes llevan texto exacto y spans;
 los nuevos o modificados requieren juicio humano. Una resolución con hash viejo
 se rechaza; una anotación independiente faltante siempre queda pendiente. Se
 conservan conteos de semilla, cada anotador y final, además de los originales.
@@ -140,8 +143,20 @@ Herramientas sin etiquetas:
 `python -I -B -m copilot.review_annotations worksheet --package <paquete>
 --first <primera> --second <segunda> --registration <registro> --output <hoja>`
 calcula los input_sha256 y lista disputas, inventarios originales y pendientes.
+claims contiene el catálogo completo: semillas y adiciones; claim_origins distingue
+seed, joint_addition, first_addition y second_addition. No se construye un inventario
+final a partir de las semillas solas.
 No necesita mapa privado ni etiquetas. Para validar una adjudicación:
 `python -I -B -m copilot.review_annotations validate --package <paquete>
 --adjudication <archivo> --first <primera> --second <segunda> --registration <registro>`.
 La validación acepta juicios humanos de adiciones registradas de un solo anotador,
 sin obligar a una resolución si no cambia el inventario.
+
+## Límites declarados tras revisión previa R1
+
+La clasificación factual de los extractos quotation puede diluir la fracción de
+afirmaciones sin respaldo. Se conservará la métrica preregistrada y se publicará
+aparte una sensibilidad descriptiva de C_fact excluyendo extractos, sin nuevo
+umbral ni cambio de aceptación. Un inventario marcado incompleto puede omitir
+juicios: el validador no los rellena y el caso permanece pendiente de adjudicación.
+Las adiciones no pueden duplicar el texto exacto de ninguna semilla.
