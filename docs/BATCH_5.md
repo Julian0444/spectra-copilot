@@ -1034,7 +1034,7 @@ Una explicación incompleta se conserva, sin nueva corrida.
 
 Revisión semántica: 894 afirmaciones en desacuerdo, 122 inventarios pendientes,
 128/128 casos pendientes; tasas científicas y sin soporte null, C_pair=0/0 N/A.
-Paquete humano completo de 84 archivos (75.250.003 bytes), sin adjudicación.
+Paquete humano completo de 84 archivos (75.250.363 bytes), sin adjudicación.
 Opus y Haiku comparten proveedor. Desviación de progreso y límites P3 declarados
 en el informe. Software/evaluación/mecánica no equivalen a ciencia o aceptación
 global. Revisión final y autorización PUBLICAR pendientes; nada publicado.

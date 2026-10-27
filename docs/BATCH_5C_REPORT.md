@@ -78,8 +78,8 @@ Es **revisión por IA**, no revisión humana; Opus y Haiku comparten proveedor.
 
 El paquete privado de adjudicación contiene los 128 casos, catálogo completo,
 textos y spans, ambos juicios, todas las disputas, contexto mecánico y campos
-humanos vacíos: 84 archivos, 75.250.003 bytes. Manifiesto SHA-256:
-`78a0e98dcb1aeb44aca6a88e9502a77b91dc7923ee65f53dea5dde253372a480`.
+humanos vacíos: 84 archivos, 75.250.363 bytes. Manifiesto SHA-256:
+`34dce65e01225ae371889adb711dda8f6b505b6adb7c73321287f981a0c72008`.
 No se adjudicó ninguna diferencia ni se puntuó la plantilla vacía.
 
 Límites de procedimiento declarados: orden de custodia conservado y ceguera
