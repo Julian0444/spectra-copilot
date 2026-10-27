@@ -1,7 +1,7 @@
-# 0.3.0 — release preparation
+# 0.3.0 — release notes
 
-Publication is pending explicit authorization. This version identifies software,
-not scientific acceptance. The default checkpoint remains v2.1; CNN-17 remains
+This version identifies software, not scientific acceptance. The dated
+[5C report](BATCH_5C_REPORT.md) records review and publication status. The default checkpoint remains v2.1; CNN-17 remains
 experimental. No training, checkpoint selection or frozen-test inference is
 part of this release preparation.
 
@@ -35,11 +35,18 @@ certified repeat cost was US$0.0280614. The earlier US$0.0035706 reservation rem
 debited without certifying its actual use. Neither that pilot nor package tests
 establish scientific accuracy.
 
-Closure corrections and final installed identity are being independently
-verified before the single authorized 128-case acceptance. Semantic review will
-use two new blinded AI sessions, with Opus and Haiku sharing a provider; disputes
-go to Julian. Scientific accuracy and global acceptance remain pending human
-adjudication. Zero emitted claim–citation pairs are N/A, not success.
+Closure corrections and build-02 passed independent review with zero P1/P2.
+The single authorized 128-case low run is sealed: 126 calls, zero retries and
+US$0.1086672 certified. One incomplete explanation is retained, with no repeat.
+After both independent AI annotations were saved and hash-registered, mechanical
+checks passed: completion 127/128 (79/80 real, 48/48 synthetic), model_z 122/122
+eligible inputs, evidence 909/909, and required abstention 18/18. Prediction
+coverage is 122/128 requested. The 894 claim disagreements and 122 incomplete
+inventories leave all 128 cases semantically pending. The complete private
+adjudication package contains no human decisions. Opus and Haiku share a provider.
+Scientific accuracy and global acceptance remain pending human adjudication;
+C_pair=0/0 is N/A, not success. Procedure limits, including content-bearing
+progress in the isolated Opus annotation session, are disclosed in the report.
 See [current 5C state](BATCH_5C_REPORT.md) and [human actions](BATCH_5C_HUMAN_ACTIONS.md).
 
 ## Publication boundaries

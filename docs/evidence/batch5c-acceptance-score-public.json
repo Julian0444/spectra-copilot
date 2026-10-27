@@ -1,0 +1,2069 @@
+{
+  "schema": "batch5c-acceptance-score-public-derivative-v1",
+  "created_ns": 1793094330484341000,
+  "date": "2026-10-27",
+  "source_score_sha256": "663f250630aab2c373f54af3c701bdc1fa4fc0f83edf26d61f274f8c28db6cca",
+  "source_mechanical_sha256": "81069834d24ec8dc12cb0ca20335af118c86b7a37b90896ca8ababb85377dec4",
+  "seal_sha256": "6131d5544efd5b56b67f536436b09a1403d6709d7bdc5915c5673a5cc7adcd72",
+  "source_annotation_registration_sha256": "82a5ec4568031a27ae433a5bba06871b54f41290157590bdd7fb8da4d223113f",
+  "source_worksheet_sha256": "b442772873ad2bd31c6747a91abf3892301383efd4ce44a874464b8066c941a7",
+  "annotations": {
+    "first": {
+      "model_declared": "GPT-6 Astra",
+      "provider": "OpenAI",
+      "sha256": "d4790a73197b308183b3a48db6d85ee1f20e5b4396c98136b93653147f570afd"
+    },
+    "second": {
+      "model_declared": "Claude Opus 5.5",
+      "provider": "Anthropic",
+      "sha256": "cce427f129e22ddfb3c2a98b7be358734d04980d643ab9153451b32bab5ee410"
+    },
+    "provider_shared_by_second_and_evaluated_system": true,
+    "AI_review_not_human": true
+  },
+  "global": {
+    "requested": 128,
+    "semantic_metrics": {
+      "textual_support": {
+        "numerator": 0,
+        "denominator": 0,
+        "rate": null
+      },
+      "scientific_accuracy": {
+        "numerator": 783,
+        "denominator": 1673,
+        "rate": null
+      },
+      "unsupported_claims": {
+        "numerator": 6,
+        "denominator": 2194,
+        "rate": null
+      }
+    },
+    "semantic_by_case": {
+      "textual_support": {
+        "passed": 0,
+        "total": 0,
+        "rate": null,
+        "wilson_95": null
+      },
+      "scientific_accuracy": {
+        "passed": 0,
+        "total": 0,
+        "rate": null,
+        "wilson_95": null
+      },
+      "unsupported_claims": {
+        "passed": 0,
+        "total": 0,
+        "rate": null,
+        "wilson_95": null
+      }
+    },
+    "inventory_changes": {
+      "excluded": 0,
+      "changed": 0,
+      "added": 0
+    },
+    "forced_claims": 0,
+    "changed_claims": 0,
+    "omitted_obligations": {
+      "report": 0,
+      "model_z": 0,
+      "caution": 0,
+      "evidence": 6,
+      "citations": 0,
+      "limitations": 0
+    },
+    "pending_obligations": {
+      "report": 0,
+      "model_z": 0,
+      "caution": 7,
+      "evidence": 3,
+      "citations": 0,
+      "limitations": 6
+    },
+    "completion": {
+      "passed": 127,
+      "total": 128,
+      "rate": 0.9921875,
+      "wilson_95": [
+        0.9570737405611394,
+        0.9986195681071257
+      ]
+    },
+    "model_z": {
+      "passed": 122,
+      "total": 122,
+      "rate": 1.0,
+      "wilson_95": [
+        0.969473821610987,
+        1.0
+      ]
+    },
+    "prediction_coverage": {
+      "passed": 122,
+      "total": 122,
+      "rate": 1.0,
+      "wilson_95": [
+        0.969473821610987,
+        1.0
+      ]
+    },
+    "template_evidence_units": 909,
+    "faithful_template_evidence_units": 909,
+    "tool_fidelity_by_case": {
+      "passed": 122,
+      "total": 122,
+      "rate": 1.0,
+      "wilson_95": [
+        0.969473821610987,
+        1.0
+      ]
+    },
+    "abstention": {
+      "passed": 18,
+      "total": 18,
+      "rate": 1.0,
+      "wilson_95": [
+        0.8241207763533425,
+        1.0
+      ]
+    },
+    "citation_mentions": 3,
+    "valid_citation_mentions": 3,
+    "semantic_review_pending_cases": 128,
+    "unsupported_claims": 6,
+    "critical_scientific_errors": 0,
+    "missing_required_citations": 0,
+    "status_counts": {
+      "ambiguous": 72,
+      "explanation_incomplete": 1,
+      "insufficient_data": 49,
+      "invalid_input": 6
+    }
+  },
+  "strata": {
+    "kind": {
+      "real": {
+        "requested": 80,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 537,
+            "denominator": 1103,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 1432,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 1,
+          "evidence": 3,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 79,
+          "total": 80,
+          "rate": 0.9875,
+          "wilson_95": [
+            0.9325372992233133,
+            0.9977900244795476
+          ]
+        },
+        "model_z": {
+          "passed": 80,
+          "total": 80,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9541818704644728,
+            0.9999999999999999
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 80,
+          "total": 80,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9541818704644728,
+            0.9999999999999999
+          ]
+        },
+        "template_evidence_units": 621,
+        "faithful_template_evidence_units": 621,
+        "tool_fidelity_by_case": {
+          "passed": 80,
+          "total": 80,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9541818704644728,
+            0.9999999999999999
+          ]
+        },
+        "abstention": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "citation_mentions": 3,
+        "valid_citation_mentions": 3,
+        "semantic_review_pending_cases": 80,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 50,
+          "explanation_incomplete": 1,
+          "insufficient_data": 29
+        }
+      },
+      "synthetic": {
+        "requested": 48,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 246,
+            "denominator": 570,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 6,
+            "denominator": 762,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 6,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 6,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 6
+        },
+        "completion": {
+          "passed": 48,
+          "total": 48,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9258998703338824,
+            0.9999999999999999
+          ]
+        },
+        "model_z": {
+          "passed": 42,
+          "total": 42,
+          "rate": 1.0,
+          "wilson_95": [
+            0.916201209134296,
+            0.9999999999999999
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 42,
+          "total": 42,
+          "rate": 1.0,
+          "wilson_95": [
+            0.916201209134296,
+            0.9999999999999999
+          ]
+        },
+        "template_evidence_units": 288,
+        "faithful_template_evidence_units": 288,
+        "tool_fidelity_by_case": {
+          "passed": 42,
+          "total": 42,
+          "rate": 1.0,
+          "wilson_95": [
+            0.916201209134296,
+            0.9999999999999999
+          ]
+        },
+        "abstention": {
+          "passed": 18,
+          "total": 18,
+          "rate": 1.0,
+          "wilson_95": [
+            0.8241207763533425,
+            1.0
+          ]
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 48,
+        "unsupported_claims": 6,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 22,
+          "insufficient_data": 20,
+          "invalid_input": 6
+        }
+      }
+    },
+    "family": {
+      "absorption": {
+        "requested": 6,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 18,
+            "denominator": 60,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 84,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "model_z": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "template_evidence_units": 24,
+        "faithful_template_evidence_units": 24,
+        "tool_fidelity_by_case": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "abstention": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 6,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 3,
+          "insufficient_data": 3
+        }
+      },
+      "coverage_gap": {
+        "requested": 6,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 47,
+            "denominator": 89,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 113,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "model_z": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "template_evidence_units": 53,
+        "faithful_template_evidence_units": 53,
+        "tool_fidelity_by_case": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "abstention": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 6,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 4,
+          "insufficient_data": 2
+        }
+      },
+      "emission": {
+        "requested": 6,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 46,
+            "denominator": 88,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 112,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "model_z": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "template_evidence_units": 52,
+        "faithful_template_evidence_units": 52,
+        "tool_fidelity_by_case": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "abstention": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 6,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 4,
+          "insufficient_data": 2
+        }
+      },
+      "invalid_support": {
+        "requested": 6,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 0,
+            "denominator": 30,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 6,
+            "denominator": 54,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 6,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 6,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 6
+        },
+        "completion": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "model_z": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "prediction_coverage": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "template_evidence_units": 0,
+        "faithful_template_evidence_units": 0,
+        "tool_fidelity_by_case": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "abstention": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 6,
+        "unsupported_claims": 6,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "invalid_input": 6
+        }
+      },
+      "noise": {
+        "requested": 6,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 6,
+            "denominator": 48,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 72,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "model_z": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "template_evidence_units": 12,
+        "faithful_template_evidence_units": 12,
+        "tool_fidelity_by_case": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "abstention": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 6,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "insufficient_data": 6
+        }
+      },
+      "permuted_grid": {
+        "requested": 6,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 56,
+            "denominator": 98,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 122,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "model_z": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "template_evidence_units": 62,
+        "faithful_template_evidence_units": 62,
+        "tool_fidelity_by_case": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "abstention": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 6,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 4,
+          "insufficient_data": 2
+        }
+      },
+      "real": {
+        "requested": 80,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 537,
+            "denominator": 1103,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 1432,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 1,
+          "evidence": 3,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 79,
+          "total": 80,
+          "rate": 0.9875,
+          "wilson_95": [
+            0.9325372992233133,
+            0.9977900244795476
+          ]
+        },
+        "model_z": {
+          "passed": 80,
+          "total": 80,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9541818704644728,
+            0.9999999999999999
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 80,
+          "total": 80,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9541818704644728,
+            0.9999999999999999
+          ]
+        },
+        "template_evidence_units": 621,
+        "faithful_template_evidence_units": 621,
+        "tool_fidelity_by_case": {
+          "passed": 80,
+          "total": 80,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9541818704644728,
+            0.9999999999999999
+          ]
+        },
+        "abstention": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "citation_mentions": 3,
+        "valid_citation_mentions": 3,
+        "semantic_review_pending_cases": 80,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 50,
+          "explanation_incomplete": 1,
+          "insufficient_data": 29
+        }
+      },
+      "reversed_grid": {
+        "requested": 6,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 57,
+            "denominator": 99,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 123,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "model_z": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "template_evidence_units": 63,
+        "faithful_template_evidence_units": 63,
+        "tool_fidelity_by_case": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "abstention": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 6,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 4,
+          "insufficient_data": 2
+        }
+      },
+      "single_line": {
+        "requested": 6,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 16,
+            "denominator": 58,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 82,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "model_z": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "template_evidence_units": 22,
+        "faithful_template_evidence_units": 22,
+        "tool_fidelity_by_case": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "abstention": {
+          "passed": 6,
+          "total": 6,
+          "rate": 1.0,
+          "wilson_95": [
+            0.6096657120978346,
+            1.0
+          ]
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 6,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 3,
+          "insufficient_data": 3
+        }
+      }
+    },
+    "cnn_exposure": {
+      "none_synthetic": {
+        "requested": 48,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 246,
+            "denominator": 570,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 6,
+            "denominator": 762,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 6,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 6,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 6
+        },
+        "completion": {
+          "passed": 48,
+          "total": 48,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9258998703338824,
+            0.9999999999999999
+          ]
+        },
+        "model_z": {
+          "passed": 42,
+          "total": 42,
+          "rate": 1.0,
+          "wilson_95": [
+            0.916201209134296,
+            0.9999999999999999
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 42,
+          "total": 42,
+          "rate": 1.0,
+          "wilson_95": [
+            0.916201209134296,
+            0.9999999999999999
+          ]
+        },
+        "template_evidence_units": 288,
+        "faithful_template_evidence_units": 288,
+        "tool_fidelity_by_case": {
+          "passed": 42,
+          "total": 42,
+          "rate": 1.0,
+          "wilson_95": [
+            0.916201209134296,
+            0.9999999999999999
+          ]
+        },
+        "abstention": {
+          "passed": 18,
+          "total": 18,
+          "rate": 1.0,
+          "wilson_95": [
+            0.8241207763533425,
+            1.0
+          ]
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 48,
+        "unsupported_claims": 6,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 22,
+          "insufficient_data": 20,
+          "invalid_input": 6
+        }
+      },
+      "train": {
+        "requested": 40,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 239,
+            "denominator": 521,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 681,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 1,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 40,
+          "total": 40,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9123783988027135,
+            1.0000000000000002
+          ]
+        },
+        "model_z": {
+          "passed": 40,
+          "total": 40,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9123783988027135,
+            1.0000000000000002
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 40,
+          "total": 40,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9123783988027135,
+            1.0000000000000002
+          ]
+        },
+        "template_evidence_units": 280,
+        "faithful_template_evidence_units": 280,
+        "tool_fidelity_by_case": {
+          "passed": 40,
+          "total": 40,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9123783988027135,
+            1.0000000000000002
+          ]
+        },
+        "abstention": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "citation_mentions": 0,
+        "valid_citation_mentions": 0,
+        "semantic_review_pending_cases": 40,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 23,
+          "insufficient_data": 17
+        }
+      },
+      "validation": {
+        "requested": 40,
+        "semantic_metrics": {
+          "textual_support": {
+            "numerator": 0,
+            "denominator": 0,
+            "rate": null
+          },
+          "scientific_accuracy": {
+            "numerator": 298,
+            "denominator": 582,
+            "rate": null
+          },
+          "unsupported_claims": {
+            "numerator": 0,
+            "denominator": 751,
+            "rate": null
+          }
+        },
+        "semantic_by_case": {
+          "textual_support": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "scientific_accuracy": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          },
+          "unsupported_claims": {
+            "passed": 0,
+            "total": 0,
+            "rate": null,
+            "wilson_95": null
+          }
+        },
+        "inventory_changes": {
+          "excluded": 0,
+          "changed": 0,
+          "added": 0
+        },
+        "forced_claims": 0,
+        "changed_claims": 0,
+        "omitted_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 0,
+          "evidence": 0,
+          "citations": 0,
+          "limitations": 0
+        },
+        "pending_obligations": {
+          "report": 0,
+          "model_z": 0,
+          "caution": 1,
+          "evidence": 2,
+          "citations": 0,
+          "limitations": 0
+        },
+        "completion": {
+          "passed": 39,
+          "total": 40,
+          "rate": 0.975,
+          "wilson_95": [
+            0.8711863103652591,
+            0.9955731684973186
+          ]
+        },
+        "model_z": {
+          "passed": 40,
+          "total": 40,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9123783988027135,
+            1.0000000000000002
+          ]
+        },
+        "prediction_coverage": {
+          "passed": 40,
+          "total": 40,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9123783988027135,
+            1.0000000000000002
+          ]
+        },
+        "template_evidence_units": 341,
+        "faithful_template_evidence_units": 341,
+        "tool_fidelity_by_case": {
+          "passed": 40,
+          "total": 40,
+          "rate": 1.0,
+          "wilson_95": [
+            0.9123783988027135,
+            1.0000000000000002
+          ]
+        },
+        "abstention": {
+          "passed": 0,
+          "total": 0,
+          "rate": null,
+          "wilson_95": null
+        },
+        "citation_mentions": 3,
+        "valid_citation_mentions": 3,
+        "semantic_review_pending_cases": 40,
+        "unsupported_claims": 0,
+        "critical_scientific_errors": 0,
+        "missing_required_citations": 0,
+        "status_counts": {
+          "ambiguous": 27,
+          "explanation_incomplete": 1,
+          "insufficient_data": 12
+        }
+      }
+    }
+  },
+  "latencies": {
+    "global": {
+      "n": 128,
+      "p50_seconds": 5.400725291998242,
+      "p95_seconds": 6.85141912895342,
+      "maximum_seconds": 8.769262665999122
+    },
+    "strata": {
+      "kind": {
+        "real": {
+          "n": 80,
+          "p50_seconds": 5.547054603492143,
+          "p95_seconds": 6.887599204455182,
+          "maximum_seconds": 7.791227666006307
+        },
+        "synthetic": {
+          "n": 48,
+          "p50_seconds": 5.285755333003181,
+          "p95_seconds": 6.5038054103089955,
+          "maximum_seconds": 8.769262665999122
+        }
+      },
+      "family": {
+        "absorption": {
+          "n": 6,
+          "p50_seconds": 5.589850666998245,
+          "p95_seconds": 6.054963697748462,
+          "maximum_seconds": 6.0821971249970375
+        },
+        "coverage_gap": {
+          "n": 6,
+          "p50_seconds": 5.330910249998851,
+          "p95_seconds": 5.931934687254397,
+          "maximum_seconds": 6.016582333002589
+        },
+        "emission": {
+          "n": 6,
+          "p50_seconds": 5.476218145493476,
+          "p95_seconds": 6.336797427258716,
+          "maximum_seconds": 6.5795347500097705
+        },
+        "invalid_support": {
+          "n": 6,
+          "p50_seconds": 2.278926187493198,
+          "p95_seconds": 2.301702312503039,
+          "maximum_seconds": 2.3067960000043968
+        },
+        "noise": {
+          "n": 6,
+          "p50_seconds": 5.436116729004425,
+          "p95_seconds": 8.044946676498512,
+          "maximum_seconds": 8.769262665999122
+        },
+        "permuted_grid": {
+          "n": 6,
+          "p50_seconds": 5.253189625007508,
+          "p95_seconds": 6.266249625488854,
+          "maximum_seconds": 6.580190333988867
+        },
+        "real": {
+          "n": 80,
+          "p50_seconds": 5.547054603492143,
+          "p95_seconds": 6.887599204455182,
+          "maximum_seconds": 7.791227666006307
+        },
+        "reversed_grid": {
+          "n": 6,
+          "p50_seconds": 5.467316582995409,
+          "p95_seconds": 5.721074718996533,
+          "maximum_seconds": 5.758873041995685
+        },
+        "single_line": {
+          "n": 6,
+          "p50_seconds": 5.31362195800466,
+          "p95_seconds": 6.139945177004847,
+          "maximum_seconds": 6.363165208007558
+        }
+      },
+      "cnn_exposure": {
+        "none_synthetic": {
+          "n": 48,
+          "p50_seconds": 5.285755333003181,
+          "p95_seconds": 6.5038054103089955,
+          "maximum_seconds": 8.769262665999122
+        },
+        "train": {
+          "n": 40,
+          "p50_seconds": 5.378224666994356,
+          "p95_seconds": 6.3311130666901585,
+          "maximum_seconds": 6.883912542005419
+        },
+        "validation": {
+          "n": 40,
+          "p50_seconds": 5.625707708997652,
+          "p95_seconds": 7.078318919410229,
+          "maximum_seconds": 7.791227666006307
+        }
+      }
+    }
+  },
+  "execution_cost": {
+    "certified": true,
+    "total_usd": 0.1086672,
+    "known_usd": 0.1086672,
+    "known_nanodollars": 108667200,
+    "mean_per_requested": 0.0008489625
+  },
+  "mechanical_checks": {
+    "completion_global_at_least_122_of_128": true,
+    "completion_real_at_least_95_percent": true,
+    "completion_synthetic_at_least_95_percent": true,
+    "all_available_model_z_preserved": true,
+    "all_measured_template_evidence_faithful": true,
+    "all_valid_input_cases_tool_faithful": true,
+    "all_emitted_citation_ids_valid": true,
+    "all_required_synthetic_abstentions": true,
+    "latency_global_and_strata_p95_at_most_60_seconds": true,
+    "cost_certified_within_12_80_and_mean_0_10": true,
+    "no_pending_or_silent_missing_rows": true
+  },
+  "mechanical_checks_pass": true,
+  "mechanical_scope": "Recorded completion, model_z, template evidence, citation IDs, synthetic oracle abstention, latency and certified cost only; not scientific accuracy or human acceptance.",
+  "semantic_inventory": {
+    "seed_claims": 2191,
+    "provisional_union_claims": 2194,
+    "initial_disagreement_claims": 894,
+    "pending_claims": 894,
+    "inventory_pending_cases": 122,
+    "semantic_pending_cases": 128,
+    "cases_with_obligation_disagreements": 9,
+    "inventory_disputes_by_reviewer": {
+      "first": 1198,
+      "second": 197
+    },
+    "additions_by_reviewer": {
+      "first": 3,
+      "second": 0
+    },
+    "rates_are_pending_not_passes": true,
+    "human_adjudication_performed": false,
+    "critical_flags_are_not_proof_of_zero_critical_errors": true,
+    "C_pair_zero_requires_global_pending": true
+  },
+  "quotation_sensitivity": {
+    "global": {
+      "unsupported_numerator": 6,
+      "factual_denominator": 2191,
+      "rate": null,
+      "excluded_quotation_claims": 3,
+      "pending": true
+    },
+    "strata": {
+      "kind": {
+        "real": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 1429,
+          "rate": null,
+          "excluded_quotation_claims": 3,
+          "pending": true
+        },
+        "synthetic": {
+          "unsupported_numerator": 6,
+          "factual_denominator": 762,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        }
+      },
+      "family": {
+        "absorption": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 84,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        },
+        "coverage_gap": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 113,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        },
+        "emission": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 112,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        },
+        "invalid_support": {
+          "unsupported_numerator": 6,
+          "factual_denominator": 54,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        },
+        "noise": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 72,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        },
+        "permuted_grid": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 122,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        },
+        "real": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 1429,
+          "rate": null,
+          "excluded_quotation_claims": 3,
+          "pending": true
+        },
+        "reversed_grid": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 123,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        },
+        "single_line": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 82,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        }
+      },
+      "cnn_exposure": {
+        "none_synthetic": {
+          "unsupported_numerator": 6,
+          "factual_denominator": 762,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        },
+        "train": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 681,
+          "rate": null,
+          "excluded_quotation_claims": 0,
+          "pending": true
+        },
+        "validation": {
+          "unsupported_numerator": 0,
+          "factual_denominator": 748,
+          "rate": null,
+          "excluded_quotation_claims": 3,
+          "pending": true
+        }
+      }
+    },
+    "descriptive_only": true,
+    "changes_acceptance_thresholds": false
+  },
+  "scientific_acceptance": "pending human adjudication",
+  "global_acceptance": "pending human adjudication; C_pair=0 remains N/A",
+  "procedural_limits": [
+    "Execution retains custody order; real/synthetic blinding is partial.",
+    "Opus posted content-bearing progress in its isolated thread contrary to the counts-only prompt. Coordinator first read that thread after both hashes were registered; no cross-annotator exposure observed.",
+    "Sessions/identities declared through orchestration, not cryptographically attested.",
+    "Known R2 P3 inventory-validator limits remain disclosed; no code was changed after evaluation."
+  ]
+}

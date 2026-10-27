@@ -17,30 +17,45 @@ registro H-18, no de una evaluación generada de su autoría:
 «credencial inválida; clave reemplazada por Julian», según su declaración a las
 21:14. Consulta anterior401; consulta nueva200. No compartir la clave.
 Intento original sellado, consumo real desconocido, reservaUS$0,0035706 debitada.
-Repetición terminada con coste certificado en BATCH_5C_REPORT.md. No más llamadas de desarrollo ni nuevo piloto. Puerta operativa superada; aceptación sin abrir hasta revisión final. Conciliar el
+Repetición terminada con coste certificado en BATCH_5C_REPORT.md. No más llamadas de desarrollo ni nuevo piloto. Puerta operativa superada y revisión previa cerrada sin P1/P2. La aceptación
+única terminó con US$0,1086672 certificados; la puntuación mecánica pasó tras
+registrar ambas anotaciones. Conciliar el
 consumo original no equivale a modificar sus registros históricos.
 
 ## Adjudicación
 
 La autorización de cierre del 2026-10-27 incluye las correcciones de D-r2 y
-su revisión independiente, con un máximo de dos rondas por hito. La aceptación
-sigue cerrada mientras se verifican esas correcciones y la identidad instalada.
+su revisión independiente, con un máximo de dos rondas por hito. R2 cerró los P1/P2 y verificó la identidad antes de la aceptación única, ya
+ejecutada y sellada. Ambas anotaciones IA terminaron; la adjudicación humana está pendiente.
 El primer intento permanece interrumpido sin evidencia de comportamiento.
 La repetición sí produjo respuestas: **low pasó la puerta operativa, 11/11**,
 según el sello y la puntuación conservados en el informe. Los P2 del evaluador
 bloquearon la puerta completa del cierre anterior; no falló la puerta de low.
 
-Todavía no hay anotaciones de aceptación que adjudicar. Si la puerta habilita
-aceptación, cada disputa llevará review_id/claim_id, texto y spans originales,
+Los dos hashes están registrados y la unión validó. El paquete privado conserva
+los 128 casos: 894 afirmaciones en desacuerdo e inventarios pendientes en 122.
+Cada disputa incluye review_id/claim_id, texto y spans originales,
 juicios de ambos anotadores, clasificación/denominador afectado y campo vacío
 para la decisión y motivo de Julian. Las diferencias de inventario, omisiones,
 identidad expuesta y contradicciones con comprobaciones mecánicas se incluyen.
-Las anotaciones iniciales y sus hashes nunca se sobrescriben. Hasta adjudicar,
+Las anotaciones iniciales y sus hashes nunca se sobrescriben. Si una adición
+conjunta tiene referencias distintas y el validador no admite la decisión de
+Julian, el caso queda pendiente: no reordenar anotadores ni forzar otra decisión.
+Todas las modificaciones de inventario se presentan junto a C_pair; no duplicar
+afirmaciones para crear pares ni adjudicar silenciosamente variantes de espacios. Hasta adjudicar,
 exactitud científica y aceptación global permanecen pendientes.
 
-Si C_pair=0 sin obligación externa omitida, el soporte es N/A; hace falta una
-decisión expresa de Julian para su consecuencia sobre aceptación global. No se
-convierte en 100% ni se cambia la rúbrica para obtener aprobación.
+C_pair=0/0: el soporte es N/A y la aceptación global permanece pendiente.
+No se convierte en 100% ni se cambia la rúbrica para obtener aprobación.
+Los valores provisionales de ciencia (783/1673) y sin soporte (6/2194) tienen
+tasa null. Ninguna anotación ni campo vacío constituye una decisión de Julian.
+
+El paquete contiene `README.md`, `worksheet.json`, `index.json`, una plantilla
+vacía, los informes ciegos, ambas anotaciones y manifiesto con hashes. Se conserva
+en el estado privado y no se sube con la release. Incluye seis obligaciones de
+evidencia acordadas como incumplidas y nueve casos con discrepancias de obligaciones.
+La desviación de progreso de Opus está declarada en el informe: se leyó después
+de registrar ambos hashes, sin exposición observada del otro anotador.
 
 ## Respaldo y publicación
 

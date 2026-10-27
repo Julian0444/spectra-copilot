@@ -1,0 +1,83 @@
+{
+  "schema": "batch5c-acceptance-execution-public-derivative-v1",
+  "date": "2026-10-27",
+  "scope": "Execution only, derived from sealed private artifacts; no per-case aliases, IDs, inputs or scoring labels. Not scientific or global acceptance.",
+  "effort": "low",
+  "requested": 128,
+  "frozen_population": {
+    "real": 80,
+    "synthetic": 48
+  },
+  "summary": {
+    "status_counts": {
+      "ambiguous": 72,
+      "complete": 0,
+      "explanation_incomplete": 1,
+      "insufficient_data": 49,
+      "invalid_input": 6,
+      "max_tokens": 0,
+      "pending": 0,
+      "refusal": 0,
+      "technical_error": 0,
+      "timeout": 0
+    },
+    "attempted": 128,
+    "attempts_per_case_max": 1,
+    "llm_calls": 126,
+    "automatic_retries": 0,
+    "cost": {
+      "certified": true,
+      "total_usd": 0.1086672,
+      "known_usd": 0.1086672,
+      "known_nanodollars": 108667200,
+      "mean_per_requested": 0.0008489625
+    },
+    "latency": {
+      "n": 128,
+      "p50": 5.400725291998242,
+      "p95": 6.85141912895342,
+      "maximum": 8.769262665999122
+    }
+  },
+  "tokens": {
+    "input_tokens": 879977,
+    "output_tokens": 41339
+  },
+  "max_calls_per_case": 3,
+  "first_fresh_worker_seconds": 6.210452667000936,
+  "all_cases_use_fresh_workers": true,
+  "evaluation": {
+    "packages": {
+      "desi-fm": {
+        "source_commit": "e15d3a973d615ca196eed0832baa175c4e30bd48",
+        "version": "0.3.0",
+        "wheel_sha256": "f2ff4357b8d5f1dceabe3d3f454995eb8771c8e37b99aa1df17fd59111fb4268"
+      },
+      "spectra-copilot": {
+        "source_commit": "0074cbc1dbe59da0160e938fe4b290fa3ee198a8",
+        "version": "0.3.0",
+        "wheel_sha256": "172773daa42001fc2abd67156a3156b949bf0cdcc9ae2211a0b7bacd93334fa4"
+      }
+    },
+    "identity_sha256": "a1415a165bf05ace0b8924853af900926b358d4b8b5bab3d804134153b0c57b8",
+    "llm_path_sha256": "985e74a43f8be5e6cb82bacb40d0ea82681af065dfd02390f7f1f49b0401158d"
+  },
+  "private_source_hashes": {
+    "acceptance-run/manifest.json": "5ef0070e6e007868926e7db209ae5c063127c8f098af105ed9230c14a397be74",
+    "acceptance-run/outputs.json": "899b496482477d9174344217dcc5f2747c8bd63894feceaeef86ac6a2a988383",
+    "acceptance-run/summary.json": "981049f800f07267daac2085206da6ac7451a3962e302866a3d7c6b96cef4b52",
+    "acceptance-run/seal.json": "6131d5544efd5b56b67f536436b09a1403d6709d7bdc5915c5673a5cc7adcd72",
+    "acceptance-run.seal-record.json": "756fa9ce12e22961b6637b80447ae215e47fee65b470f93b01d2601ebac164d6",
+    "acceptance-accounting-check.json": "3e7b2c143214165dc140d06d70f29eab35ec461af5500998e7b97d9612420557",
+    "preacceptance-approval.json": "eaec614c868a4b14a5261db36b46f03618c0e75ee5b5a28dda67e7b958696673",
+    "acceptance-prelaunch-register.json": "c47cf6a987b2bb6a052004bf999b601ac6fcd11e3ed00e9ca43b1ed6bd89f4a8"
+  },
+  "independent_preexecution_review": {
+    "model": "Claude Opus 5.5",
+    "rounds": 2,
+    "p1_open": 0,
+    "p2_open": 0,
+    "report_sha256": "90cd626c058c9bb3e0afeb88283f373db645d7245687099261b92e9bbe4aabe4"
+  },
+  "repeat_authorized": false
+}

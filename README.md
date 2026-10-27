@@ -73,8 +73,11 @@ per-call, token and time limits. This example does not launch or authorize it.
 The completed 5C development pilot compared low and medium effort on the same
 12 cases each. Low passed the operational gate with 11/11 valid reports; medium
 had 6/11. The earlier interrupted attempt is retained, with no usable response
-and no behavioral evidence. Current acceptance, semantic review and human
-adjudication status are recorded in [the 5C report](docs/BATCH_5C_REPORT.md).
+and no behavioral evidence. The single 128-case acceptance passed mechanical
+checks with 127/128 completed (79/80 real, 48/48 synthetic), at certified cost
+US$0.1086672. Both AI annotations are complete; 894 claim disagreements leave
+semantic review pending in 128/128 cases. The full adjudication package has no
+human decisions. See [the 5C report](docs/BATCH_5C_REPORT.md).
 Scientific accuracy and global acceptance remain pending human adjudication;
 zero emitted claim–citation pairs are N/A, never 100% support.
 
@@ -91,7 +94,7 @@ retained in `eval/transcripts/` as historical evidence.
 - [Architecture and decisions](docs/DECISIONS.md)
 - [Canonical scientific evaluation](https://github.com/Julian0444/desi-spectra-fm/blob/main/docs/EVALUATION.md)
 - [Semantic review procedure](docs/BATCH_5C_AI_REVIEW.md) and [remaining human actions](docs/BATCH_5C_HUMAN_ACTIONS.md)
-- [Release preparation](docs/RELEASE_0_3_0.md)
+- [Release notes](docs/RELEASE_0_3_0.md)
 
 Development and audits used AI assistants (Codex and Claude), with decisions and
 verifications recorded in `docs/`. Personal contributions are not inferred from

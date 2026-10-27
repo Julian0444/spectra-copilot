@@ -1,16 +1,102 @@
-# Lote 5C — cierre en curso, 2026-10-27
+# Lote 5C — mecánica aprobada, adjudicación pendiente (2026-10-27)
 
-La repetición sellada eligió low y pasó la puerta operativa (11/11 válidos).
-Bajo la nueva autorización se corrigen D-P2-N1/N2 y P3-N1/N2/N3, se prepara CI y
-documentación y se verifica la identidad final antes de abrir aceptación.
-La corrida única de 128 casos no se ha materializado ni ejecutado. Correcciones
-locales no equivalen a aprobación independiente; la puerta sigue cerrada.
-La anotación semántica IA ahora forma parte del alcance, con adjudicación humana
-pendiente. No hubo nuevas llamadas pagas ni publicación. PUBLICAR es obligatorio.
+La repetición del piloto eligió low y pasó la puerta operativa (11/11 válidos).
+Las correcciones D-P2-N1/N2 y P3-N1/N2/N3 fueron verificadas en dos rondas nuevas
+de Opus 5.5. R1 encontró un P2 residual de inventario; rojo 78a1d8b (11 fallos)
+→ verde 0074cbc, con 425 pruebas instaladas. R2 concluyó **0 P1 y 0 P2**.
+La adenda 5C-2, procedimiento corregido e identidad quedaron registrados antes
+de materializar. Build-02 conserva el camino LLM del piloto ejecutado; no se
+repitió ni modificó el piloto aprobado.
+
+## Ejecución única de aceptación
+
+Instalación evaluada: FM e15d3a9 y Copilot 0074cbc, build-02/acceptance-env,
+variante low, techo US$12,80. Custodio offline, vistas separadas y comprobador
+previo: 5.398 superficies, cero hallazgos, incluidos los 128 NPZ y el plan.
+El sello y su registro externo se escribieron antes de leer cualquier etiqueta.
+
+- Solicitados e intentados: **128/128** (población congelada: 80 reales, 48 sintéticos).
+- Estados de ejecución: 72 ambiguous, 49 insufficient_data, 6 invalid_input,
+  1 explanation_incomplete; 0 pending, timeout, technical_error, max_tokens o refusal.
+- **126 llamadas, cero reintentos**, un único intento por caso.
+- Coste certificado: **US$0,1086672**, media por solicitado **US$0,0008489625**.
+- Latencia total: p50 5,400725 s; p95 6,851419 s; máximo 8,769263 s.
+
+Estos datos describen la ejecución; la puntuación posterior figura debajo.
+La explicación incompleta se conserva y no se repite. Las 128 filas permanecen
+en todos los denominadores globales aplicables; no se elimina ningún fallo.
+Sello: `6131d5544efd5b56b67f536436b09a1403d6709d7bdc5915c5673a5cc7adcd72`.
+Identidad evaluada: `a1415a165bf05ace0b8924853af900926b358d4b8b5bab3d804134153b0c57b8`.
+El registro canónico y las trazas se conservan en el estado privado.
+[Derivado público de ejecución](evidence/batch5c-acceptance-execution-public.json):
+879.977 tokens de entrada, 41.339 de salida; 126 reservas y 126 liquidaciones
+recalculadas, ninguna reserva pendiente. Los 128 casos usaron workers nuevos;
+el primero tardó 6,210453 s y permanece en la latencia total.
+
+## Puntuación mecánica y anotación IA terminadas
+
+La puntuación se realizó después de registrar ambos hashes y verificar el sello
+externo antes de abrir las etiquetas. **Pasan las comprobaciones mecánicas** del
+protocolo; esto no aprueba exactitud científica ni aceptación global.
+
+| Comprobación | Global | Reales | Sintéticos |
+|---|---:|---:|---:|
+| Completados / solicitados | 127/128 | 79/80 | 48/48 |
+| model_z conservado / elegibles | 122/122 | 80/80 | 42/42 |
+| Unidades de evidencia fieles | 909/909 | 621/621 | 288/288 |
+| Casos válidos fieles a herramientas | 122/122 | 80/80 | 42/42 |
+| Abstenciones requeridas | 18/18 | N/A (0/0) | 18/18 |
+| Menciones de IDs de cita válidas | 3/3 | 3/3 | N/A (0/0) |
+
+La cobertura de predicción es 122/122 entradas elegibles, **122/128 solicitados**;
+los seis rechazos inválidos siguen en N. La explicación incompleta cuenta como
+fallo de completitud. El p95 global y por estrato queda bajo 60 s; el coste
+certificado queda bajo US$12,80 y la media bajo US$0,10. Fuentes, intervalos y
+estratos completos: [derivado público de puntuación](evidence/batch5c-acceptance-score-public.json).
+Las tres menciones válidas son pertenencia de ID, no pares científicos.
+
+Dos sesiones nuevas, GPT-6 Astra y Claude Opus 5.5, recibieron copias equivalentes
+de un paquete ciego de 128 casos y 2.191 semillas. Los dos archivos se guardaron
+y registraron por hash antes de que el coordinador abriera cualquiera de sus
+juicios o las etiquetas. Los revisores previos estaban cerrados. La unión validó.
+Es **revisión por IA**, no revisión humana; Opus y Haiku comparten proveedor.
+
+- Unión provisional: 2.194 afirmaciones, incluidas tres adiciones de Astra y cero
+  de Opus; 894 afirmaciones inicialmente en desacuerdo y pendientes.
+- Inventario pendiente: 122 casos; revisión semántica pendiente: **128/128**.
+- Disputas de inventario declaradas: 1.198 por Astra y 197 por Opus (recuentos por
+  anotador, no una suma de disputas únicas). Nueve casos discrepan en obligaciones.
+- Ciencia: 783 juicios acordados correctos sobre denominador provisional 1.673;
+  sin soporte: 6 sobre denominador provisional 2.194. **Ambas tasas son null**,
+  no 46,8% de exactitud ni un aprobado del umbral de afirmaciones sin soporte.
+- C_pair=0/0 ⇒ N/A y aceptación global pendiente. Seis obligaciones de evidencia
+  acordadas como incumplidas se conservan; obligaciones pendientes: cautela 7,
+  evidencia 3 y limitaciones 6. Cero indicadores críticos acordados no demuestra
+  ausencia de errores críticos mientras la revisión siga pendiente.
+- Sin adjudicación humana: forced=0, changed=0, inventory_changes=0. Sensibilidad
+  descriptiva sin tres extractos: 6/2.191, tasa null; no altera el criterio.
+
+El paquete privado de adjudicación contiene los 128 casos, catálogo completo,
+textos y spans, ambos juicios, todas las disputas, contexto mecánico y campos
+humanos vacíos: 84 archivos, 75.250.003 bytes. Manifiesto SHA-256:
+`78a0e98dcb1aeb44aca6a88e9502a77b91dc7923ee65f53dea5dde253372a480`.
+No se adjudicó ninguna diferencia ni se puntuó la plantilla vacía.
+
+Límites de procedimiento declarados: orden de custodia conservado y ceguera
+real/sintética parcial; identidades de sesión declaradas por la orquestación.
+Opus escribió progreso con contenido en su sesión aislada, contra la instrucción
+de comunicar solo recuentos. El coordinador leyó esa conversación después del
+registro de ambos hashes; no se observó exposición del otro anotador. Se conserva
+el rastro y no se repiten anotaciones. Los límites P3 del validador permanecen en
+[REMAINING](BATCH_5C_REMAINING.md) y en las instrucciones a Julian.
+
+Exactitud científica y aceptación global quedan pendientes de adjudicación humana
+y de los límites del protocolo que sigan aplicando. **Publicación detenida hasta
+PUBLICAR**; revisión final de agregados y publicación en preparación.
 
 El registro siguiente describe exclusivamente el cierre económico anterior.
-Se conserva su cronología; sus restricciones de alcance fueron sustituidas por
-la autorización del 2026-10-27. Resultados del piloto, costes y sellos no cambian.
+Se conserva su cronología; su alcance fue sustituido por la autorización del
+2026-10-27. Los resultados, costes y sellos anteriores no se modifican.
 
 ## Registro del cierre económico anterior
 

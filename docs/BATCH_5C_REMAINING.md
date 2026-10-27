@@ -1,13 +1,22 @@
 # Trabajo pendiente del cierre 5C — 2026-10-27
 
-Correcciones locales de D-P2-N1/N2 y P3-N1/N2/N3: rojo 61b1ce9 (16 fallos,
-1 control verde), verde 0ae8ef0 (42 pruebas dirigidas). La revisión independiente R1 verificó esas correcciones, adenda e identidad,
-pero encontró un P2 residual: conservación de adiciones conjuntas durante la
-adjudicación. Rojo 78a1d8b: 11 fallos; corrección y segunda revisión pendientes
-de registro final. No se abre aceptación mientras exista un P1/P2.
-No se repite el piloto aprobado ni se cambian criterios. Después de esa puerta:
-una corrida de 128 casos, dos anotaciones IA ciegas, unión y puntuación, paquete
-para Julian, revisión del informe y preparación de publicación sin push.
+Correcciones e identidad build-02 revisadas por Opus en dos rondas: R2, 0 P1/P2.
+La aceptación única low terminó: 128 casos, 126 llamadas, US$0,1086672 certificados,
+sin reintentos; se conserva una explicación incompleta. No hay otra corrida
+ni piloto autorizado. Ambas anotaciones IA están selladas; su unión validó y la
+puntuación mecánica pasó (127/128 completados). La revisión semántica deja
+894 afirmaciones en desacuerdo, inventario pendiente en 122 casos y 128/128
+casos pendientes. El paquete de adjudicación está completo, sin decisiones
+humanas. Faltan la revisión final de agregados/informe y publicación. PUBLICAR
+sigue pendiente; exactitud científica y aceptación global no están aprobadas.
+
+R2 declaró límites P3 no invalidantes: referencias distintas en una adición de
+igual texto dependen del orden fijado; resoluciones humanas pueden duplicar textos
+registrados bajo otro ID (trazado en inventory_changes); el bloqueo de duplicados
+compara texto exacto, no variantes de espacios; la ejecución conserva el orden
+de custodia y ceguera real/sintética parcial. Se registró la invocación -I -B sin
+-O; escaneo, precios y preparación quedaron ligados en el registro previo.
+No se cambió código tras evaluación para corregir estos límites.
 
 Los P3 no incluidos en la corrección solicitada siguen declarados: detección de
 identidad parcial en razones; schema/ejemplo opcionales en paquetes genéricos;

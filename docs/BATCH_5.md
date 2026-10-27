@@ -962,7 +962,7 @@ Respaldo independiente y H-18 siguen pendientes. Piloto y aceptación todavía
 no ejecutados; no hay aceptación aprobada ni publicación.
 
 
-## 5C — matriz vigente tras la repetición autorizada (2026-10-25/26)
+## 5C — matriz histórica del cierre económico (2026-10-25/26)
 
 Este registro actualiza los estados históricos anteriores. Fuentes canónicas:
 [BATCH_5C_REPORT.md](BATCH_5C_REPORT.md), [repetición](evidence/batch5c-repeat.json),
@@ -1010,3 +1010,31 @@ identidad antes de materializar la aceptación única low de 128 casos (80/48,
 techo US$12,80). Incluye anotación por dos sesiones nuevas IA y adjudicación de
 Julian pendiente; no autoriza repetir un piloto ni una aceptación defectuosa.
 Se prepara publicación, detenida hasta PUBLICAR. Estado en BATCH_5C_REPORT.md.
+
+
+## 5C — aceptación ejecutada y sellada, 2026-10-27
+
+R2 de Opus:0P1/P2 tras corrección de inventario; build-02 FM e15d3a9 / CP0074cbc,
+425 pruebas Copilot instaladas. Camino LLM idéntico al piloto aprobado. Una
+aceptación low:128/128intentados (80reales48sintéticos),126llamadas,0reintentos,
+US$0,1086672certificados,1explicación incompleta conservada. Las anotaciones IA
+independientes están en curso; puntuación tras ambos hashes, sin adjudicar.
+Este asiento sustituye el estado actual H-09/H-16/H-17 de la matriz histórica,
+sin cambiar aquella evidencia. Ciencia/global siguen pendientes de Julian;
+publicación requiere PUBLICAR. Detalle y límites actuales en BATCH_5C_REPORT.md.
+
+
+## 5C — puntuación y entrega para adjudicación (2026-10-27)
+
+Ambas anotaciones IA quedaron registradas antes de leer juicios y etiquetas;
+unión validada. Mecánica aprobada: 127/128 completados (79/80 reales, 48/48
+sintéticos), model_z 122/122 elegibles, cobertura 122/128 solicitados, evidencia
+909/909, abstención 18/18; p95 6,851419 s, coste certificado US$0,1086672.
+Una explicación incompleta se conserva, sin nueva corrida.
+
+Revisión semántica: 894 afirmaciones en desacuerdo, 122 inventarios pendientes,
+128/128 casos pendientes; tasas científicas y sin soporte null, C_pair=0/0 N/A.
+Paquete humano completo de 84 archivos (75.250.003 bytes), sin adjudicación.
+Opus y Haiku comparten proveedor. Desviación de progreso y límites P3 declarados
+en el informe. Software/evaluación/mecánica no equivalen a ciencia o aceptación
+global. Revisión final y autorización PUBLICAR pendientes; nada publicado.
