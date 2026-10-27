@@ -7,7 +7,7 @@ and [architecture decisions](DECISIONS.md).
 |---|---|
 | `EVALUATION.md` in FM | Canonical results, protocols, limitations and evaluation status. |
 | `DECISIONS.md` | Current architecture, recorded alternatives and boundaries. |
-| `RELEASE_0_3_0.md` | Release preparation and delivery state. |
+| `RELEASE_0_3_0.md` | Release notes, delivery boundaries and evaluated/release identity references. |
 | `BATCH_5C_REPRODUCE.md` | Installed-package commands and asset requirements; Spanish technical record. |
 | `BATCH_5C_REPORT.md`, `BATCH_5C_REMAINING.md` | Current closure state and remaining work, retaining the economic closure history. |
 | `BATCH_5C_AI_REVIEW.md`, `review/` | Semantic procedure, instructions and annotation contract. |

@@ -7,8 +7,11 @@ ni piloto autorizado. Ambas anotaciones IA están selladas; su unión validó y 
 puntuación mecánica pasó (127/128 completados). La revisión semántica deja
 894 afirmaciones en desacuerdo, inventario pendiente en 122 casos y 128/128
 casos pendientes. El paquete de adjudicación está completo, sin decisiones
-humanas. Faltan la revisión final de agregados/informe y publicación. PUBLICAR
-sigue pendiente; exactitud científica y aceptación global no están aprobadas.
+humanas. R1 final confirmó los agregados y señaló un P2 de publicación sobre
+reconstrucción del Space; la respuesta documental y los comandos declaran ese
+efecto y exigen su aceptación expresa. El registro de release identifica el
+dictamen final del delta y los comandos correspondientes a cada commit.
+PUBLICAR sigue pendiente; exactitud científica y aceptación global no están aprobadas.
 
 R2 declaró límites P3 no invalidantes: referencias distintas en una adición de
 igual texto dependen del orden fijado; resoluciones humanas pueden duplicar textos

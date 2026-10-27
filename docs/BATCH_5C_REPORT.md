@@ -60,6 +60,8 @@ de un paquete ciego de 128 casos y 2.191 semillas. Los dos archivos se guardaron
 y registraron por hash antes de que el coordinador abriera cualquiera de sus
 juicios o las etiquetas. Los revisores previos estaban cerrados. La unión validó.
 Es **revisión por IA**, no revisión humana; Opus y Haiku comparten proveedor.
+Cada anotador construyó sus juicios por afirmación con scripts propios después
+de leer los casos. Ese método no equivale a validación humana independiente.
 
 - Unión provisional: 2.194 afirmaciones, incluidas tres adiciones de Astra y cero
   de Opus; 894 afirmaciones inicialmente en desacuerdo y pendientes.
@@ -78,8 +80,8 @@ Es **revisión por IA**, no revisión humana; Opus y Haiku comparten proveedor.
 
 El paquete privado de adjudicación contiene los 128 casos, catálogo completo,
 textos y spans, ambos juicios, todas las disputas, contexto mecánico y campos
-humanos vacíos: 84 archivos, 75.250.363 bytes. Manifiesto SHA-256:
-`34dce65e01225ae371889adb711dda8f6b505b6adb7c73321287f981a0c72008`.
+humanos vacíos: 84 archivos, 75.251.019 bytes. Manifiesto SHA-256:
+`93da1dcb66ef81be9cd80343ec42aa94d1b8f49275e7b91ae0a075b86874d137`.
 No se adjudicó ninguna diferencia ni se puntuó la plantilla vacía.
 
 Límites de procedimiento declarados: orden de custodia conservado y ceguera
@@ -92,7 +94,12 @@ el rastro y no se repiten anotaciones. Los límites P3 del validador permanecen 
 
 Exactitud científica y aceptación global quedan pendientes de adjudicación humana
 y de los límites del protocolo que sigan aplicando. **Publicación detenida hasta
-PUBLICAR**; revisión final de agregados y publicación en preparación.
+PUBLICAR**. La R1 final de Opus reprodujo los resultados y encontró un P2 de
+publicación: un README del Space puede reconstruir el servicio y resolver la
+dependencia FM sin fijar. La respuesta corrige las afirmaciones sobre runtime,
+exige aceptación expresa de ese efecto y añade comprobaciones posteriores.
+El dictamen final del delta y los hashes de release se entregan con las notas
+de release, sin atribuir aceptación a otro código ni repetir la evaluación.
 
 El registro siguiente describe exclusivamente el cierre económico anterior.
 Se conserva su cronología; su alcance fue sustituido por la autorización del

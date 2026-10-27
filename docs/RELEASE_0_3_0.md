@@ -53,8 +53,14 @@ See [current 5C state](BATCH_5C_REPORT.md) and [human actions](BATCH_5C_HUMAN_AC
 
 FM must pass CI on its exact reviewed branch commit before main fast-forward,
 tag v0.3.0 and release; Copilot follows after the FM tag exists. Tags and artifacts
-are never overwritten. Hosted Space code is unchanged by this software release;
-only model-card/README text is in the publication scope. The reproduction bundle
+are never overwritten. Only model-card/README text is in the Hugging Face
+publication scope; app.py and requirements files are not edited. A Space README
+commit triggers a rebuild and restart. The demo and API Spaces currently install
+desi-fm from GitHub's unpinned default branch; after publication a rebuild can
+install 0.3.0 under the existing app.py, or fail. Cache reuse can retain an older
+dependency. Runtime equivalence is not asserted. The proposed Space README
+commit requires explicit acceptance of that effect and a post-commit smoke
+check; no updated demo code is claimed. The reproduction bundle
 is prepared separately and is not uploaded. H-18, human adjudication, independent
 backup, artifact hosting and deactivation of old keys remain human actions.
 

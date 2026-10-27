@@ -1014,10 +1014,10 @@ Se prepara publicación, detenida hasta PUBLICAR. Estado en BATCH_5C_REPORT.md.
 
 ## 5C — aceptación ejecutada y sellada, 2026-10-27
 
-R2 de Opus:0P1/P2 tras corrección de inventario; build-02 FM e15d3a9 / CP0074cbc,
+R2 de Opus: 0 P1/P2 tras corrección de inventario; build-02 FM e15d3a9 / CP 0074cbc,
 425 pruebas Copilot instaladas. Camino LLM idéntico al piloto aprobado. Una
-aceptación low:128/128intentados (80reales48sintéticos),126llamadas,0reintentos,
-US$0,1086672certificados,1explicación incompleta conservada. Las anotaciones IA
+aceptación low: 128/128 intentados (80 reales y 48 sintéticos), 126 llamadas, 0 reintentos,
+US$0,1086672 certificados, 1 explicación incompleta conservada. Las anotaciones IA
 independientes están en curso; puntuación tras ambos hashes, sin adjudicar.
 Este asiento sustituye el estado actual H-09/H-16/H-17 de la matriz histórica,
 sin cambiar aquella evidencia. Ciencia/global siguen pendientes de Julian;
@@ -1034,7 +1034,23 @@ Una explicación incompleta se conserva, sin nueva corrida.
 
 Revisión semántica: 894 afirmaciones en desacuerdo, 122 inventarios pendientes,
 128/128 casos pendientes; tasas científicas y sin soporte null, C_pair=0/0 N/A.
-Paquete humano completo de 84 archivos (75.250.363 bytes), sin adjudicación.
+Paquete humano completo de 84 archivos (75.251.019 bytes), sin adjudicación.
 Opus y Haiku comparten proveedor. Desviación de progreso y límites P3 declarados
 en el informe. Software/evaluación/mecánica no equivalen a ciencia o aceptación
 global. Revisión final y autorización PUBLICAR pendientes; nada publicado.
+
+
+## 5C — revisión final R1 y respuesta de publicación (2026-10-27)
+
+Opus reprodujo sellos, orden, costes, unión, puntuación, agregados, paquete
+humano, wheels y barridos. Dictamen R1: 0 P1, 1 P2 y 6 P3. El P2 afecta al
+README del Space: un commit dispara rebuild/restart y su dependencia desi-fm
+apunta a main sin fijar versión. Se corrigieron las afirmaciones absolutas
+sobre runtime sin cambios. La propuesta mantiene cambios solo en README,
+explica que puede resolver 0.3.0 o conservar caché/fallar, y requiere aceptación
+expresa de ese efecto con PUBLICAR más comprobación posterior. No se editan
+app.py ni requirements. También se corrigen guardas de CI, procedencia GitHub
+de los registros de publicación, método de anotación, instrucciones humanas
+y legibilidad. El dictamen final del delta queda ligado en el registro de
+aprobación/release; este asiento conserva el resultado de R1. No se publicó
+nada al preparar este candidato ni se repitió la evaluación.

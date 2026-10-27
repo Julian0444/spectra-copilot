@@ -75,3 +75,16 @@ global permanecen pendientes de Julian. Las claves viejas deben desactivarse en
 la Consola del proveedor; no se presume que eso ya ocurrió. El hospedaje del
 paquete de artefactos y un respaldo independiente también quedan pendientes.
 La publicación espera la palabra expresa PUBLICAR, tras presentar los comandos.
+
+
+## Efecto del README del Space antes de PUBLICAR
+
+La propuesta solo modifica README en Hugging Face, pero ese commit reconstruye
+y reinicia el Space. Su desi-fm depende de main sin fijar: puede instalar0.3.0
+bajo el mismo app.py, conservar caché o fallar. La autorización PUBLICAR debe
+aceptar expresamente ese efecto al aprobar los comandos presentados. No se
+editarán app.py ni requirements, no se afirmará runtime idéntico y se comprobará
+la disponibilidad después. Esa comprobación no certifica la versión instalada
+ni reproduce la evaluación. Si falla, se informa y detiene, sin cambios de
+código, reinicio forzado ni rollback automático. La API también tiene esa
+dependencia sin fijar y podría cambiar en una reconstrucción futura.
